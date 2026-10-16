@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b6b4f"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><title>Consulta de Postos</title><script src="config.js"></script><script src="dados.js?v=1"></script><script src="bases.js"></script><script src="https://accounts.google.com/gsi/client" async defer></script><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b6b4f"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><title>Consulta de Postos</title><script src="config.js"></script><script src="dados.js?v=2"></script><script src="bases.js"></script><script src="https://accounts.google.com/gsi/client" async defer></script><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <style>
 :root{--fundo:#f3f5f4;--papel:#fff;--texto:#17211d;--suave:#5b6963;--linha:#d5dcd8;
 --acento:#0b6b4f;--acento-texto:#fff;--erro:#a32222;
@@ -118,14 +118,16 @@ button.hoje{font-size:.72rem;padding:2px 6px}
 td.tel .equip.consumo{margin-top:8px;padding-top:8px;border-top:1px dashed var(--linha)}
 .redebox input.rede-nome{margin-top:0}
 #arqmsg{font-size:.9rem;color:var(--suave)}
+tr.consumidor td:first-child{box-shadow:inset 3px 0 0 #b26b00}
+button.mais{display:block;margin:0 auto}
 </style><main>
 <header><div class="topo"><h1>Consulta de Postos</h1><button type="button" id="ajuda">Como funciona</button></div>
-<p class="sub">Postos revendedores autorizados pela ANP nos 107 municípios da sua lista de contatos. Dados de <span class="d-anp"></span>. Códigos de cliente conforme a Carteira de Clientes de <span class="d-cart"></span>. Telefones da sua agenda (exportação de <span class="d-ag"></span>) aparecem primeiro.</p></header>
+<p class="sub">Postos revendedores autorizados pela ANP nos 107 municípios da sua lista de contatos. Dados de <span class="d-anp"></span>. Códigos de cliente conforme a Carteira de Clientes de <span class="d-cart"></span>. Telefones da sua agenda (exportação de <span class="d-ag"></span>) aparecem primeiro. Consumidores (transportadoras, ônibus e frotas) vêm dos seus contatos, base de <span class="d-cons"></span>.</p></header>
 <form id="f">
  <div class="filtros">
   <label class="campo">Município
    <select id="mun"><option value="">Todos os municípios</option></select></label>
-  <label class="campo">Posto, bandeira, bairro, telefone, CNPJ, código, rede, fornecedor ou contato
+  <label class="campo">Nome, bandeira, segmento, bairro, telefone, CNPJ, código, rede, fornecedor ou contato
    <input type="text" id="q" placeholder="Digite para filtrar" autocomplete="off"></label>
   <label class="campo">WhatsApp
    <select id="wa"><option value="">Todos</option><option value="sim">Só com WhatsApp</option><option value="pend">Ainda não testados</option><option value="nao">Sem WhatsApp</option></select></label>
@@ -133,6 +135,8 @@ td.tel .equip.consumo{margin-top:8px;padding-top:8px;border-top:1px dashed var(-
    <select id="ord"><option value="dist" selected>Mais perto de Vespasiano</option><option value="arla">Maior potencial de Arla 32</option></select></label>
  </div>
  <div class="filtros filtros2">
+  <label class="campo">Tipo
+   <select id="ftipo"><option value="">Todos</option><option value="revendedor">Revendedores (postos)</option><option value="consumidor">Consumidores (frotas)</option></select></label>
   <label class="campo">Visita
    <select id="fvis"><option value="">Todos</option><option value="sim">Já visitados</option><option value="nao">Ainda não visitados</option></select></label>
   <label class="campo">Consumo de Arla
@@ -161,8 +165,9 @@ td.tel .equip.consumo{margin-top:8px;padding-top:8px;border-top:1px dashed var(-
  <datalist id="redes"></datalist><datalist id="fornecedores"></datalist>
 </form>
 <div class="rolo"><table><thead><tr>
-<th>Posto</th><th>Bandeira</th><th>Endereço</th><th>Telefone</th><th title="Distância em linha reta do centro de Vespasiano, em km">Dist Vespasiano</th><th title="Arla 32 potencial, em litros por mês">Arla</th><th title="Volume de S10 em m³ por mês: estimativa da ANP ou o número que você informou na visita">Vol S10</th>
-</tr></thead><tbody id="tb"></tbody></table><div class="vazio" id="vazio" hidden>Nenhum posto encontrado para essa busca.</div></div>
+<th>Nome</th><th>Bandeira / segmento</th><th>Endereço</th><th>Telefone</th><th title="Distância em linha reta do centro de Vespasiano, em km">Dist Vespasiano</th><th title="Arla 32 potencial, em litros por mês">Arla</th><th title="Volume de S10 em m³ por mês: estimativa da ANP ou o número que você informou na visita">Vol S10</th>
+</tr></thead><tbody id="tb"></tbody></table><div class="vazio" id="vazio" hidden>Nada encontrado com esses critérios.</div></div>
+<button type="button" id="mais" class="mais" hidden>Mostrar mais</button>
 </main>
 <dialog id="dlg" aria-labelledby="dlgt"><div class="dlgcab"><h2 id="dlgt">Como funciona a consulta</h2><button type="button" id="dlgx" aria-label="Fechar">Fechar</button></div>
 <div class="dlgcorpo">
@@ -180,7 +185,7 @@ td.tel .equip.consumo{margin-top:8px;padding-top:8px;border-top:1px dashed var(-
 <h3>Marcações e datas</h3>
 <p>Inativo, Posto de Rede (abre um campo para o nome da rede), Equipamento, capacidade do tanque de Arla em litros, Automação, fornecedor atual, preço, volume de S10 e telefones. Cada campo preenchido mostra a data em que foi feito, e o nome do posto mostra a última atualização; passe o mouse sobre ela para ver a data de cada campo.</p>
 <h3>Filtros</h3>
-<p>Município, busca livre, WhatsApp, visita, consumo de Arla, perfil, bandeira, fornecedor atual, equipamento e automação podem ser combinados. "Limpar filtros" volta à lista completa. A lista de fornecedores se monta com os nomes que você digitar nos postos.</p>
+<p>A lista só aparece depois que você escolhe um município, digita uma busca ou usa um filtro, e mostra 60 registros por vez (botão "Mostrar mais" no fim). O filtro Tipo separa revendedores (postos) de consumidores (transportadoras, ônibus e frotas). Nos consumidores, informe na coluna Vol S10 o diesel da frota em m³ por mês para calcular o potencial de Arla. Município, busca livre, WhatsApp, visita, consumo de Arla, perfil, bandeira, fornecedor atual, equipamento e automação podem ser combinados. "Limpar filtros" volta à lista completa. A lista de fornecedores se monta com os nomes que você digitar nos postos.</p>
 <h3>Salvamento no Google Drive</h3>
 <p>As marcações ficam no arquivo <b>postos-marcacoes.json</b>, na pasta <b>BIOAR › App Consulta de Postos</b> do seu Drive. Toque em “Conectar ao Drive” uma vez ao abrir o app: depois disso, cada alteração vai para o Drive sozinha, poucos segundos depois. O login do Google vale por cerca de uma hora; quando vencer, o botão vira “Reconectar ao Drive” e um toque resolve. Nada se perde nesse intervalo: fica guardado no aparelho.</p>
 <p>Celular e computador usam o mesmo arquivo. Se os dois mexerem ao mesmo tempo, o app junta as alterações de cada um, campo por campo. O app confere o Drive a cada minuto e ao voltar para a tela. O Drive guarda as versões anteriores do arquivo por 30 dias (botão direito no arquivo › Gerenciar versões).</p>
@@ -212,7 +217,7 @@ function listaRedes(){var dl=document.getElementById("redes");if(!dl)return;var 
 var FORN=marcas("postos_fornecedor"),PRECO=marcas("postos_preco"),VOL=marcas("postos_volume");
 var DATAS=marcas("postos_datas"),PERFIL=marcas("postos_perfil"),TANQ=marcas("postos_tanque_arla"),VISITA=marcas("postos_visita"),CONSUMO=marcas("postos_consumo");
 var CONS_TXT={granel:"A granel",embalado:"Embalado",ambos:"Granel e embalado",nao:"Não vende Arla"};
-function perfilDe(p){return PERFIL[p.cnpj.replace(/\D/g,"")]||p.perfilAuto}
+function perfilDe(p){return PERFIL[p.ck]||p.perfilAuto}
 var CAMPO={"postos_visita":"visita","postos_consumo":"consumo","postos_tanque_arla":"tanque","postos_fornecedor":"fornecedor","postos_preco":"preco","postos_volume":"volume","postos_inativo":"inativo","postos_rede":"rede","postos_automacao":"automacao"};
 var ROT={visita:"Data da visita",consumo:"Consumo de Arla",perfil:"Perfil",tanque:"Tanque de Arla",volume:"Volume S10",fornecedor:"Fornecedor",preco:"Preço",equipamento:"Equipamento",automacao:"Automação",rede:"Posto de rede",redeNome:"Nome da rede",inativo:"Inativo",telefones:"Telefones",whatsapp:"Teste de WhatsApp"};
 function hojeISO(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
@@ -231,7 +236,7 @@ function volParse(v){v=String(v||"").trim().replace(/[^\d,.]/g,"");if(!v)return 
 function volNum(k){return volParse(VOL[k])}
 var FED=marcas("postos_fone_editado"),FADD=marcas("postos_fone_novo"),FNOME=marcas("postos_contato_nome"),EDITANDO={};
 function dig(t){return String(t||"").replace(/\D/g,"")}
-function ckOf(p){return p.cnpj.replace(/\D/g,"")}
+function ckOf(p){return p.ck}
 function foneEf(ck,t){var d=dig(t);if(!d)return null;var e=FED[ck+":"+d];if(e==="-")return null;return e?fone(e):t}
 function novos(ck){return String(FADD[ck]||"").split(",").map(dig).filter(Boolean).map(fone)}
 function efList(p,arr){var ck=ckOf(p);return arr.map(function(t){return foneEf(ck,t)}).filter(Boolean)}
@@ -272,7 +277,7 @@ var NOMES={"ABAETE":"Abaeté","ALVINOPOLIS":"Alvinópolis","ALVORADA DE MINAS":"
 var postos=DADOS.map(function(r){
  var pr=r[11].map(function(x){return {produto:PRODS[x[0]],tanc:x[1],bicos:x[2]}});
  var d=pr.filter(function(x){return x.produto.indexOf("DIESEL")>=0});
- var p={cnpj:cnpj(r[0]),nome:r[1],bandeira:r[2],endereco:r[3],compl:r[4],bairro:r[5],mun:r[6],
+ var p={tipo:"revendedor",ck:r[0],cnpj:cnpj(r[0]),nome:r[1],bandeira:r[2],endereco:r[3],compl:r[4],bairro:r[5],mun:r[6],
   cidade:NOMES[r[6]]||r[6],cep:r[7].slice(0,5)+"-"+r[7].slice(5),lat:r[8],lon:r[9],vinculo:r[10],produtos:pr,tel1:fone((r[12]||[])[0]),tel2:fone((r[12]||[])[1]),email:String((r[12]||[])[2]||"").toLowerCase(),
   diesel:d.length>0,s10:d.some(function(x){return x.produto.indexOf("S10")>=0}),
   tancDiesel:d.reduce(function(a,x){return a+x.tanc},0),tancS10:d.filter(function(x){return x.produto.indexOf("S10")>=0}).reduce(function(a,x){return a+x.tanc},0),bicosDiesel:d.reduce(function(a,x){return a+x.bicos},0)};
@@ -281,8 +286,16 @@ var postos=DADOS.map(function(r){
  var ct=CARTEIRA[r[0]];p.cart=ct?{cod:ct[0],lojas:ct[1],ult:ct[2],vol:ct[3],ok:ct[4]===1}:null;
  p.busca=sem([r[0],ct?"COD "+ct[0]:"",p.cnpj,p.nome,p.bandeira,p.endereco,p.bairro,p.mun,p.tel1,p.tel2,(r[12]||[])[0],(r[12]||[])[1]].concat(p.agenda.map(function(g){return g.nome+" "+g.email+" "+g.fones.join(" ")+" "+g.fones.map(function(t){return t.replace(/\D/g,"")}).join(" ")})).join(" "));
  return p});
+(B.consumidores||[]).forEach(function(r){var mun=r[5]||"";if(mun&&!NOMES[mun])NOMES[mun]=r[6]||mun;
+ var p={tipo:"consumidor",ck:r[0],cnpj:r[1]?cnpj(r[1]):"",nome:r[2],bandeira:"",segmento:r[3]||"",endereco:r[4]||"",compl:"",bairro:"",mun:mun,cidade:r[6]||"",cep:r[7]||"",
+  lat:"",lon:"",vinculo:"",produtos:[],tel1:"",tel2:"",email:"",diesel:false,s10:false,tancDiesel:0,tancS10:0,bicosDiesel:0};
+ p.agenda=(r[9]||[]).map(function(g){return {nome:g[0],fones:g[1].map(function(t){return fone(t.length===10&&/[6-9]/.test(t[2])?t.slice(0,2)+"9"+t.slice(2):t)}),email:g[2],obs:g[3],como:g[4]}});
+ p.todos=[];p.agenda.forEach(function(g){g.fones.forEach(function(t){if(p.todos.indexOf(t)<0)p.todos.push(t)})});
+ p.cart=r[8]?{cod:r[8],lojas:"",ult:"",vol:0,ok:true}:null;
+ p.busca=sem([r[0],p.cnpj,r[8]?"COD "+r[8]:"",p.nome,p.segmento,p.endereco,p.cidade,mun,"CONSUMIDOR FROTA"].concat(p.agenda.map(function(g){return g.nome+" "+g.email+" "+g.obs+" "+g.fones.join(" ")+" "+g.fones.map(function(t){return t.replace(/\D/g,"")}).join(" ")})).join(" "));
+ postos.push(p)});
 var PERF_TXT={rodoviario:"Rodoviário",misto:"Misto",urbano:"Urbano"};
-postos.forEach(function(p){var tot=p.produtos.reduce(function(a,x){return a+x.tanc},0),sh=tot?p.tancDiesel/tot:0;
+postos.forEach(function(p){if(p.tipo==="consumidor")return;var tot=p.produtos.reduce(function(a,x){return a+x.tanc},0),sh=tot?p.tancDiesel/tot:0;
  var rod=/^(RODOVIA|ROD\b|BR\b|ESTRADA|ANEL|AREA BR|MARGEM BR|AREA ROD|AREA RURAL)/.test(p.endereco)||/\bKM\b|KM\s*\d|KM:/.test(p.endereco+" "+p.compl)||/ZONA RURAL|AREA RURAL/.test(p.bairro);
  var agUrb=p.agenda.some(function(g){return /urbano/i.test(g.obs||"")});
  p.dieselPct=Math.round(sh*100);p.perfilAuto=agUrb?"urbano":(rod&&sh>=0.5?"rodoviario":(!rod&&sh<0.35?"urbano":"misto"));
@@ -299,21 +312,30 @@ function med(v){v=v.slice().sort(function(a,b){return a-b});var n=v.length;retur
 function num(id,pad){var v=parseFloat(String($(id).value).replace(",","."));return isFinite(v)&&v>0?v:pad}
 function fmt(n){return Math.round(n).toLocaleString("pt-BR")}
 var GIRO=4,PCT=5;
-function calcular(){var g=GIRO,pc=PCT;postos.forEach(function(p){var k=p.cnpj.replace(/\D/g,""),v=volNum(k);p.s10Est=p.tancS10*g;p.volInf=v!=null;p.s10Mes=v!=null?v:p.s10Est;p.arla=p.s10Mes*1000*pc/100});
+function calcular(){var g=GIRO,pc=PCT;postos.forEach(function(p){var k=p.ck,v=volNum(k);p.s10Est=p.tancS10*g;p.volInf=v!=null;p.s10Mes=v!=null?v:p.s10Est;p.arla=p.s10Mes*1000*pc/100});
  var o=document.getElementById("ord"),porDist=o&&o.value==="dist";
  postos.sort(function(a,b){if(porDist){var x=a.dist==null?1e9:a.dist,y=b.dist==null?1e9:b.dist;if(x!==y)return x-y}
   return b.arla-a.arla||b.tancDiesel-a.tancDiesel||a.nome.localeCompare(b.nome)})}
-var MIN_ARLA=3000;calcular();postos=postos.filter(function(p){return p.s10Est*1000*PCT/100>=MIN_ARLA});
-var atual=[];
+var MIN_ARLA=3000;calcular();postos=postos.filter(function(p){return p.tipo==="consumidor"||p.s10Est*1000*PCT/100>=MIN_ARLA});
+var atual=[],limite=60,ultChave="";
+function contaTxt(l){var r=0,c=0;l.forEach(function(p){if(p.tipo==="consumidor")c++;else r++});return [r?r+(r>1?" postos":" posto"):"",c?c+(c>1?" consumidores":" consumidor"):""].filter(Boolean).join(" e ")||"Nenhum registro"}
+function totalBase(){return contaTxt(postos)+" na base. A lista aparece quando você escolhe um critério."}
 function td(t,c){var e=document.createElement("td");if(c)e.className=c;e.textContent=t;return e}
 function filtrar(){
  calcular();
  var termos=sem($("q").value).split(",").map(function(t){return t.trim()}).filter(Boolean);
  var soDig=$("q").value.replace(/\D/g,"");
- var d=false,mu=$("mun").value;
+ var d=false,mu=$("mun").value,FILTROS=["wa","fvis","fcons","fperf","fband","fforn","feq","faut","ftipo"];
+ var chave=[mu,$("q").value].concat(FILTROS.map(function(id){return $(id).value})).join("|");if(chave!==ultChave){limite=60;ultChave=chave}
+ if(!mu&&!termos.length&&!(soDig.length>=8)&&!FILTROS.some(function(id){return $(id).value})){
+  atual=[];$("tb").textContent="";$("mais").hidden=true;$("vazio").hidden=false;
+  $("vazio").textContent="Escolha um município, digite uma busca ou use um filtro para ver a lista.";
+  $("aviso").textContent=totalBase();return}
+ $("vazio").textContent="Nada encontrado com esses critérios.";
  atual=postos.filter(function(p){
   if(d&&!p.diesel)return false;
   if(mu&&p.mun!==mu)return false;
+  var tv=$("ftipo").value;if(tv&&p.tipo!==tv)return false;
   var wf=$("wa").value;if(wf){var ts=fonesEfetivos(p),st=ts.map(waGet);
    if(wf==="sim"&&st.indexOf("sim")<0)return false;
    if(wf==="nao"&&!(ts.length&&st.every(function(x){return x==="nao"})))return false;
@@ -326,13 +348,13 @@ function filtrar(){
   var ev=$("feq").value,ex=EQUIP[ckf]||"";if(ev&&(ev==="__sem"?ex:ex!==ev))return false;
   var av=$("faut").value;if(av==="sim"&&!AUTO[ckf])return false;if(av==="nao"&&AUTO[ckf])return false;
   if(!termos.length)return true;
-  var rnb=(REDE[p.cnpj.replace(/\D/g,"")]?sem(REDENOME[p.cnpj.replace(/\D/g,"")]||""):"")+" "+sem(FORN[p.cnpj.replace(/\D/g,"")]||"")+" "+sem(FNOME[ckOf(p)]||"")+" "+String(FADD[ckOf(p)]||"");rnb=rnb.trim();
+  var rnb=(REDE[p.ck]?sem(REDENOME[p.ck]||""):"")+" "+sem(FORN[p.ck]||"")+" "+sem(FNOME[ckOf(p)]||"")+" "+String(FADD[ckOf(p)]||"");rnb=rnb.trim();
   return termos.some(function(t){return p.busca.indexOf(t)>=0||(rnb&&rnb.indexOf(t)>=0)})||(soDig.length>=8&&p.busca.indexOf(soDig)>=0)});
  $("tb").textContent="";
- atual.forEach(function(p){
-  var tr=document.createElement("tr");if(p.diesel)tr.className="diesel";
-  var a=td(p.nome);var s=document.createElement("div");s.className="fraco";s.textContent=p.cnpj;a.appendChild(s);
-  var ck=p.cnpj.replace(/\D/g,"");var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent="Google Contatos";gb1.title="Baixa o contato deste posto para importar no Google Contatos";gb1.addEventListener("click",function(){exportaUm(p)});a.appendChild(gb1);if(INAT[ck])tr.classList.add("inativo");
+ atual.slice(0,limite).forEach(function(p){
+  var tr=document.createElement("tr");if(p.diesel)tr.className="diesel";if(p.tipo==="consumidor")tr.className="consumidor";
+  var a=td(p.nome);var s=document.createElement("div");s.className="fraco";s.textContent=p.cnpj||"sem CNPJ no cadastro";a.appendChild(s);
+  var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent="Google Contatos";gb1.title="Baixa o contato deste posto para importar no Google Contatos";gb1.addEventListener("click",function(){exportaUm(p)});a.appendChild(gb1);if(INAT[ck])tr.classList.add("inativo");
   a.appendChild(caixa("Inativo",INAT,"postos_inativo",ck,function(v){tr.classList.toggle("inativo",v);tr2.classList.toggle("inativo",v)}));
   if(p.cart){var cb=document.createElement("div");var cl=document.createElement("span");
    if(p.cart.ok){cl.className="cli";cl.textContent="Cliente cód. "+p.cart.cod+(p.cart.lojas?" · loja "+p.cart.lojas:"");cl.title="Cadastro confirmado na Carteira de Clientes (razão social e município)";cb.appendChild(cl);
@@ -340,11 +362,11 @@ function filtrar(){
     if(inf.length){var ci=document.createElement("div");ci.className="cliinfo";ci.textContent=inf.join(" · ");cb.appendChild(ci)}}
    else{cl.className="cli grupo";cl.textContent="Empresa cliente (cód. "+p.cart.cod+") · filial fora da carteira";cl.title="A mesma empresa está na Carteira de Clientes, mas não com esta unidade/município";cb.appendChild(cl)}
    a.appendChild(cb)}
-  var e=td(p.endereco+(p.compl&&p.compl.length>1?" · "+p.compl:"")+" · "+p.bairro);
-  var m=document.createElement("div");m.className="fraco";m.textContent=p.cidade+"/MG · CEP "+p.cep+" · ";
-  var l=document.createElement("a");l.href=p.coordAprox?"https://www.google.com/maps/search/"+encodeURIComponent(p.endereco+", "+p.cidade+" MG"):"https://www.google.com/maps?q="+p.lat+","+p.lon;l.target="_blank";l.rel="noopener";l.textContent="mapa";
+  var e=td([p.endereco+(p.compl&&p.compl.length>1?" · "+p.compl:""),p.bairro].filter(function(x){return x&&x.trim()}).join(" · ")||"endereço não informado");
+  var m=document.createElement("div");m.className="fraco";m.textContent=(p.cidade?p.cidade+"/MG":"cidade não informada")+(p.cep?" · CEP "+p.cep:"")+" · ";
+  var l=document.createElement("a");l.href=p.coordAprox||!p.lat?"https://www.google.com/maps/search/"+encodeURIComponent((p.endereco||p.nome)+", "+p.cidade+" MG"):"https://www.google.com/maps?q="+p.lat+","+p.lon;l.target="_blank";l.rel="noopener";l.textContent="mapa";
   m.appendChild(l);e.appendChild(m);var fx=document.createElement("div");fx.className="ficha";e.appendChild(fx);
-  tr.appendChild(a);var bd=td(p.bandeira);
+  tr.appendChild(a);var bd=td(p.tipo==="consumidor"?"Consumidor · "+p.segmento:p.bandeira);
   var eq=document.createElement("label");eq.className="equip";var eqt=document.createElement("span");eqt.textContent="Equipamento";eqt.appendChild(dtSpan(ck,"equipamento"));eq.appendChild(eqt);
   var es=document.createElement("select");[["","—"],["terceiros","Terceiros"],["proprio","Próprio"]].forEach(function(o){var op=document.createElement("option");op.value=o[0];op.textContent=o[1];es.appendChild(op)});
   es.value=EQUIP[ck]||"";es.className=es.value;es.addEventListener("change",function(){equipSet(ck,es.value);es.className=es.value});
@@ -360,12 +382,12 @@ function filtrar(){
   csl.value=CONSUMO[ck]||"";csl.className=csl.value?"proprio":"";csl.addEventListener("change",function(){txtSet(CONSUMO,"postos_consumo",ck,csl.value);csl.className=csl.value?"proprio":""});
   cs.appendChild(csl);cs.className="equip consumo";
   bd.appendChild(caixa("Automação",AUTO,"postos_automacao",ck));
-  var pf=document.createElement("label");pf.className="equip";var pft=document.createElement("span");pft.textContent="Perfil";pft.appendChild(dtSpan(ck,"perfil"));pf.appendChild(pft);
+  if(p.tipo!=="consumidor"){var pf=document.createElement("label");pf.className="equip";var pft=document.createElement("span");pft.textContent="Perfil";pft.appendChild(dtSpan(ck,"perfil"));pf.appendChild(pft);
   var ps=document.createElement("select");ps.setAttribute("aria-label","Perfil do posto "+p.nome);
   [["","Automático: "+PERF_TXT[p.perfilAuto]],["rodoviario","Rodoviário"],["misto","Misto"],["urbano","Urbano"]].forEach(function(o){var op=document.createElement("option");op.value=o[0];op.textContent=o[1];ps.appendChild(op)});
   ps.value=PERFIL[ck]||"";ps.className=PERFIL[ck]?"proprio":"";ps.title="Estimativa automática: "+PERF_TXT[p.perfilAuto]+" ("+p.perfilMotivo+")";
   ps.addEventListener("change",function(){carimbo(ck,"perfil",ps.value,PERFIL[ck]);if(ps.value)PERFIL[ck]=ps.value;else delete PERFIL[ck];try{localStorage.setItem("postos_perfil",JSON.stringify(PERFIL))}catch(e){}mudou();ps.className=ps.value?"proprio":""});
-  pf.className="equip perfil";pf.appendChild(ps);a.insertBefore(pf,s.nextSibling);
+  pf.className="equip perfil";pf.appendChild(ps);a.insertBefore(pf,s.nextSibling)}
   var vl=document.createElement("label");vl.className="equip visita";var vlt=document.createElement("span");vlt.textContent="Data da visita";vl.appendChild(vlt);
   var vr=document.createElement("span");vr.className="vrow";var vd=document.createElement("input");vd.type="date";vd.className="dvis"+(VISITA[ck]?" inf":"");vd.value=VISITA[ck]||"";vd.setAttribute("aria-label","Data da visita ao posto "+p.nome);
   function setVis(v){txtSet(VISITA,"postos_visita",ck,v);vd.value=VISITA[ck]||"";vd.classList.toggle("inf",!!VISITA[ck])}
@@ -401,21 +423,21 @@ function filtrar(){
   var ed=document.createElement("button");ed.type="button";ed.className="edfones";ed.textContent="Editar telefones";
   ed.addEventListener("click",function(){EDITANDO[ck]=1;filtrar();var f=document.querySelector("td.tel .edbox input");if(f)f.focus()});tc.appendChild(ed);tc.appendChild(dtSpan(ck,"telefones","telefones editados em"));tc.appendChild(dtSpan(ck,"whatsapp","WhatsApp testado em"))}
   if(!tc.firstChild)tc.appendChild(document.createTextNode("sem telefone"));
-  var rn=document.createElement("input");rn.type="text";rn.className="rede-nome";rn.placeholder="Qual rede?";rn.setAttribute("list","redes");rn.autocomplete="off";rn.setAttribute("aria-label","Nome da rede do posto "+p.nome);rn.value=REDENOME[ck]||"";rn.hidden=!REDE[ck];rn.addEventListener("change",function(){redeNomeSet(ck,rn.value)});rn.addEventListener("blur",function(){redeNomeSet(ck,rn.value)});rn.addEventListener("input",function(){var v=rn.value.trim();carimbo(ck,"redeNome",v,REDENOME[ck]);if(v)REDENOME[ck]=v;else delete REDENOME[ck];try{localStorage.setItem("postos_rede_nome",JSON.stringify(REDENOME))}catch(e){}mudou()});var rw=document.createElement("div");rw.className="redebox";rw.appendChild(caixa("Posto de Rede",REDE,"postos_rede",ck,function(v){rn.hidden=!v;if(v)rn.focus()}));rw.appendChild(rn);fx.appendChild(rw);tc.appendChild(cs);
+  var rn=document.createElement("input");rn.type="text";rn.className="rede-nome";rn.placeholder="Qual rede?";rn.setAttribute("list","redes");rn.autocomplete="off";rn.setAttribute("aria-label","Nome da rede do posto "+p.nome);rn.value=REDENOME[ck]||"";rn.hidden=!REDE[ck];rn.addEventListener("change",function(){redeNomeSet(ck,rn.value)});rn.addEventListener("blur",function(){redeNomeSet(ck,rn.value)});rn.addEventListener("input",function(){var v=rn.value.trim();carimbo(ck,"redeNome",v,REDENOME[ck]);if(v)REDENOME[ck]=v;else delete REDENOME[ck];try{localStorage.setItem("postos_rede_nome",JSON.stringify(REDENOME))}catch(e){}mudou()});var rw=document.createElement("div");rw.className="redebox";rw.appendChild(caixa(p.tipo==="consumidor"?"Faz parte de grupo":"Posto de Rede",REDE,"postos_rede",ck,function(v){rn.hidden=!v;if(v)rn.focus()}));rw.appendChild(rn);fx.appendChild(rw);tc.appendChild(cs);
   tr.appendChild(tc);
   var dc=td(p.dist==null?"—":(p.coordAprox?"≈ ":"")+fmt(p.dist)+" km","n");
   if(p.dist!=null){var ro=document.createElement("a");ro.className="fraco";ro.style.display="block";ro.target="_blank";ro.rel="noopener";ro.textContent="rota";
-   ro.href="https://www.google.com/maps/dir/?api=1&origin=Vespasiano,MG&destination="+encodeURIComponent(p.endereco+", "+p.cidade+" - MG");dc.appendChild(ro)}
-  if(p.coordAprox)dc.title="Posição aproximada pelo centro do município (coordenada da ANP ausente ou incorreta)";
+   ro.href="https://www.google.com/maps/dir/?api=1&origin=Vespasiano,MG&destination="+encodeURIComponent((p.endereco||p.nome)+", "+p.cidade+" - MG");dc.appendChild(ro)}
+  if(p.coordAprox)dc.title="Posição aproximada pelo centro do município";
   tr.appendChild(dc);
   var ac=td(p.s10||p.volInf?fmt(p.arla):"—","n arla");tr.appendChild(ac);
   var vc=td("","n vol");var vi=document.createElement("input");vi.type="text";vi.className="vol"+(p.volInf?" inf":"");vi.inputMode="decimal";vi.autocomplete="off";
   vi.placeholder=p.s10?fmt(p.s10Est):"—";vi.value=VOL[ck]||"";vi.setAttribute("aria-label","Volume de S10 em m³ por mês do posto "+p.nome);
   var vn=document.createElement("div");vn.className="volnota";
-  function volNota(){vn.textContent=p.volInf?"informado · ANP "+(p.s10?fmt(p.s10Est):"—"):"estimativa ANP"}
+  function volNota(){vn.textContent=p.tipo==="consumidor"?(p.volInf?"diesel informado":"diesel/mês da frota"):(p.volInf?"informado · ANP "+(p.s10?fmt(p.s10Est):"—"):"estimativa ANP")}
   function volAtual(){txtSet(VOL,"postos_volume",ck,vi.value);var v=volNum(ck);p.volInf=v!=null;p.s10Mes=p.volInf?v:p.s10Est;p.arla=p.s10Mes*1000*PCT/100;
    ac.textContent=p.s10||p.volInf?fmt(p.arla):"—";vi.classList.toggle("inf",p.volInf);volNota();
-   var tot=atual.reduce(function(a,x){return a+x.arla},0);$("aviso").textContent=atual.length+" posto(s), ordenados "+($("ord").value==="dist"?"pela distância de Vespasiano":"pelo maior potencial")+". Potencial somado: "+fmt(tot)+" L de Arla 32 por mês."}
+   var tot=atual.reduce(function(a,x){return a+x.arla},0);$("aviso").textContent=contaTxt(atual)+", ordenados "+($("ord").value==="dist"?"pela distância de Vespasiano":"pelo maior potencial")+". Potencial somado: "+fmt(tot)+" L de Arla 32 por mês."}
   vi.addEventListener("input",volAtual);vi.addEventListener("change",function(){vi.value=volFmt(vi.value);volAtual()});
   volNota();vc.appendChild(vi);vc.appendChild(vn);vc.appendChild(dtSpan(ck,"volume","em"));tr.appendChild(vc);
   tr.classList.add("linha1");[a,bd,e,tc].forEach(function(c){c.rowSpan=2});
@@ -428,27 +450,28 @@ function filtrar(){
   bx.appendChild(l1);bx.appendChild(l2);cc.appendChild(bx);tr2.appendChild(cc);
   $("tb").appendChild(tr);$("tb").appendChild(tr2)});
  $("vazio").hidden=atual.length>0;
+ var resto=atual.length-limite;$("mais").hidden=resto<=0;if(resto>0)$("mais").textContent="Mostrar mais "+Math.min(60,resto)+" (de "+resto+" restantes)";
  var tot=atual.reduce(function(a,p){return a+p.arla},0);
- $("aviso").textContent=atual.length+" posto(s), ordenados "+($("ord").value==="dist"?"pela distância de Vespasiano":"pelo maior potencial")+". Potencial somado: "+fmt(tot)+" L de Arla 32 por mês.";
+ $("aviso").textContent=contaTxt(atual)+", ordenados "+($("ord").value==="dist"?"pela distância de Vespasiano":"pelo maior potencial")+". Potencial somado: "+fmt(tot)+" L de Arla 32 por mês.";
 }
 Object.keys(NOMES).sort(function(a,b){return a.localeCompare(b)}).forEach(function(m){
  var o=document.createElement("option");o.value=m;
  o.textContent=NOMES[m]+" ("+postos.filter(function(p){return p.mun===m}).length+")";
  $("mun").appendChild(o)});
-$("mun").addEventListener("change",filtrar);["fvis","fcons","fperf","fband","fforn","feq","faut"].forEach(function(id){$(id).addEventListener("change",filtrar)});
+$("mun").addEventListener("change",filtrar);["fvis","fcons","fperf","fband","fforn","feq","faut","ftipo"].forEach(function(id){$(id).addEventListener("change",filtrar)});
 (function(){var u={};postos.forEach(function(p){u[p.bandeira]=(u[p.bandeira]||0)+1});Object.keys(u).sort(function(a,b){return (a==="BANDEIRA BRANCA")-(b==="BANDEIRA BRANCA")||u[b]-u[a]||a.localeCompare(b)}).forEach(function(b){var o=document.createElement("option");o.value=b;o.textContent=({"ALE":"ALE","RAIZEN":"Raízen","TORRAO":"Torrão","SIM DISTRIBUIDOR":"SIM Distribuidor"}[b]||titulo(b))+" ("+u[b]+")";$("fband").appendChild(o)})})();
-$("limpar").addEventListener("click",function(){["mun","wa","fvis","fcons","fperf","fband","fforn","feq","faut"].forEach(function(id){$(id).value=""});$("q").value="";$("desde").value="";filtrar()});
+$("limpar").addEventListener("click",function(){["mun","wa","fvis","fcons","fperf","fband","fforn","feq","faut","ftipo"].forEach(function(id){$(id).value=""});$("q").value="";$("desde").value="";filtrar()});
 $("ajuda").addEventListener("click",function(){var d=$("dlg");if(d.showModal)d.showModal();else d.setAttribute("open","")});
 $("dlgx").addEventListener("click",function(){var d=$("dlg");if(d.close)d.close();else d.removeAttribute("open")});
 $("dlg").addEventListener("click",function(e){if(e.target===this&&this.close)this.close()});$("wa").addEventListener("change",filtrar);$("ord").addEventListener("change",filtrar);
-$("q").addEventListener("input",filtrar);
+$("q").addEventListener("input",filtrar);$("mais").addEventListener("click",function(){limite+=60;filtrar()});
 $("f").addEventListener("submit",function(e){e.preventDefault();filtrar()});
 $("baixar").addEventListener("click",function(){
- var cab=["CNPJ","Cód. cliente","Situação na carteira","Inativo","Posto de rede","Nome da rede","Equipamento","Tanque de Arla (L)","Automação","Razão social","Bandeira","Perfil","Perfil definido por","Data da visita","Consumo de Arla","Contato na agenda","Telefones da agenda","WhatsApp (agenda)","E-mail (agenda)","Obs. da agenda","Telefone (Receita)","WhatsApp tel. 1","Telefone 2 (Receita)","WhatsApp tel. 2","E-mail (Receita)","Contato da visita","Telefones da visita","Endereço","Complemento","Bairro","Município","UF","CEP","Vende diesel","Vende S10","Tancagem S10 (m³)","Bicos diesel","S10 estimado ANP (m³/mês)","S10 informado na visita (m³/mês)","Arla 32 potencial (L/mês)","Distância de Vespasiano (km, linha reta)","Atual fornecedor","Preço praticado (R$/L)","Latitude","Longitude","Vínculo com a bandeira","Produtos","Última atualização","Datas por campo"];
+ var cab=["Tipo","Segmento","CNPJ","Cód. cliente","Situação na carteira","Inativo","Posto de rede","Nome da rede","Equipamento","Tanque de Arla (L)","Automação","Razão social","Bandeira","Perfil","Perfil definido por","Data da visita","Consumo de Arla","Contato na agenda","Telefones da agenda","WhatsApp (agenda)","E-mail (agenda)","Obs. da agenda","Telefone (Receita)","WhatsApp tel. 1","Telefone 2 (Receita)","WhatsApp tel. 2","E-mail (Receita)","Contato da visita","Telefones da visita","Endereço","Complemento","Bairro","Município","UF","CEP","Vende diesel","Vende S10","Tancagem S10 (m³)","Bicos diesel","S10 estimado ANP (m³/mês)","S10 informado na visita (m³/mês)","Arla 32 potencial (L/mês)","Distância de Vespasiano (km, linha reta)","Atual fornecedor","Preço praticado (R$/L)","Latitude","Longitude","Vínculo com a bandeira","Produtos","Última atualização","Datas por campo"];
  function c(v){v=String(v);return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
  var linhas=[cab.join(";")].concat(atual.map(function(p){
-  return [p.cnpj,p.cart?p.cart.cod:"",!p.cart?"":p.cart.ok?"cliente"+(p.cart.lojas?" (loja "+p.cart.lojas+")":""):"empresa cliente, filial fora da carteira",INAT[p.cnpj.replace(/\D/g,"")]?"sim":"não",REDE[p.cnpj.replace(/\D/g,"")]?"sim":"não",REDE[p.cnpj.replace(/\D/g,"")]?(REDENOME[p.cnpj.replace(/\D/g,"")]||""):"",EQ_TXT[EQUIP[p.cnpj.replace(/\D/g,"")]||""],TANQ[ckOf(p)]||"",AUTO[p.cnpj.replace(/\D/g,"")]?"sim":"não",p.nome,p.bandeira,PERF_TXT[perfilDe(p)],PERFIL[ckOf(p)]?"você":"estimativa ("+p.perfilMotivo+")",dtLonga(VISITA[ckOf(p)]||""),CONS_TXT[CONSUMO[ckOf(p)]]||"",p.agenda.map(function(g){return g.nome||"(cadastro do posto)"}).join(" | "),p.agenda.map(function(g){return efList(p,g.fones).join(", ")}).filter(Boolean).join(" | "),p.agenda.map(function(g){return efList(p,g.fones).map(function(t){return t+": "+waTxt(t)}).join(", ")}).filter(Boolean).join(" | "),p.agenda.map(function(g){return g.email}).filter(Boolean).join(" | "),p.agenda.map(function(g){return g.obs}).filter(Boolean).join(" | "),foneEf(ckOf(p),p.tel1)||"",waTxt(foneEf(ckOf(p),p.tel1)),foneEf(ckOf(p),p.tel2)||"",waTxt(foneEf(ckOf(p),p.tel2)),p.email,FNOME[ckOf(p)]||"",novos(ckOf(p)).map(function(t){return t+": "+waTxt(t)}).join(", "),p.endereco,p.compl,p.bairro,p.cidade,"MG",p.cep,p.diesel?"sim":"não",p.s10?"sim":"não",
-   p.tancS10,p.bicosDiesel,Math.round(p.s10Est),VOL[p.cnpj.replace(/\D/g,"")]||"",Math.round(p.arla),p.dist==null?"":(p.coordAprox?"~":"")+Math.round(p.dist),FORN[p.cnpj.replace(/\D/g,"")]||"",PRECO[p.cnpj.replace(/\D/g,"")]||"",p.lat.replace(".",","),p.lon.replace(".",","),p.vinculo,
+  return [p.tipo==="consumidor"?"Consumidor":"Revendedor",p.segmento||"",p.cnpj,p.cart?p.cart.cod:"",!p.cart?"":p.cart.ok?"cliente"+(p.cart.lojas?" (loja "+p.cart.lojas+")":""):"empresa cliente, filial fora da carteira",INAT[p.ck]?"sim":"não",REDE[p.ck]?"sim":"não",REDE[p.ck]?(REDENOME[p.ck]||""):"",EQ_TXT[EQUIP[p.ck]||""],TANQ[ckOf(p)]||"",AUTO[p.ck]?"sim":"não",p.nome,p.bandeira,PERF_TXT[perfilDe(p)]||"",p.tipo==="consumidor"?"":PERFIL[ckOf(p)]?"você":"estimativa ("+p.perfilMotivo+")",dtLonga(VISITA[ckOf(p)]||""),CONS_TXT[CONSUMO[ckOf(p)]]||"",p.agenda.map(function(g){return g.nome||"(cadastro do posto)"}).join(" | "),p.agenda.map(function(g){return efList(p,g.fones).join(", ")}).filter(Boolean).join(" | "),p.agenda.map(function(g){return efList(p,g.fones).map(function(t){return t+": "+waTxt(t)}).join(", ")}).filter(Boolean).join(" | "),p.agenda.map(function(g){return g.email}).filter(Boolean).join(" | "),p.agenda.map(function(g){return g.obs}).filter(Boolean).join(" | "),foneEf(ckOf(p),p.tel1)||"",waTxt(foneEf(ckOf(p),p.tel1)),foneEf(ckOf(p),p.tel2)||"",waTxt(foneEf(ckOf(p),p.tel2)),p.email,FNOME[ckOf(p)]||"",novos(ckOf(p)).map(function(t){return t+": "+waTxt(t)}).join(", "),p.endereco,p.compl,p.bairro,p.cidade,"MG",p.cep,p.diesel?"sim":"não",p.s10?"sim":"não",
+   p.tancS10,p.bicosDiesel,Math.round(p.s10Est),VOL[p.ck]||"",Math.round(p.arla),p.dist==null?"":(p.coordAprox?"~":"")+Math.round(p.dist),FORN[p.ck]||"",PRECO[p.ck]||"",p.lat.replace(".",","),p.lon.replace(".",","),p.vinculo,
    p.produtos.map(function(x){return x.produto+" ("+x.tanc+" m³, "+x.bicos+" bicos)"}).join(" | "),dtLonga(ultima(ckOf(p))),resumoDatas(ckOf(p)).replace(/\n/g," | ")].map(c).join(";")}));
  baixar("postos_anp.csv","\uFEFF"+linhas.join("\r\n"),"text/csv;charset=utf-8");
 });
@@ -479,7 +502,7 @@ function lsSet(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.
 function clientId(){return String(CFG.clientId||lsGet("cfg_client_id")||"").trim()}
 var SCOPE="https://www.googleapis.com/auth/drive";
 var PASTA_APP=CFG.nomePasta||"App Consulta de Postos",ARQ_MARC="postos-marcacoes.json";
-var BASES_ARQ={"postos-anp.json":"anp","postos-carteira.json":"carteira","postos-agenda.json":"agenda"};
+var BASES_ARQ={"postos-anp.json":"anp","postos-carteira.json":"carteira","postos-agenda.json":"agenda","postos-consumidores.json":"consumidores"};
 var DR="https://www.googleapis.com/drive/v3/files",UP="https://www.googleapis.com/upload/drive/v3/files";
 var sujo=pendente(),corrente=null,deNovo=false,timer=null,retry=null,tc=null,tok=null,tokExp=0;
 var remVer=lsGet("drive_versao")||"",arqId=lsGet("drive_arq")||"",pastaId=lsGet("drive_pasta")||"";
@@ -580,7 +603,7 @@ function erroDrive(e){var c=(e&&e.code)||"",m;botao();
  if(conectado()&&!/popup|negado|access_denied|http403/.test(c)){clearTimeout(retry);retry=setTimeout(function(){if(sujo)gravar()},30000)}}
 
 /* Bases (ANP, carteira, agenda) que você coloca na pasta do app no Drive */
-function validaBase(k,o){return o&&o.tipo==="postos-"+k&&(k==="anp"?Array.isArray(o.dados)&&Array.isArray(o.prods):o.dados&&typeof o.dados==="object"&&!Array.isArray(o.dados))}
+function validaBase(k,o){return o&&o.tipo==="postos-"+k&&(k==="anp"?Array.isArray(o.dados)&&Array.isArray(o.prods):k==="consumidores"?Array.isArray(o.dados):o.dados&&typeof o.dados==="object"&&!Array.isArray(o.dados))}
 function verBases(fs){var meta={};try{meta=JSON.parse(lsGet("bases_meta")||"{}")||{}}catch(e){}
  var nomes=fs.map(function(f){return f.name}),mexeu=false,primeira=!Object.keys(meta).length;
  Object.keys(meta).forEach(function(n){if(nomes.indexOf(n)<0){lsSet("base_"+BASES_ARQ[n],null);delete meta[n];mexeu=true}});
@@ -653,7 +676,7 @@ function contatoGoogle(p){var ck=ckOf(p),fones=[],emails=[];
  return {nome:nome||titulo(ag)||org,org:org,fones:fones,emails:emails,
   rua:rua,bairro:titulo(p.bairro),cidade:p.cidade,cep:p.cep,
   fmt:rua+", "+titulo(p.bairro)+", "+p.cidade+" - MG, "+p.cep+", Brasil",
-  rotulos:["Postos Arla",sit,p.cidade],cnpj:p.cnpj,ficha:FICHA+"#c"+ck}}
+  rotulos:[p.tipo==="consumidor"?"Consumidor":"Revendedor",sit,p.cidade].filter(Boolean),cnpj:p.cnpj,ficha:FICHA+"#c"+ck}}
 function csvGoogle(lista){
  var cs=lista.map(contatoGoogle),nf=Math.max(1,Math.max.apply(null,cs.map(function(c){return c.fones.length}))),ne=Math.max(1,Math.max.apply(null,cs.map(function(c){return c.emails.length})));
  var cab=["First Name","Last Name","Organization Name","Organization Title","Notes","Labels"];
@@ -675,13 +698,14 @@ $("gc").addEventListener("click",function(){
  baixar("google-contatos-"+hojeISO()+".csv",csvGoogle(lista),"text/csv;charset=utf-8").then(function(){var m=$("arqmsg").textContent;if(/salvo|baixado/.test(m))arqMsg(lista.length+" contato(s) no arquivo. Importe em contacts.google.com, opção Importar.")})});
 function exportaUm(p){baixar("contato-"+nomeArq(p.nome)+".csv",csvGoogle([p]),"text/csv;charset=utf-8").then(function(){var m=$("arqmsg").textContent;if(/salvo|baixado/.test(m))arqMsg("Contato de "+titulo(p.nome)+" pronto. Importe em contacts.google.com, opção Importar.")})}
 /* Link direto para a ficha: ...#c<CNPJ> */
-function abreFicha(){var m=/^#c(\d{14})$/.exec(location.hash||"");if(!m)return false;$("mun").value="";$("wa").value="";$("q").value=m[1];return true}
+function abreFicha(){var m=/^#c(\d{13,14})$/.exec(location.hash||"");if(!m)return false;$("mun").value="";$("wa").value="";$("q").value=m[1];return true}
 window.addEventListener("hashchange",function(){if(abreFicha())filtrar()});
 
 document.querySelectorAll(".d-anp").forEach(function(e){e.textContent=B.datas.anp});
 document.querySelectorAll(".d-cart").forEach(function(e){e.textContent=B.datas.carteira});
 document.querySelectorAll(".d-ag").forEach(function(e){e.textContent=B.datas.agenda});
-$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+". Versão do app: 1.";
+document.querySelectorAll(".d-cons").forEach(function(e){e.textContent=B.datas.consumidores});
+$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: 2.";
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});
 botao();if(conectado())sincronizar();else avisoLocal();
