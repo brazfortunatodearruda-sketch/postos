@@ -106,6 +106,11 @@ dialog#dlg::backdrop{background:rgba(10,20,16,.45)}
 .dlgcorpo p{margin:0 0 8px;max-width:65ch}
 input.tanq{font:.85rem var(--fonte);width:100px;padding:3px 6px;text-align:right;font-variant-numeric:tabular-nums;border:1px solid var(--linha);border-radius:4px;background:var(--fundo);color:var(--texto)}
 input.tanq.inf{border-color:var(--acento);font-weight:600}
+.cnpjbox{display:block;margin-top:3px}
+input.cnpjin{font:.85rem var(--fonte);width:11.5em;max-width:100%;box-sizing:border-box;padding:3px 6px;font-variant-numeric:tabular-nums;border:1px dashed var(--linha);border-radius:4px;background:var(--fundo);color:var(--texto)}
+input.cnpjin.inf{border-style:solid;border-color:var(--acento);font-weight:600}
+input.cnpjin.erro{border-style:solid;border-color:#c0392b}
+.cnpjmsg{display:block;font-size:.72rem;color:#c0392b}
 .equip.perfil{margin-top:6px}
 .vrow{display:flex;gap:4px;align-items:center}
 input.dvis{font:.8rem var(--fonte);padding:2px 4px;border:1px solid var(--linha);border-radius:4px;background:var(--fundo);color:var(--texto);max-width:140px}
@@ -181,7 +186,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Perfil do posto</h3>
 <p>Rodoviário, misto ou urbano. Começa estimado pela página: rodoviário quando o endereço é de rodovia (BR, km, anel rodoviário, zona rural) e o diesel ocupa pelo menos metade da tancagem; urbano quando o endereço é na cidade e o diesel fica abaixo de 35% da tancagem, ou quando a observação da agenda diz "urbano"; misto nos demais casos. Passe o mouse sobre o campo para ver o motivo. Na visita, escolha o perfil real no campo Perfil, logo abaixo da razão social: ele passa a valer no filtro e na planilha.</p>
 <h3>Visita e consumo de Arla</h3>
-<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
+<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
 <h3>Marcações e datas</h3>
 <p>Inativo, Posto de Rede (abre um campo para o nome da rede), Equipamento, capacidade do tanque de Arla em litros, Automação, fornecedor atual, preço, volume de S10 e telefones. Cada campo preenchido mostra a data em que foi feito, e o nome do posto mostra a última atualização; passe o mouse sobre ela para ver a data de cada campo.</p>
 <h3>Filtros</h3>
@@ -216,10 +221,13 @@ function redeNomeSet(k,v){carimbo(k,"redeNome",String(v||"").trim(),REDENOME[k])
 function listaRedes(){var dl=document.getElementById("redes");if(!dl)return;var u={};Object.keys(REDENOME).forEach(function(k){u[REDENOME[k]]=1});dl.textContent="";Object.keys(u).sort(function(a,b){return a.localeCompare(b)}).forEach(function(n){var o=document.createElement("option");o.value=n;dl.appendChild(o)})}
 var FORN=marcas("postos_fornecedor"),PRECO=marcas("postos_preco"),VOL=marcas("postos_volume");
 var DATAS=marcas("postos_datas"),PERFIL=marcas("postos_perfil"),TANQ=marcas("postos_tanque_arla"),VISITA=marcas("postos_visita"),CONSUMO=marcas("postos_consumo");
+var CNPJINF=marcas("postos_cnpj"),CMES=marcas("postos_consumo_mes");
+function cnpjOk(d){if(!/^\d{14}$/.test(d)||/^(\d)\1+$/.test(d))return false;function dv(n){var s=0,p=n-7;for(var i=0;i<n;i++){s+=+d[i]*p--;if(p<2)p=9}var r=s%11;return r<2?0:11-r}return dv(12)===+d[12]&&dv(13)===+d[13]}
+function cnpjDe(p){if(p.cnpj)return p.cnpj;var d=dig(CNPJINF[p.ck]);return d.length===14?cnpj(d):d}
 var CONS_TXT={granel:"A granel",embalado:"Embalado",ambos:"Granel e embalado",nao:"Não vende Arla"};
 function perfilDe(p){return PERFIL[p.ck]||p.perfilAuto}
-var CAMPO={"postos_visita":"visita","postos_consumo":"consumo","postos_tanque_arla":"tanque","postos_fornecedor":"fornecedor","postos_preco":"preco","postos_volume":"volume","postos_inativo":"inativo","postos_rede":"rede","postos_automacao":"automacao"};
-var ROT={visita:"Data da visita",consumo:"Consumo de Arla",perfil:"Perfil",tanque:"Tanque de Arla",volume:"Volume S10",fornecedor:"Fornecedor",preco:"Preço",equipamento:"Equipamento",automacao:"Automação",rede:"Posto de rede",redeNome:"Nome da rede",inativo:"Inativo",telefones:"Telefones",whatsapp:"Teste de WhatsApp"};
+var CAMPO={"postos_cnpj":"cnpj","postos_consumo_mes":"consumoMes","postos_visita":"visita","postos_consumo":"consumo","postos_tanque_arla":"tanque","postos_fornecedor":"fornecedor","postos_preco":"preco","postos_volume":"volume","postos_inativo":"inativo","postos_rede":"rede","postos_automacao":"automacao"};
+var ROT={cnpj:"CNPJ",visita:"Data da visita",consumo:"Consumo de Arla",consumoMes:"Consumo mensal de Arla",perfil:"Perfil",tanque:"Tanque de Arla",volume:"Volume S10",fornecedor:"Fornecedor",preco:"Preço",equipamento:"Equipamento",automacao:"Automação",rede:"Posto de rede",redeNome:"Nome da rede",inativo:"Inativo",telefones:"Telefones",whatsapp:"Teste de WhatsApp"};
 function hojeISO(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function dtCurta(iso){return iso?iso.slice(8,10)+"/"+iso.slice(5,7)+"/"+iso.slice(2,4):""}
 function dtLonga(iso){return iso?iso.slice(8,10)+"/"+iso.slice(5,7)+"/"+iso.slice(0,4):""}
@@ -348,12 +356,18 @@ function filtrar(){
   var ev=$("feq").value,ex=EQUIP[ckf]||"";if(ev&&(ev==="__sem"?ex:ex!==ev))return false;
   var av=$("faut").value;if(av==="sim"&&!AUTO[ckf])return false;if(av==="nao"&&AUTO[ckf])return false;
   if(!termos.length)return true;
-  var rnb=(REDE[p.ck]?sem(REDENOME[p.ck]||""):"")+" "+sem(FORN[p.ck]||"")+" "+sem(FNOME[ckOf(p)]||"")+" "+String(FADD[ckOf(p)]||"");rnb=rnb.trim();
-  return termos.some(function(t){return p.busca.indexOf(t)>=0||(rnb&&rnb.indexOf(t)>=0)})||(soDig.length>=8&&p.busca.indexOf(soDig)>=0)});
+  var rnb=(REDE[p.ck]?sem(REDENOME[p.ck]||""):"")+" "+sem(FORN[p.ck]||"")+" "+sem(FNOME[ckOf(p)]||"")+" "+String(FADD[ckOf(p)]||"")+" "+String(CNPJINF[p.ck]||"")+" "+sem(cnpjDe(p));rnb=rnb.trim();
+  return termos.some(function(t){return p.busca.indexOf(t)>=0||(rnb&&rnb.indexOf(t)>=0)})||(soDig.length>=8&&(p.busca.indexOf(soDig)>=0||String(CNPJINF[p.ck]||"").indexOf(soDig)>=0))});
  $("tb").textContent="";
  atual.slice(0,limite).forEach(function(p){
   var tr=document.createElement("tr");if(p.diesel)tr.className="diesel";if(p.tipo==="consumidor")tr.className="consumidor";
-  var a=td(p.nome);var s=document.createElement("div");s.className="fraco";s.textContent=p.cnpj||"sem CNPJ no cadastro";a.appendChild(s);
+  var a=td(p.nome);var s;if(p.cnpj){s=document.createElement("div");s.className="fraco";s.textContent=p.cnpj}else{s=document.createElement("label");s.className="cnpjbox";
+   var cj=document.createElement("input");cj.type="text";cj.className="cnpjin";cj.inputMode="numeric";cj.autocomplete="off";cj.placeholder="CNPJ (digite)";cj.setAttribute("aria-label","CNPJ de "+p.nome);cj.value=cnpjDe(p);
+   var cjm=document.createElement("span");cjm.className="cnpjmsg";
+   function cjPinta(){var d=dig(CNPJINF[p.ck]);cj.classList.toggle("inf",d.length===14&&cnpjOk(d));cj.classList.toggle("erro",!!d&&!(d.length===14&&cnpjOk(d)));cjm.textContent=!d?"":d.length!==14?"CNPJ incompleto ("+d.length+" de 14 dígitos)":cnpjOk(d)?"":"CNPJ inválido, confira os números"}
+   cj.addEventListener("input",function(){txtSet(CNPJINF,"postos_cnpj",p.ck,dig(cj.value));cjPinta()});
+   cj.addEventListener("change",function(){cj.value=cnpjDe(p);cjPinta()});
+   s.appendChild(cj);s.appendChild(dtSpan(p.ck,"cnpj"));s.appendChild(cjm);cjPinta()}a.appendChild(s);
   var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent="Google Contatos";gb1.title="Baixa o contato deste posto para importar no Google Contatos";gb1.addEventListener("click",function(){exportaUm(p)});a.appendChild(gb1);if(INAT[ck])tr.classList.add("inativo");
   a.appendChild(caixa("Inativo",INAT,"postos_inativo",ck,function(v){tr.classList.toggle("inativo",v);tr2.classList.toggle("inativo",v)}));
   if(p.cart){var cb=document.createElement("div");var cl=document.createElement("span");
@@ -381,6 +395,11 @@ function filtrar(){
   [["","—"],["granel","A granel"],["embalado","Embalado"],["ambos","Granel e embalado"],["nao","Não vende Arla"]].forEach(function(o){var op=document.createElement("option");op.value=o[0];op.textContent=o[1];csl.appendChild(op)});
   csl.value=CONSUMO[ck]||"";csl.className=csl.value?"proprio":"";csl.addEventListener("change",function(){txtSet(CONSUMO,"postos_consumo",ck,csl.value);csl.className=csl.value?"proprio":""});
   cs.appendChild(csl);cs.className="equip consumo";
+  var cm=document.createElement("label");cm.className="equip consumo";var cmt=document.createElement("span");cmt.textContent="Consumo mensal de Arla (L/mês)";cmt.appendChild(dtSpan(ck,"consumoMes"));cm.appendChild(cmt);
+  var cmi=document.createElement("input");cmi.type="text";cmi.className="tanq"+(CMES[ck]?" inf":"");cmi.inputMode="decimal";cmi.autocomplete="off";cmi.placeholder="ex.: 2.000";cmi.value=CMES[ck]||"";cmi.setAttribute("aria-label","Consumo mensal de Arla, em litros, de "+p.nome);
+  cmi.addEventListener("input",function(){txtSet(CMES,"postos_consumo_mes",ck,cmi.value);cmi.classList.toggle("inf",!!CMES[ck])});
+  cmi.addEventListener("change",function(){cmi.value=volFmt(cmi.value);txtSet(CMES,"postos_consumo_mes",ck,cmi.value);cmi.classList.toggle("inf",!!CMES[ck])});
+  cm.appendChild(cmi);
   bd.appendChild(caixa("Automação",AUTO,"postos_automacao",ck));
   if(p.tipo!=="consumidor"){var pf=document.createElement("label");pf.className="equip";var pft=document.createElement("span");pft.textContent="Perfil";pft.appendChild(dtSpan(ck,"perfil"));pf.appendChild(pft);
   var ps=document.createElement("select");ps.setAttribute("aria-label","Perfil do posto "+p.nome);
@@ -423,7 +442,7 @@ function filtrar(){
   var ed=document.createElement("button");ed.type="button";ed.className="edfones";ed.textContent="Editar telefones";
   ed.addEventListener("click",function(){EDITANDO[ck]=1;filtrar();var f=document.querySelector("td.tel .edbox input");if(f)f.focus()});tc.appendChild(ed);tc.appendChild(dtSpan(ck,"telefones","telefones editados em"));tc.appendChild(dtSpan(ck,"whatsapp","WhatsApp testado em"))}
   if(!tc.firstChild)tc.appendChild(document.createTextNode("sem telefone"));
-  var rn=document.createElement("input");rn.type="text";rn.className="rede-nome";rn.placeholder="Qual rede?";rn.setAttribute("list","redes");rn.autocomplete="off";rn.setAttribute("aria-label","Nome da rede do posto "+p.nome);rn.value=REDENOME[ck]||"";rn.hidden=!REDE[ck];rn.addEventListener("change",function(){redeNomeSet(ck,rn.value)});rn.addEventListener("blur",function(){redeNomeSet(ck,rn.value)});rn.addEventListener("input",function(){var v=rn.value.trim();carimbo(ck,"redeNome",v,REDENOME[ck]);if(v)REDENOME[ck]=v;else delete REDENOME[ck];try{localStorage.setItem("postos_rede_nome",JSON.stringify(REDENOME))}catch(e){}mudou()});var rw=document.createElement("div");rw.className="redebox";rw.appendChild(caixa(p.tipo==="consumidor"?"Faz parte de grupo":"Posto de Rede",REDE,"postos_rede",ck,function(v){rn.hidden=!v;if(v)rn.focus()}));rw.appendChild(rn);fx.appendChild(rw);tc.appendChild(cs);
+  var rn=document.createElement("input");rn.type="text";rn.className="rede-nome";rn.placeholder="Qual rede?";rn.setAttribute("list","redes");rn.autocomplete="off";rn.setAttribute("aria-label","Nome da rede do posto "+p.nome);rn.value=REDENOME[ck]||"";rn.hidden=!REDE[ck];rn.addEventListener("change",function(){redeNomeSet(ck,rn.value)});rn.addEventListener("blur",function(){redeNomeSet(ck,rn.value)});rn.addEventListener("input",function(){var v=rn.value.trim();carimbo(ck,"redeNome",v,REDENOME[ck]);if(v)REDENOME[ck]=v;else delete REDENOME[ck];try{localStorage.setItem("postos_rede_nome",JSON.stringify(REDENOME))}catch(e){}mudou()});var rw=document.createElement("div");rw.className="redebox";rw.appendChild(caixa(p.tipo==="consumidor"?"Faz parte de grupo":"Posto de Rede",REDE,"postos_rede",ck,function(v){rn.hidden=!v;if(v)rn.focus()}));rw.appendChild(rn);fx.appendChild(rw);tc.appendChild(cs);tc.appendChild(cm);
   tr.appendChild(tc);
   var dc=td(p.dist==null?"—":(p.coordAprox?"≈ ":"")+fmt(p.dist)+" km","n");
   if(p.dist!=null){var ro=document.createElement("a");ro.className="fraco";ro.style.display="block";ro.target="_blank";ro.rel="noopener";ro.textContent="rota";
@@ -467,18 +486,18 @@ $("dlg").addEventListener("click",function(e){if(e.target===this&&this.close)thi
 $("q").addEventListener("input",filtrar);$("mais").addEventListener("click",function(){limite+=60;filtrar()});
 $("f").addEventListener("submit",function(e){e.preventDefault();filtrar()});
 $("baixar").addEventListener("click",function(){
- var cab=["Tipo","Segmento","CNPJ","Cód. cliente","Situação na carteira","Inativo","Posto de rede","Nome da rede","Equipamento","Tanque de Arla (L)","Automação","Razão social","Bandeira","Perfil","Perfil definido por","Data da visita","Consumo de Arla","Contato na agenda","Telefones da agenda","WhatsApp (agenda)","E-mail (agenda)","Obs. da agenda","Telefone (Receita)","WhatsApp tel. 1","Telefone 2 (Receita)","WhatsApp tel. 2","E-mail (Receita)","Contato da visita","Telefones da visita","Endereço","Complemento","Bairro","Município","UF","CEP","Vende diesel","Vende S10","Tancagem S10 (m³)","Bicos diesel","S10 estimado ANP (m³/mês)","S10 informado na visita (m³/mês)","Arla 32 potencial (L/mês)","Distância de Vespasiano (km, linha reta)","Atual fornecedor","Preço praticado (R$/L)","Latitude","Longitude","Vínculo com a bandeira","Produtos","Última atualização","Datas por campo"];
+ var cab=["Tipo","Segmento","CNPJ","Cód. cliente","Situação na carteira","Inativo","Posto de rede","Nome da rede","Equipamento","Tanque de Arla (L)","Automação","Razão social","Bandeira","Perfil","Perfil definido por","Data da visita","Consumo de Arla","Consumo mensal de Arla (L)","Contato na agenda","Telefones da agenda","WhatsApp (agenda)","E-mail (agenda)","Obs. da agenda","Telefone (Receita)","WhatsApp tel. 1","Telefone 2 (Receita)","WhatsApp tel. 2","E-mail (Receita)","Contato da visita","Telefones da visita","Endereço","Complemento","Bairro","Município","UF","CEP","Vende diesel","Vende S10","Tancagem S10 (m³)","Bicos diesel","S10 estimado ANP (m³/mês)","S10 informado na visita (m³/mês)","Arla 32 potencial (L/mês)","Distância de Vespasiano (km, linha reta)","Atual fornecedor","Preço praticado (R$/L)","Latitude","Longitude","Vínculo com a bandeira","Produtos","Última atualização","Datas por campo"];
  function c(v){v=String(v);return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
  var linhas=[cab.join(";")].concat(atual.map(function(p){
-  return [p.tipo==="consumidor"?"Consumidor":"Revendedor",p.segmento||"",p.cnpj,p.cart?p.cart.cod:"",!p.cart?"":p.cart.ok?"cliente"+(p.cart.lojas?" (loja "+p.cart.lojas+")":""):"empresa cliente, filial fora da carteira",INAT[p.ck]?"sim":"não",REDE[p.ck]?"sim":"não",REDE[p.ck]?(REDENOME[p.ck]||""):"",EQ_TXT[EQUIP[p.ck]||""],TANQ[ckOf(p)]||"",AUTO[p.ck]?"sim":"não",p.nome,p.bandeira,PERF_TXT[perfilDe(p)]||"",p.tipo==="consumidor"?"":PERFIL[ckOf(p)]?"você":"estimativa ("+p.perfilMotivo+")",dtLonga(VISITA[ckOf(p)]||""),CONS_TXT[CONSUMO[ckOf(p)]]||"",p.agenda.map(function(g){return g.nome||"(cadastro do posto)"}).join(" | "),p.agenda.map(function(g){return efList(p,g.fones).join(", ")}).filter(Boolean).join(" | "),p.agenda.map(function(g){return efList(p,g.fones).map(function(t){return t+": "+waTxt(t)}).join(", ")}).filter(Boolean).join(" | "),p.agenda.map(function(g){return g.email}).filter(Boolean).join(" | "),p.agenda.map(function(g){return g.obs}).filter(Boolean).join(" | "),foneEf(ckOf(p),p.tel1)||"",waTxt(foneEf(ckOf(p),p.tel1)),foneEf(ckOf(p),p.tel2)||"",waTxt(foneEf(ckOf(p),p.tel2)),p.email,FNOME[ckOf(p)]||"",novos(ckOf(p)).map(function(t){return t+": "+waTxt(t)}).join(", "),p.endereco,p.compl,p.bairro,p.cidade,"MG",p.cep,p.diesel?"sim":"não",p.s10?"sim":"não",
+  return [p.tipo==="consumidor"?"Consumidor":"Revendedor",p.segmento||"",cnpjDe(p),p.cart?p.cart.cod:"",!p.cart?"":p.cart.ok?"cliente"+(p.cart.lojas?" (loja "+p.cart.lojas+")":""):"empresa cliente, filial fora da carteira",INAT[p.ck]?"sim":"não",REDE[p.ck]?"sim":"não",REDE[p.ck]?(REDENOME[p.ck]||""):"",EQ_TXT[EQUIP[p.ck]||""],TANQ[ckOf(p)]||"",AUTO[p.ck]?"sim":"não",p.nome,p.bandeira,PERF_TXT[perfilDe(p)]||"",p.tipo==="consumidor"?"":PERFIL[ckOf(p)]?"você":"estimativa ("+p.perfilMotivo+")",dtLonga(VISITA[ckOf(p)]||""),CONS_TXT[CONSUMO[ckOf(p)]]||"",CMES[ckOf(p)]||"",p.agenda.map(function(g){return g.nome||"(cadastro do posto)"}).join(" | "),p.agenda.map(function(g){return efList(p,g.fones).join(", ")}).filter(Boolean).join(" | "),p.agenda.map(function(g){return efList(p,g.fones).map(function(t){return t+": "+waTxt(t)}).join(", ")}).filter(Boolean).join(" | "),p.agenda.map(function(g){return g.email}).filter(Boolean).join(" | "),p.agenda.map(function(g){return g.obs}).filter(Boolean).join(" | "),foneEf(ckOf(p),p.tel1)||"",waTxt(foneEf(ckOf(p),p.tel1)),foneEf(ckOf(p),p.tel2)||"",waTxt(foneEf(ckOf(p),p.tel2)),p.email,FNOME[ckOf(p)]||"",novos(ckOf(p)).map(function(t){return t+": "+waTxt(t)}).join(", "),p.endereco,p.compl,p.bairro,p.cidade,"MG",p.cep,p.diesel?"sim":"não",p.s10?"sim":"não",
    p.tancS10,p.bicosDiesel,Math.round(p.s10Est),VOL[p.ck]||"",Math.round(p.arla),p.dist==null?"":(p.coordAprox?"~":"")+Math.round(p.dist),FORN[p.ck]||"",PRECO[p.ck]||"",p.lat.replace(".",","),p.lon.replace(".",","),p.vinculo,
    p.produtos.map(function(x){return x.produto+" ("+x.tanc+" m³, "+x.bicos+" bicos)"}).join(" | "),dtLonga(ultima(ckOf(p))),resumoDatas(ckOf(p)).replace(/\n/g," | ")].map(c).join(";")}));
  baixar("postos_anp.csv","\uFEFF"+linhas.join("\r\n"),"text/csv;charset=utf-8");
 });
 listaRedes();listaForn();abreFicha();filtrar();
 /* ---------- Salvamento: Google Drive (pasta BIOAR) + arquivo de backup ---------- */
-var LS={visita:"postos_visita",consumo:"postos_consumo",tanque:"postos_tanque_arla",perfil:"postos_perfil",datas:"postos_datas",volume:"postos_volume",foneEditado:"postos_fone_editado",foneNovo:"postos_fone_novo",contatoNome:"postos_contato_nome",whatsapp:"postos_whatsapp",rede:"postos_rede",inativo:"postos_inativo",automacao:"postos_automacao",equipamento:"postos_equipamento",redeNome:"postos_rede_nome",fornecedor:"postos_fornecedor",preco:"postos_preco"};
-function mapas(){return {visita:VISITA,consumo:CONSUMO,tanque:TANQ,perfil:PERFIL,datas:DATAS,volume:VOL,foneEditado:FED,foneNovo:FADD,contatoNome:FNOME,whatsapp:WA,rede:REDE,inativo:INAT,automacao:AUTO,equipamento:EQUIP,redeNome:REDENOME,fornecedor:FORN,preco:PRECO}}
+var LS={visita:"postos_visita",consumo:"postos_consumo",tanque:"postos_tanque_arla",perfil:"postos_perfil",datas:"postos_datas",volume:"postos_volume",foneEditado:"postos_fone_editado",foneNovo:"postos_fone_novo",contatoNome:"postos_contato_nome",whatsapp:"postos_whatsapp",rede:"postos_rede",inativo:"postos_inativo",automacao:"postos_automacao",equipamento:"postos_equipamento",redeNome:"postos_rede_nome",fornecedor:"postos_fornecedor",preco:"postos_preco",cnpj:"postos_cnpj",consumoMes:"postos_consumo_mes"};
+function mapas(){return {visita:VISITA,consumo:CONSUMO,tanque:TANQ,perfil:PERFIL,datas:DATAS,volume:VOL,foneEditado:FED,foneNovo:FADD,contatoNome:FNOME,whatsapp:WA,rede:REDE,inativo:INAT,automacao:AUTO,equipamento:EQUIP,redeNome:REDENOME,fornecedor:FORN,preco:PRECO,cnpj:CNPJINF,consumoMes:CMES}}
 function estadoAtual(){var m=mapas(),o={};Object.keys(m).forEach(function(k){o[k]=Object.assign({},m[k])});return o}
 function contar(s){var n=0;Object.keys(LS).forEach(function(k){if(s&&s[k])n+=Object.keys(s[k]).length});return n}
 function aplicaEstado(s,mesclar){var m=mapas(),n=0;
@@ -676,7 +695,7 @@ function contatoGoogle(p){var ck=ckOf(p),fones=[],emails=[];
  return {nome:nome||titulo(ag)||org,org:org,fones:fones,emails:emails,
   rua:rua,bairro:titulo(p.bairro),cidade:p.cidade,cep:p.cep,
   fmt:rua+", "+titulo(p.bairro)+", "+p.cidade+" - MG, "+p.cep+", Brasil",
-  rotulos:[p.tipo==="consumidor"?"Consumidor":"Revendedor",sit,p.cidade].filter(Boolean),cnpj:p.cnpj,ficha:FICHA+"#c"+ck}}
+  rotulos:[p.tipo==="consumidor"?"Consumidor":"Revendedor",sit,p.cidade].filter(Boolean),cnpj:cnpjDe(p),ficha:FICHA+"#c"+ck}}
 function csvGoogle(lista){
  var cs=lista.map(contatoGoogle),nf=Math.max(1,Math.max.apply(null,cs.map(function(c){return c.fones.length}))),ne=Math.max(1,Math.max.apply(null,cs.map(function(c){return c.emails.length})));
  var cab=["First Name","Last Name","Organization Name","Organization Title","Notes","Labels"];
@@ -705,7 +724,7 @@ document.querySelectorAll(".d-anp").forEach(function(e){e.textContent=B.datas.an
 document.querySelectorAll(".d-cart").forEach(function(e){e.textContent=B.datas.carteira});
 document.querySelectorAll(".d-ag").forEach(function(e){e.textContent=B.datas.agenda});
 document.querySelectorAll(".d-cons").forEach(function(e){e.textContent=B.datas.consumidores});
-$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: 2.";
+$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: 3.";
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});
 botao();if(conectado())sincronizar();else avisoLocal();
