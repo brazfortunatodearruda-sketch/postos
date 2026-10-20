@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b6b4f"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><title>Consulta de Postos</title><script src="config.js"></script><script src="dados.js?v=2"></script><script src="bases.js"></script><script src="https://accounts.google.com/gsi/client" async defer></script><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b6b4f"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><title>Gestor de Carteira Arla 32</title><script src="config.js"></script><script src="dados.js?v=2"></script><script src="bases.js"></script><script src="https://accounts.google.com/gsi/client" async defer></script><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <style>
 :root{--fundo:#f3f5f4;--papel:#fff;--texto:#17211d;--suave:#5b6963;--linha:#d5dcd8;
 --acento:#0b6b4f;--acento-texto:#fff;--erro:#a32222;
@@ -160,8 +160,8 @@ td.tel .equip.consumo{margin-top:8px;padding-top:8px;border-top:1px dashed var(-
 tr.consumidor td:first-child{box-shadow:inset 3px 0 0 #b26b00}
 button.mais{display:block;margin:0 auto}
 </style><main>
-<header><div class="topo"><h1>Consulta de Postos</h1><span class="topo-acoes"><a id="lkreceita" href="consulta-cnpj.html" target="receitaws" rel="noopener">Consulta de CNPJs</a><button type="button" id="ajuda">Como funciona</button></span></div>
-<p class="sub">Postos revendedores autorizados pela ANP nos 107 municípios da sua lista de contatos. Dados de <span class="d-anp"></span>. Códigos de cliente conforme a Carteira de Clientes de <span class="d-cart"></span>. Telefones da sua agenda (exportação de <span class="d-ag"></span>) aparecem primeiro. Consumidores (transportadoras, ônibus e frotas) vêm dos seus contatos, base de <span class="d-cons"></span>.</p></header>
+<header><div class="topo"><h1>Gestor de Carteira Arla 32</h1><span class="topo-acoes"><a id="lkreceita" href="consulta-cnpj.html" target="receitaws" rel="noopener">Consulta de CNPJs</a><button type="button" id="ajuda">Como funciona</button></span></div>
+<p class="sub">Sua carteira de Arla 32: clientes, revendedores e consumidores em um só lugar. Postos revendedores autorizados pela ANP nos 107 municípios da sua lista de contatos. Dados de <span class="d-anp"></span>. Códigos de cliente conforme a Carteira de Clientes de <span class="d-cart"></span>. Telefones da sua agenda (exportação de <span class="d-ag"></span>) aparecem primeiro. Consumidores (transportadoras, ônibus e frotas) vêm dos seus contatos, base de <span class="d-cons"></span>.</p></header>
 <form id="f">
  <div class="filtros">
   <label class="campo">Município
@@ -894,7 +894,7 @@ document.querySelectorAll(".d-anp").forEach(function(e){e.textContent=B.datas.an
 document.querySelectorAll(".d-cart").forEach(function(e){e.textContent=B.datas.carteira});
 document.querySelectorAll(".d-ag").forEach(function(e){e.textContent=B.datas.agenda});
 document.querySelectorAll(".d-cons").forEach(function(e){e.textContent=B.datas.consumidores});
-$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: 7.";
+$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: 8.";
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});
 botao();if(conectado())sincronizar();else avisoLocal();
