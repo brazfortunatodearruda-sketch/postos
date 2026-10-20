@@ -1,6 +1,6 @@
 /* Guarda o app no aparelho para abrir sem internet. Ao abrir com sinal, baixa a versão nova em segundo plano. */
-var CACHE="postos-4";
-var ARQS=["./","index.html","config.js","dados.js?v=2","bases.js","manifest.webmanifest","icon-192.png","icon-512.png","icon-maskable-512.png"];
+var CACHE="postos-5";
+var ARQS=["./","index.html","config.js","dados.js?v=2","bases.js","consulta-cnpj.html","manifest.webmanifest","icon-192.png","icon-512.png","icon-maskable-512.png"];
 self.addEventListener("install",function(e){e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(ARQS)}).then(function(){return self.skipWaiting()}))});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k!==CACHE}).map(function(k){return caches.delete(k)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){
