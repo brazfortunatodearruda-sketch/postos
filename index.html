@@ -111,7 +111,8 @@ input.tanq.capital{width:130px}
 #lkreceita{font-size:.9rem;color:var(--acento);font-weight:600}
 a.receita-link,button.receita-link{font-size:.75rem;color:var(--acento)}
 button.receita-link{background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;font-weight:600;display:block;margin-top:2px}
-button.receita-link[hidden]{display:none}
+button.receita-link[hidden],a.receita-link[hidden]{display:none}
+a.receita-link.google{display:block;margin-top:2px;font-weight:600}
 .capnota{display:block;font-size:.72rem;color:var(--suave)}.capnota.baixo{color:#a35a00;font-weight:600}
 span.capnota.baixo{display:inline}
 .rws{margin-top:6px}
@@ -177,6 +178,8 @@ button.mais{display:block;margin:0 auto}
    <select id="ftipo"><option value="">Todos</option><option value="revendedor">Revendedores (postos)</option><option value="consumidor">Consumidores (frotas)</option></select></label>
   <label class="campo">Capital social (consumidores)
    <select id="fcap"><option value="">Todos</option><option value="acima">R$ 150 mil ou mais</option><option value="abaixo">Abaixo de R$ 150 mil</option><option value="__sem">Capital não informado</option></select></label>
+  <label class="campo">CNPJ
+   <select id="fcnpj"><option value="">Todos</option><option value="sem">Sem CNPJ (para pesquisar)</option><option value="com">Com CNPJ</option></select></label>
   <label class="campo">Visita
    <select id="fvis"><option value="">Todos</option><option value="sim">Já visitados</option><option value="nao">Ainda não visitados</option></select></label>
   <label class="campo">Consumo de Arla
@@ -222,7 +225,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Perfil do posto</h3>
 <p>Rodoviário, misto ou urbano. Começa estimado pela página: rodoviário quando o endereço é de rodovia (BR, km, anel rodoviário, zona rural) e o diesel ocupa pelo menos metade da tancagem; urbano quando o endereço é na cidade e o diesel fica abaixo de 35% da tancagem, ou quando a observação da agenda diz "urbano"; misto nos demais casos. Passe o mouse sobre o campo para ver o motivo. Na visita, escolha o perfil real no campo Perfil, logo abaixo da razão social: ele passa a valer no filtro e na planilha.</p>
 <h3>Visita e consumo de Arla</h3>
-<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social e endereço, com botões para levar esses dados ao cliente. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório de alterações (PDF)" lista os clientes que você alterou, com cada campo, valor e data; preencha "só atualizados desde" para limitar o período e, na janela de impressão, escolha "Salvar como PDF". Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
+<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social e endereço, com botões para levar esses dados ao cliente. Para quem está sem CNPJ, use o filtro "CNPJ: Sem CNPJ" e o link "Procurar CNPJ no Google", que pesquisa pelo nome e cidade; cole o número no campo e use "Buscar na Receita" para conferir. Se o nome na Receita não bater com o cadastro, o app avisa. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório de alterações (PDF)" lista os clientes que você alterou, com cada campo, valor e data; preencha "só atualizados desde" para limitar o período e, na janela de impressão, escolha "Salvar como PDF". Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
 <h3>Marcações e datas</h3>
 <p>Inativo, Posto de Rede (abre um campo para o nome da rede), Equipamento, capacidade do tanque de Arla em litros, Automação, fornecedor atual, preço, volume de S10 e telefones. Cada campo preenchido mostra a data em que foi feito, e o nome do posto mostra a última atualização; passe o mouse sobre ela para ver a data de cada campo.</p>
 <h3>Filtros</h3>
@@ -268,6 +271,8 @@ var RECEITA="consulta-cnpj.html",RWS={},RWS_T=[];
 function rwsConsulta(d){return new Promise(function(ok,no){var nome="__rws_"+Date.now()+"_"+Math.floor(Math.random()*1e6),sc=document.createElement("script");
  var rel=setTimeout(function(){fim();no(new Error("tempo"))},25000);function fim(){clearTimeout(rel);delete window[nome];sc.remove()}
  window[nome]=function(x){fim();ok(x)};sc.onerror=function(){fim();no(new Error("rede"))};sc.src="https://receitaws.com.br/v1/cnpj/"+d+"?callback="+nome;document.head.appendChild(sc)})}
+function nomeParecido(a,b){var STOP=/^(LTDA|ME|EPP|EIRELI|SA|DE|DA|DO|DAS|DOS|EM|TRANSPORTE|TRANSPORTES|TRANSPORTADORA|LOGISTICA|COMERCIO|SERVICOS)$/;function pal(t){return sem(t).replace(/[^A-Z0-9 ]/g," ").split(/\s+/).filter(function(w){return w.length>1&&!STOP.test(w)})}
+ var A=pal(a),B=pal(b);if(!A.length)return true;return A.some(function(w){return B.indexOf(w)>=0})}
 function cepFmt(c){c=dig(c);return c.length===8?c.slice(0,5)+"-"+c.slice(5):c}
 function rwsEnd(x){return {endereco:[x.logradouro,x.numero].filter(Boolean).join(", "),compl:x.complemento||"",bairro:x.bairro||"",cep:cepFmt(x.cep)}}
 function rwsCap(x){var n=parseFloat(x.capital_social);return isFinite(n)&&n>0?n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}):""}
@@ -288,6 +293,7 @@ function painelReceita(p){var ck=p.ck,r=RWS[ck],box=document.createElement("div"
  var x=r.x,e=rwsEnd(x),cap=rwsCap(x),sit=String(x.situacao||"").toUpperCase();
  box.appendChild(el("div","rwsnome",x.nome||""));
  box.appendChild(el("div",sit==="ATIVA"?"rwsok":"rwserro","Situação: "+(x.situacao||"não informada")));
+ if(x.nome&&!nomeParecido(p.nome,x.nome+" "+(x.fantasia||"")))box.appendChild(el("p","rwserro","Confira: o nome na Receita é diferente do cadastro ("+titulo(p.nome)+"). Pode ser outra empresa."));
  if(cap){var cl=el("div","rwslin","Capital social: R$ "+cap);var cn=parseFloat(x.capital_social);if(p.tipo==="consumidor"&&cn<CORTE_CAPITAL)cl.appendChild(el("span","capnota baixo"," · abaixo da linha de corte"));box.appendChild(cl)}
  var et=[e.endereco,e.compl,e.bairro,[x.municipio,x.uf].filter(Boolean).join("/"),e.cep?"CEP "+e.cep:""].filter(Boolean).join(" · ");
  box.appendChild(el("div","rwslin","Endereço: "+(et||"não informado")));
@@ -305,6 +311,9 @@ function linkReceita(p,d){var l=document.createElement("button");l.type="button"
 var CORTE_CAPITAL=150000;function capNum(k){return volParse(CAPITAL[k])}
 function capFmt(v){var n=volParse(v);return n==null?"":n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}
 function cnpjOk(d){if(!/^\d{14}$/.test(d)||/^(\d)\1+$/.test(d))return false;function dv(n){var s=0,p=n-7;for(var i=0;i<n;i++){s+=+d[i]*p--;if(p<2)p=9}var r=s%11;return r<2?0:11-r}return dv(12)===+d[12]&&dv(13)===+d[13]}
+var CNPJ_SESSAO={};
+function temCnpj(p){if(p.cnpj)return true;var d=dig(CNPJINF[p.ck]);return d.length===14&&cnpjOk(d)}
+function buscaGoogle(p){return "https://www.google.com/search?q="+encodeURIComponent("CNPJ \""+titulo(p.nome)+"\" "+(p.cidade||"")+" MG")}
 function cnpjDe(p){if(p.cnpj)return p.cnpj;var d=dig(CNPJINF[p.ck]);return d.length===14?cnpj(d):d}
 var CONS_TXT={granel:"A granel",embalado:"Embalado",ambos:"Granel e embalado",nao:"Não vende Arla"};
 function perfilDe(p){return PERFIL[p.ck]||p.perfilAuto}
@@ -431,7 +440,7 @@ function filtrar(){
  postos.forEach(aplicaEnd);calcular();
  var termos=sem($("q").value).split(",").map(function(t){return t.trim()}).filter(Boolean);
  var soDig=$("q").value.replace(/\D/g,"");
- var d=false,mu=$("mun").value,FILTROS=["wa","fvis","fcons","fperf","fband","fforn","feq","faut","ftipo","fcap"];
+ var d=false,mu=$("mun").value,FILTROS=["wa","fvis","fcons","fperf","fband","fforn","feq","faut","ftipo","fcap","fcnpj"];
  var chave=[mu,$("q").value].concat(FILTROS.map(function(id){return $(id).value})).join("|");if(chave!==ultChave){limite=60;ultChave=chave}
  if(!mu&&!termos.length&&!(soDig.length>=8)&&!FILTROS.some(function(id){return $(id).value})){
   atual=[];$("tb").textContent="";$("mais").hidden=true;$("vazio").hidden=false;
@@ -442,6 +451,7 @@ function filtrar(){
   if(d&&!p.diesel)return false;
   if(mu&&p.mun!==mu)return false;
   var tv=$("ftipo").value;if(tv&&p.tipo!==tv)return false;
+  var nv=$("fcnpj").value;if(nv){var tc=temCnpj(p);if(nv==="sem"?tc&&!CNPJ_SESSAO[p.ck]:!tc)return false}
   var kv=$("fcap").value;if(kv){if(p.tipo!=="consumidor")return false;var kn=capNum(p.ck);if(kv==="__sem"?kn!=null:kn==null||(kv==="acima"?kn<CORTE_CAPITAL:kn>=CORTE_CAPITAL))return false}
   var wf=$("wa").value;if(wf){var ts=fonesEfetivos(p),st=ts.map(waGet);
    if(wf==="sim"&&st.indexOf("sim")<0)return false;
@@ -463,10 +473,10 @@ function filtrar(){
   var a=td(p.nome);var s,rl;if(p.cnpj){s=document.createElement("div");s.className="fraco";s.textContent=p.cnpj;rl=linkReceita(p,dig(p.cnpj));s.appendChild(document.createElement("br"));s.appendChild(rl)}else{s=document.createElement("label");s.className="cnpjbox";
    var cj=document.createElement("input");cj.type="text";cj.className="cnpjin";cj.inputMode="numeric";cj.autocomplete="off";cj.placeholder="CNPJ (digite)";cj.setAttribute("aria-label","CNPJ de "+p.nome);cj.value=cnpjDe(p);
    var cjm=document.createElement("span");cjm.className="cnpjmsg";
-   function cjPinta(){var d=dig(CNPJINF[p.ck]);cj.classList.toggle("inf",d.length===14&&cnpjOk(d));cj.classList.toggle("erro",!!d&&!(d.length===14&&cnpjOk(d)));cjm.textContent=!d?"":d.length!==14?"CNPJ incompleto ("+d.length+" de 14 dígitos)":cnpjOk(d)?"":"CNPJ inválido, confira os números";var okd=d.length===14&&cnpjOk(d);if(rl){rl.hidden=!okd}}
-   cj.addEventListener("input",function(){txtSet(CNPJINF,"postos_cnpj",p.ck,dig(cj.value));cjPinta()});
+   function cjPinta(){var d=dig(CNPJINF[p.ck]);cj.classList.toggle("inf",d.length===14&&cnpjOk(d));cj.classList.toggle("erro",!!d&&!(d.length===14&&cnpjOk(d)));cjm.textContent=!d?"":d.length!==14?"CNPJ incompleto ("+d.length+" de 14 dígitos)":cnpjOk(d)?"":"CNPJ inválido, confira os números";var okd=d.length===14&&cnpjOk(d);if(rl){rl.hidden=!okd}var g2=s.querySelector("a.google");if(g2)g2.hidden=okd}
+   cj.addEventListener("input",function(){CNPJ_SESSAO[p.ck]=1;txtSet(CNPJINF,"postos_cnpj",p.ck,dig(cj.value));cjPinta()});
    cj.addEventListener("change",function(){cj.value=cnpjDe(p);cjPinta()});
-   rl=linkReceita(p,"");s.appendChild(cj);s.appendChild(dtSpan(p.ck,"cnpj"));s.appendChild(cjm);s.appendChild(rl);cjPinta()}a.appendChild(s);if(RWS[p.ck])a.appendChild(painelReceita(p));
+   rl=linkReceita(p,"");var gl=document.createElement("a");gl.className="receita-link google";gl.href=buscaGoogle(p);gl.target="busca";gl.rel="noopener";gl.textContent="Procurar CNPJ no Google";gl.title="Pesquisa o CNPJ pelo nome da empresa e cidade";s.appendChild(cj);s.appendChild(gl);s.appendChild(dtSpan(p.ck,"cnpj"));s.appendChild(cjm);s.appendChild(rl);cjPinta()}a.appendChild(s);if(RWS[p.ck])a.appendChild(painelReceita(p));
   var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent="Google Contatos";gb1.title="Baixa o contato deste posto para importar no Google Contatos";gb1.addEventListener("click",function(){exportaUm(p)});a.appendChild(gb1);if(INAT[ck])tr.classList.add("inativo");
   a.appendChild(caixa("Inativo",INAT,"postos_inativo",ck,function(v){tr.classList.toggle("inativo",v);tr2.classList.toggle("inativo",v)}));
   if(p.cart){var cb=document.createElement("div");var cl=document.createElement("span");
@@ -586,9 +596,9 @@ Object.keys(NOMES).sort(function(a,b){return a.localeCompare(b)}).forEach(functi
  var o=document.createElement("option");o.value=m;
  o.textContent=NOMES[m]+" ("+postos.filter(function(p){return p.mun===m}).length+")";
  $("mun").appendChild(o)});
-$("mun").addEventListener("change",filtrar);["fvis","fcons","fperf","fband","fforn","feq","faut","ftipo","fcap"].forEach(function(id){$(id).addEventListener("change",filtrar)});
+$("mun").addEventListener("change",filtrar);["fvis","fcons","fperf","fband","fforn","feq","faut","ftipo","fcap","fcnpj"].forEach(function(id){$(id).addEventListener("change",filtrar)});
 (function(){var u={};postos.forEach(function(p){u[p.bandeira]=(u[p.bandeira]||0)+1});Object.keys(u).sort(function(a,b){return (a==="BANDEIRA BRANCA")-(b==="BANDEIRA BRANCA")||u[b]-u[a]||a.localeCompare(b)}).forEach(function(b){var o=document.createElement("option");o.value=b;o.textContent=({"ALE":"ALE","RAIZEN":"Raízen","TORRAO":"Torrão","SIM DISTRIBUIDOR":"SIM Distribuidor"}[b]||titulo(b))+" ("+u[b]+")";$("fband").appendChild(o)})})();
-$("limpar").addEventListener("click",function(){["mun","wa","fvis","fcons","fperf","fband","fforn","feq","faut","ftipo","fcap"].forEach(function(id){$(id).value=""});$("q").value="";$("desde").value="";filtrar()});
+$("limpar").addEventListener("click",function(){["mun","wa","fvis","fcons","fperf","fband","fforn","feq","faut","ftipo","fcap","fcnpj"].forEach(function(id){$(id).value=""});$("q").value="";$("desde").value="";filtrar()});
 $("ajuda").addEventListener("click",function(){var d=$("dlg");if(d.showModal)d.showModal();else d.setAttribute("open","")});
 $("dlgx").addEventListener("click",function(){var d=$("dlg");if(d.close)d.close();else d.removeAttribute("open")});
 $("dlg").addEventListener("click",function(e){if(e.target===this&&this.close)this.close()});$("wa").addEventListener("change",filtrar);$("ord").addEventListener("change",filtrar);
@@ -884,7 +894,7 @@ document.querySelectorAll(".d-anp").forEach(function(e){e.textContent=B.datas.an
 document.querySelectorAll(".d-cart").forEach(function(e){e.textContent=B.datas.carteira});
 document.querySelectorAll(".d-ag").forEach(function(e){e.textContent=B.datas.agenda});
 document.querySelectorAll(".d-cons").forEach(function(e){e.textContent=B.datas.consumidores});
-$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: 6.";
+$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: 7.";
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});
 botao();if(conectado())sincronizar();else avisoLocal();
