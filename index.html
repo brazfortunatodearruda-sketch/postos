@@ -121,6 +121,10 @@ span.capnota.baixo{display:inline}
 .rwsok{font-size:.78rem;color:var(--acento);font-weight:600}
 .rwserro{font-size:.75rem;color:var(--erro);margin:0}
 .rwsacoes{display:flex;flex-wrap:wrap;gap:6px}
+button.lnk{background:none;border:0;padding:0;font:600 .75rem var(--fonte);color:var(--acento);text-decoration:underline;cursor:pointer}
+button.lnk.perigo{color:var(--erro)}
+.apagar{font-size:.75rem;margin-top:4px}
+.unidos{font-size:.72rem;color:var(--suave);margin-top:4px;max-width:260px}
 #rel{display:none}
 @media print{
  body.imprimindo{background:#fff!important;color:#000!important;padding:0!important}
@@ -175,7 +179,7 @@ button.mais{display:block;margin:0 auto}
  </div>
  <div class="filtros filtros2">
   <label class="campo">Tipo
-   <select id="ftipo"><option value="">Todos</option><option value="revendedor">Revendedores (postos)</option><option value="consumidor">Consumidores (frotas)</option></select></label>
+   <select id="ftipo"><option value="">Todos</option><option value="revendedor">Revendedores (postos)</option><option value="consumidor">Consumidores (frotas)</option><option value="excluidos">Apagados (lixeira)</option></select></label>
   <label class="campo">Capital social (consumidores)
    <select id="fcap"><option value="">Todos</option><option value="acima">R$ 150 mil ou mais</option><option value="abaixo">Abaixo de R$ 150 mil</option><option value="__sem">Capital não informado</option></select></label>
   <label class="campo">CNPJ
@@ -225,7 +229,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Perfil do posto</h3>
 <p>Rodoviário, misto ou urbano. Começa estimado pela página: rodoviário quando o endereço é de rodovia (BR, km, anel rodoviário, zona rural) e o diesel ocupa pelo menos metade da tancagem; urbano quando o endereço é na cidade e o diesel fica abaixo de 35% da tancagem, ou quando a observação da agenda diz "urbano"; misto nos demais casos. Passe o mouse sobre o campo para ver o motivo. Na visita, escolha o perfil real no campo Perfil, logo abaixo da razão social: ele passa a valer no filtro e na planilha.</p>
 <h3>Visita e consumo de Arla</h3>
-<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social, endereço, telefone e e-mail, com botões para levar esses dados ao cliente (o telefone da Receita entra no grupo "Receita Federal", com teste de WhatsApp, e só completa as vagas vazias). Para quem está sem CNPJ, use o filtro "CNPJ: Sem CNPJ" e o link "Procurar CNPJ no Google", que pesquisa pelo nome e cidade; cole o número no campo e use "Buscar na Receita" para conferir. Se o nome na Receita não bater com o cadastro, o app avisa. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório de alterações (PDF)" lista os clientes que você alterou, com cada campo, valor e data; preencha "só atualizados desde" para limitar o período e, na janela de impressão, escolha "Salvar como PDF". Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
+<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social, endereço, telefone e e-mail, com botões para levar esses dados ao cliente (o telefone da Receita entra no grupo "Receita Federal", com teste de WhatsApp, e só completa as vagas vazias). Para quem está sem CNPJ, use o filtro "CNPJ: Sem CNPJ" e o link "Procurar CNPJ no Google", que pesquisa pelo nome e cidade; cole o número no campo e use "Buscar na Receita" para conferir. Se o nome na Receita não bater com o cadastro, o app avisa. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório de alterações (PDF)" lista os clientes que você alterou, com cada campo, valor e data; preencha "só atualizados desde" para limitar o período e, na janela de impressão, escolha "Salvar como PDF". "Apagar registro" (abaixo do nome) tira o registro da lista; ele vai para a lixeira, que você vê no filtro Tipo → "Apagados (lixeira)", onde dá para restaurar. Empresas que vieram repetidas da agenda (vários contatos da mesma empresa) aparecem unificadas, com todos os contatos juntos; o app também unifica sozinho consumidores com o mesmo CNPJ. "Separar" desfaz uma unificação. Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
 <h3>Marcações e datas</h3>
 <p>Inativo, Posto de Rede (abre um campo para o nome da rede), Equipamento, capacidade do tanque de Arla em litros, Automação, fornecedor atual, preço, volume de S10 e telefones. Cada campo preenchido mostra a data em que foi feito, e o nome do posto mostra a última atualização; passe o mouse sobre ela para ver a data de cada campo.</p>
 <h3>Filtros</h3>
@@ -332,7 +336,7 @@ function cnpjDe(p){if(p.cnpj)return p.cnpj;var d=dig(CNPJINF[p.ck]);return d.len
 var CONS_TXT={granel:"A granel",embalado:"Embalado",ambos:"Granel e embalado",nao:"Não vende Arla"};
 function perfilDe(p){return PERFIL[p.ck]||p.perfilAuto}
 var CAMPO={"postos_capital":"capital","postos_cnpj":"cnpj","postos_consumo_mes":"consumoMes","postos_visita":"visita","postos_consumo":"consumo","postos_tanque_arla":"tanque","postos_fornecedor":"fornecedor","postos_preco":"preco","postos_volume":"volume","postos_inativo":"inativo","postos_rede":"rede","postos_automacao":"automacao"};
-var ROT={endereco:"Endereço",capital:"Capital social",cnpj:"CNPJ",visita:"Data da visita",consumo:"Consumo de Arla",consumoMes:"Consumo mensal de Arla",perfil:"Perfil",tanque:"Tanque de Arla",volume:"Volume S10",fornecedor:"Fornecedor",preco:"Preço",equipamento:"Equipamento",automacao:"Automação",rede:"Posto de rede",redeNome:"Nome da rede",inativo:"Inativo",telefones:"Telefones",whatsapp:"Teste de WhatsApp"};
+var ROT={excluido:"Registro apagado",endereco:"Endereço",capital:"Capital social",cnpj:"CNPJ",visita:"Data da visita",consumo:"Consumo de Arla",consumoMes:"Consumo mensal de Arla",perfil:"Perfil",tanque:"Tanque de Arla",volume:"Volume S10",fornecedor:"Fornecedor",preco:"Preço",equipamento:"Equipamento",automacao:"Automação",rede:"Posto de rede",redeNome:"Nome da rede",inativo:"Inativo",telefones:"Telefones",whatsapp:"Teste de WhatsApp"};
 function hojeISO(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function dtCurta(iso){return iso?iso.slice(8,10)+"/"+iso.slice(5,7)+"/"+iso.slice(2,4):""}
 function dtLonga(iso){return iso?iso.slice(8,10)+"/"+iso.slice(5,7)+"/"+iso.slice(0,4):""}
@@ -422,6 +426,29 @@ var postos=DADOS.map(function(r){
  p.cart=r[8]?{cod:r[8],lojas:"",ult:"",vol:0,ok:true}:null;
  p.busca=sem([r[0],p.cnpj,r[8]?"COD "+r[8]:"",p.nome,p.segmento,p.endereco,p.cidade,mun,"CONSUMIDOR FROTA"].concat(p.agenda.map(function(g){return g.nome+" "+g.email+" "+g.obs+" "+g.fones.join(" ")+" "+g.fones.map(function(t){return t.replace(/\D/g,"")}).join(" ")})).join(" "));
  postos.push(p)});
+/* ---------- Unificação de registros da mesma empresa (consumidores) ---------- */
+var UNIF_PADRAO={"2706598923642":"17256140000128","7134294560659":"61414838000205","1017853714221":"61414838000205","8161833023351":"1094154912849","7015187212037":"20468310000142","1019429793832":"03360912000162","3185693397497":"9468144795979","5792434021285":"17097551000118","9245196400637":"64294325000107","7129822661496":"02331952000113","9506007042297":"08579947000291","8793984145917":"21256870000287","3306730201006":"21256870000287","4953408038982":"21256870000287","1266166737626":"1095063359043","3194170959318":"1242824409851","4512182973156":"1242824409851","9442291839180":"19792977000117","8467232077837":"19792977000117","1040768876211":"19792977000117","6590637431311":"12023616000167","8926291135669":"6052881583875","1065421583373":"6052881583875","7948619704092":"06054727000138","1214699194983":"20723631000146","6079733776048":"20723631000146","5505302633409":"39488901000100","1257799058440":"14986631000136","3830291905669":"03302157000160","7558305606864":"24048514000185","8926043525474":"3465756337498","1982911325702":"8166107957941","2995281398360":"1313324164309","1058969371825":"22432769000898","1009213264397":"45252724000160","1443566898978":"14285592000140","7342470321019":"06131931000105","1123244362952":"02400001000582","1020854907834":"08877756000125","2831051277775":"9915757366521"};
+var UNIF_NOMES={"17256140000128": "EXPRESSO ALVORADA LTDA", "61414838000205": "VIAÇÃO PEDRA NEGRA", "1094154912849": "PAVIDEZ ENGENHARIA", "20468310000142": "TORA LOGÍSTICA", "17097551000118": "RÁPIDO RESENDE LTDA", "64294325000107": "CONFINS TRANSPORTES LTDA", "08579947000291": "JMN MINERAÇÃO SA", "21256870000287": "FERRO+ MINERAÇÃO SA", "1242824409851": "LOURENA TRANSPORTES", "19792977000117": "EMPRESA SÃO GONÇALO LTDA", "12023616000167": "SIDERTRANS TRANSPORTES RODOVIÁRIOS LTDA", "39488901000100": "CARBOLOG VESPASIANO LTDA", "14986631000136": "MORADA AGROFLORESTAL LTDA", "24048514000185": "COOPERCEMG", "06131931000105": "TRANSPORTADORA MULTI EXPRESS LTDA", "9915757366521": "GTS TRANSPORTADORA"};
+var EXCL=marcas("postos_excluido"),SEPAR=marcas("postos_separado");
+(function(){var cons={},uni={};postos.forEach(function(p){if(p.tipo==="consumidor")cons[p.ck]=p});
+ Object.keys(UNIF_PADRAO).forEach(function(s){if(cons[s]&&cons[UNIF_PADRAO[s]])uni[s]=UNIF_PADRAO[s]});
+ var porCnpj={};Object.keys(cons).forEach(function(k){var p=cons[k],d=p.cnpj?dig(p.cnpj):dig(CNPJINF[k]);if(d.length!==14||!cnpjOk(d))return;(porCnpj[d]=porCnpj[d]||[]).push(p)});
+ Object.keys(porCnpj).forEach(function(d){var g=porCnpj[d];if(g.length<2)return;g.sort(function(a,b){return (b.cnpj?1:0)-(a.cnpj?1:0)});g.slice(1).forEach(function(p){if(!uni[p.ck])uni[p.ck]=g[0].ck})});
+ function raiz(k){var n=0;while(uni[k]&&n++<10)k=uni[k];return k}
+ Object.keys(uni).forEach(function(s){if(SEPAR[s]){delete uni[s];return}var r=raiz(s);if(r===s)delete uni[s];else uni[s]=r});
+ var m=mapas();
+ Object.keys(uni).forEach(function(s){var a=cons[uni[s]],b=cons[s];if(!a||!b)return;
+  a.unidos=(a.unidos||[]).concat([{ck:s,nome:b.nome}]);
+  b.agenda.forEach(function(g){a.agenda.push(g)});b.todos.forEach(function(t){if(a.todos.indexOf(t)<0)a.todos.push(t)});
+  ["endereco","cep","segmento","cidade","mun"].forEach(function(c){if(!a[c]&&b[c])a[c]=b[c]});if(!a.cart&&b.cart)a.cart=b.cart;
+  a.busca+=" "+b.busca;
+  Object.keys(m).forEach(function(n){var o=m[n];if(n==="whatsapp")return;Object.keys(o).forEach(function(k){if(k===s||k.indexOf(s+":")===0){var nk=a.ck+k.slice(s.length);if(!(nk in o))o[nk]=o[k]}})});
+  b.absorvido=true});
+ Object.keys(UNIF_NOMES).forEach(function(k){if(cons[k]&&cons[k].unidos){cons[k].nomeAgenda=cons[k].nome;cons[k].nome=UNIF_NOMES[k]}});
+ postos=postos.filter(function(p){return !p.absorvido})})();
+function excluir(p){EXCL[p.ck]=1;carimbo(p.ck,"excluido",1,0);setLS("postos_excluido",EXCL);filtrar()}
+function restaurar(p){delete EXCL[p.ck];carimbo(p.ck,"excluido","","x");setLS("postos_excluido",EXCL);filtrar()}
+function separar(p){(p.unidos||[]).forEach(function(u){SEPAR[u.ck]=1});setLS("postos_separado",SEPAR);setTimeout(function(){location.reload()},600)}
 postos.forEach(aplicaEnd);
 var PERF_TXT={rodoviario:"Rodoviário",misto:"Misto",urbano:"Urbano"};
 postos.forEach(function(p){if(p.tipo==="consumidor")return;var tot=p.produtos.reduce(function(a,x){return a+x.tanc},0),sh=tot?p.tancDiesel/tot:0;
@@ -448,7 +475,7 @@ function calcular(){var g=GIRO,pc=PCT;postos.forEach(function(p){var k=p.ck,v=vo
 var MIN_ARLA=3000;calcular();postos=postos.filter(function(p){return p.tipo==="consumidor"||p.s10Est*1000*PCT/100>=MIN_ARLA});
 var atual=[],limite=60,ultChave="";
 function contaTxt(l){var r=0,c=0;l.forEach(function(p){if(p.tipo==="consumidor")c++;else r++});return [r?r+(r>1?" postos":" posto"):"",c?c+(c>1?" consumidores":" consumidor"):""].filter(Boolean).join(" e ")||"Nenhum registro"}
-function totalBase(){return contaTxt(postos)+" na base. A lista aparece quando você escolhe um critério."}
+function totalBase(){return contaTxt(postos.filter(function(p){return !EXCL[p.ck]}))+" na base. A lista aparece quando você escolhe um critério."}
 function td(t,c){var e=document.createElement("td");if(c)e.className=c;e.textContent=t;return e}
 function filtrar(){
  postos.forEach(aplicaEnd);calcular();
@@ -464,7 +491,7 @@ function filtrar(){
  atual=postos.filter(function(p){
   if(d&&!p.diesel)return false;
   if(mu&&p.mun!==mu)return false;
-  var tv=$("ftipo").value;if(tv&&p.tipo!==tv)return false;
+  var tv=$("ftipo").value;if(tv==="excluidos"){if(!EXCL[p.ck])return false}else{if(EXCL[p.ck])return false;if(tv&&p.tipo!==tv)return false}
   var nv=$("fcnpj").value;if(nv){var tc=temCnpj(p);if(nv==="sem"?tc&&!CNPJ_SESSAO[p.ck]:!tc)return false}
   var kv=$("fcap").value;if(kv){if(p.tipo!=="consumidor")return false;var kn=capNum(p.ck);if(kv==="__sem"?kn!=null:kn==null||(kv==="acima"?kn<CORTE_CAPITAL:kn>=CORTE_CAPITAL))return false}
   var wf=$("wa").value;if(wf){var ts=fonesEfetivos(p),st=ts.map(waGet);
@@ -493,6 +520,18 @@ function filtrar(){
    rl=linkReceita(p,"");var gl=document.createElement("a");gl.className="receita-link google";gl.href=buscaGoogle(p);gl.target="busca";gl.rel="noopener";gl.textContent="Procurar CNPJ no Google";gl.title="Pesquisa o CNPJ pelo nome da empresa e cidade";s.appendChild(cj);s.appendChild(gl);s.appendChild(dtSpan(p.ck,"cnpj"));s.appendChild(cjm);s.appendChild(rl);cjPinta()}a.appendChild(s);if(RWS[p.ck])a.appendChild(painelReceita(p));
   var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent="Google Contatos";gb1.title="Baixa o contato deste posto para importar no Google Contatos";gb1.addEventListener("click",function(){exportaUm(p)});a.appendChild(gb1);if(INAT[ck])tr.classList.add("inativo");
   a.appendChild(caixa("Inativo",INAT,"postos_inativo",ck,function(v){tr.classList.toggle("inativo",v);tr2.classList.toggle("inativo",v)}));
+  if(p.unidos){var un=document.createElement("div");un.className="unidos";un.textContent="Unificado: "+[p.nomeAgenda||""].concat(p.unidos.map(function(u){return u.nome})).filter(Boolean).join(" + ");
+   var sp=document.createElement("button");sp.type="button";sp.className="lnk";sp.textContent="Separar";sp.title="Desfaz a unificação e volta a mostrar os registros separados";
+   sp.addEventListener("click",function(){sp.disabled=true;sp.textContent="Separando…";separar(p)});un.appendChild(document.createTextNode(" · "));un.appendChild(sp);a.appendChild(un)}
+  var dx=document.createElement("div");dx.className="apagar";
+  function dxNormal(){dx.textContent="";var b=document.createElement("button");b.type="button";b.className="lnk perigo";
+   if(EXCL[ck]){b.textContent="Restaurar registro";b.className="lnk";b.addEventListener("click",function(){restaurar(p)})}
+   else{b.textContent="Apagar registro";b.addEventListener("click",function(){dx.textContent="";var q=document.createElement("span");q.textContent="Apagar este registro? ";dx.appendChild(q);
+    var y=document.createElement("button");y.type="button";y.className="lnk perigo";y.textContent="Sim, apagar";y.addEventListener("click",function(){excluir(p)});
+    var n=document.createElement("button");n.type="button";n.className="lnk";n.textContent="Cancelar";n.addEventListener("click",dxNormal);
+    dx.appendChild(y);dx.appendChild(document.createTextNode(" · "));dx.appendChild(n)})}
+   dx.appendChild(b)}
+  dxNormal();a.appendChild(dx);
   if(p.cart){var cb=document.createElement("div");var cl=document.createElement("span");
    if(p.cart.ok){cl.className="cli";cl.textContent="Cliente cód. "+p.cart.cod+(p.cart.lojas?" · loja "+p.cart.lojas:"");cl.title="Cadastro confirmado na Carteira de Clientes (razão social e município)";cb.appendChild(cl);
     var inf=[];if(p.cart.ult)inf.push("últ. compra "+p.cart.ult);if(p.cart.vol)inf.push(fmt(p.cart.vol)+" L no ano");
@@ -651,7 +690,7 @@ function valorCampo(p,c){var k=p.ck;switch(c){
  default:return ""}}
 function relatorio(){
  var ds=$("desde").value;postos.forEach(aplicaEnd);
- var lista=postos.filter(function(p){var u=ultima(p.ck);return u&&(!ds||u>=ds)});
+ var lista=postos.filter(function(p){var u=ultima(p.ck);if(EXCL[p.ck]&&!(DATAS[p.ck+":excluido"]))return false;return u&&(!ds||u>=ds)});
  if(!lista.length){arqMsg(ds?"Nenhum cliente alterado desde "+dtLonga(ds)+".":"Você ainda não alterou nenhum cliente.");return}
  lista.sort(function(a,b){return (a.cidade||"").localeCompare(b.cidade||"")||a.nome.localeCompare(b.nome)});
  var R=$("rel");R.textContent="";
@@ -680,8 +719,8 @@ function relatorio(){
  setTimeout(function(){window.print();arqMsg("Relatório com "+lista.length+(lista.length>1?" clientes":" cliente")+". Na janela de impressão, escolha \"Salvar como PDF\".")},50)}
 $("relpdf").addEventListener("click",relatorio);
 /* ---------- Salvamento: Google Drive (pasta BIOAR) + arquivo de backup ---------- */
-var LS={visita:"postos_visita",consumo:"postos_consumo",tanque:"postos_tanque_arla",perfil:"postos_perfil",datas:"postos_datas",volume:"postos_volume",foneEditado:"postos_fone_editado",foneNovo:"postos_fone_novo",contatoNome:"postos_contato_nome",whatsapp:"postos_whatsapp",rede:"postos_rede",inativo:"postos_inativo",automacao:"postos_automacao",equipamento:"postos_equipamento",redeNome:"postos_rede_nome",fornecedor:"postos_fornecedor",preco:"postos_preco",cnpj:"postos_cnpj",consumoMes:"postos_consumo_mes",capital:"postos_capital",endereco:"postos_endereco",receitaContato:"postos_receita_contato"};
-function mapas(){return {visita:VISITA,consumo:CONSUMO,tanque:TANQ,perfil:PERFIL,datas:DATAS,volume:VOL,foneEditado:FED,foneNovo:FADD,contatoNome:FNOME,whatsapp:WA,rede:REDE,inativo:INAT,automacao:AUTO,equipamento:EQUIP,redeNome:REDENOME,fornecedor:FORN,preco:PRECO,cnpj:CNPJINF,consumoMes:CMES,capital:CAPITAL,endereco:ENDER,receitaContato:RCONT}}
+var LS={visita:"postos_visita",consumo:"postos_consumo",tanque:"postos_tanque_arla",perfil:"postos_perfil",datas:"postos_datas",volume:"postos_volume",foneEditado:"postos_fone_editado",foneNovo:"postos_fone_novo",contatoNome:"postos_contato_nome",whatsapp:"postos_whatsapp",rede:"postos_rede",inativo:"postos_inativo",automacao:"postos_automacao",equipamento:"postos_equipamento",redeNome:"postos_rede_nome",fornecedor:"postos_fornecedor",preco:"postos_preco",cnpj:"postos_cnpj",consumoMes:"postos_consumo_mes",capital:"postos_capital",endereco:"postos_endereco",receitaContato:"postos_receita_contato",excluido:"postos_excluido",separado:"postos_separado"};
+function mapas(){return {visita:VISITA,consumo:CONSUMO,tanque:TANQ,perfil:PERFIL,datas:DATAS,volume:VOL,foneEditado:FED,foneNovo:FADD,contatoNome:FNOME,whatsapp:WA,rede:REDE,inativo:INAT,automacao:AUTO,equipamento:EQUIP,redeNome:REDENOME,fornecedor:FORN,preco:PRECO,cnpj:CNPJINF,consumoMes:CMES,capital:CAPITAL,endereco:ENDER,receitaContato:RCONT,excluido:EXCL,separado:SEPAR}}
 function estadoAtual(){var m=mapas(),o={};Object.keys(m).forEach(function(k){o[k]=Object.assign({},m[k])});return o}
 function contar(s){var n=0;Object.keys(LS).forEach(function(k){if(s&&s[k])n+=Object.keys(s[k]).length});return n}
 function aplicaEstado(s,mesclar){var m=mapas(),n=0;
@@ -908,7 +947,7 @@ document.querySelectorAll(".d-anp").forEach(function(e){e.textContent=B.datas.an
 document.querySelectorAll(".d-cart").forEach(function(e){e.textContent=B.datas.carteira});
 document.querySelectorAll(".d-ag").forEach(function(e){e.textContent=B.datas.agenda});
 document.querySelectorAll(".d-cons").forEach(function(e){e.textContent=B.datas.consumidores});
-$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: 9.";
+$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: 10.";
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});
 botao();if(conectado())sincronizar();else avisoLocal();
