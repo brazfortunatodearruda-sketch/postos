@@ -46,6 +46,7 @@ tr.diesel td:first-child{box-shadow:inset 3px 0 0 var(--acento)}
 tr:last-child td{border-bottom:0}
 .fraco{color:var(--suave);font-size:.85rem}a{color:var(--acento)}
 .vazio{padding:24px;color:var(--suave)}
+.sitrec{display:block;width:max-content;max-width:100%;margin:3px 0;font-size:.78rem;font-weight:700;border-radius:4px;padding:1px 7px;color:#fff;background:var(--erro)}.sitrec.rj{background:#b45a00}
 .cli{display:inline-block;margin-top:3px;font-size:.8rem;font-weight:600;color:var(--acento);border:1px solid var(--acento);border-radius:4px;padding:0 6px}
 .cli.grupo{font-weight:400;color:var(--suave);border-color:var(--linha)}
 .cliinfo{color:var(--suave);font-size:.78rem}
@@ -183,7 +184,7 @@ button.mais{display:block;margin:0 auto}
   <label class="campo">Capital social (consumidores)
    <select id="fcap"><option value="">Todos</option><option value="acima">R$ 150 mil ou mais</option><option value="abaixo">Abaixo de R$ 150 mil</option><option value="__sem">Capital não informado</option></select></label>
   <label class="campo">CNPJ
-   <select id="fcnpj"><option value="">Todos</option><option value="sem">Sem CNPJ (para pesquisar)</option><option value="com">Com CNPJ</option></select></label>
+   <select id="fcnpj"><option value="">Todos</option><option value="sem">Sem CNPJ (para pesquisar)</option><option value="com">Com CNPJ</option><option value="baixado">Baixados/inaptos na Receita</option><option value="rj">Em recuperação judicial</option><option value="regular">Sem restrição na Receita</option></select></label>
   <label class="campo">Visita
    <select id="fvis"><option value="">Todos</option><option value="sim">Já visitados</option><option value="nao">Ainda não visitados</option></select></label>
   <label class="campo">Consumo de Arla
@@ -229,7 +230,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Perfil do posto</h3>
 <p>Rodoviário, misto ou urbano. Começa estimado pela página: rodoviário quando o endereço é de rodovia (BR, km, anel rodoviário, zona rural) e o diesel ocupa pelo menos metade da tancagem; urbano quando o endereço é na cidade e o diesel fica abaixo de 35% da tancagem, ou quando a observação da agenda diz "urbano"; misto nos demais casos. Passe o mouse sobre o campo para ver o motivo. Na visita, escolha o perfil real no campo Perfil, logo abaixo da razão social: ele passa a valer no filtro "Perfil do Posto" e na planilha.</p>
 <h3>Visita e consumo de Arla</h3>
-<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social, endereço, telefone e e-mail, com botões para levar esses dados ao cliente (o telefone da Receita entra no grupo "Receita Federal", com teste de WhatsApp, e só completa as vagas vazias). Para quem está sem CNPJ, use o filtro "CNPJ: Sem CNPJ" e o link "Procurar CNPJ no Google", que pesquisa pelo nome e cidade; cole o número no campo e use "Buscar na Receita" para conferir. Se o nome na Receita não bater com o cadastro, o app avisa. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório de alterações (PDF)" lista os clientes que você alterou, com cada campo, valor e data; preencha "só atualizados desde" para limitar o período e, na janela de impressão, escolha "Salvar como PDF". "Apagar registro" (abaixo do nome) tira o registro da lista; ele vai para a lixeira, que você vê no filtro Tipo de Cliente → "Apagados (lixeira)", onde dá para restaurar. Empresas que vieram repetidas da agenda (vários contatos da mesma empresa) aparecem unificadas, com todos os contatos juntos; o app também unifica sozinho consumidores com o mesmo CNPJ. "Separar" desfaz uma unificação. Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
+<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social, endereço, telefone e e-mail, com botões para levar esses dados ao cliente (o telefone da Receita entra no grupo "Receita Federal", com teste de WhatsApp, e só completa as vagas vazias). Para quem está sem CNPJ, use o filtro "CNPJ: Sem CNPJ" e o link "Procurar CNPJ no Google", que pesquisa pelo nome e cidade; cole o número no campo e use "Buscar na Receita" para conferir. Se o nome na Receita não bater com o cadastro, o app avisa. Toda consulta à Receita (pelo botão "Buscar na Receita" ou pela página Consulta de CNPJs) grava a situação do CNPJ no cliente: se estiver baixado, inapto ou suspenso, aparece um aviso vermelho logo abaixo do nome; se estiver em recuperação judicial, um aviso laranja. Passe o mouse sobre o aviso para ver a data da consulta. No filtro CNPJ, as opções "Baixados/inaptos na Receita", "Em recuperação judicial" e "Sem restrição na Receita" ajudam a definir a prioridade de visita; elas consideram só os clientes já consultados. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório de alterações (PDF)" lista os clientes que você alterou, com cada campo, valor e data; preencha "só atualizados desde" para limitar o período e, na janela de impressão, escolha "Salvar como PDF". "Apagar registro" (abaixo do nome) tira o registro da lista; ele vai para a lixeira, que você vê no filtro Tipo de Cliente → "Apagados (lixeira)", onde dá para restaurar. Empresas que vieram repetidas da agenda (vários contatos da mesma empresa) aparecem unificadas, com todos os contatos juntos; o app também unifica sozinho consumidores com o mesmo CNPJ. "Separar" desfaz uma unificação. Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
 <h3>Marcações e datas</h3>
 <p>Inativo, Posto de Rede (abre um campo para o nome da rede), Equipamento, capacidade do tanque de Arla em litros, Automação, fornecedor atual, preço, volume de S10 e telefones. Cada campo preenchido mostra a data em que foi feito, e o nome do posto mostra a última atualização; passe o mouse sobre ela para ver a data de cada campo.</p>
 <h3>Filtros</h3>
@@ -276,6 +277,18 @@ function endEditado(p){return END_CAMPOS.some(function(c){return !!ENDER[p.ck+":
 function endTxt(p){return [[p.endereco,p.compl&&p.compl.length>1?p.compl:""].filter(Boolean).join(" · "),p.bairro,(p.cidade?p.cidade+"/MG":""),p.cep?"CEP "+p.cep:""].filter(function(x){return x&&String(x).trim()}).join(" · ")}
 function endOrigTxt(p){var o=p.o||p;return [[o.endereco,o.compl&&o.compl.length>1?o.compl:""].filter(Boolean).join(" · "),o.bairro,o.cep?"CEP "+o.cep:""].filter(function(x){return x&&String(x).trim()}).join(" · ")}
 var RECEITA="consulta-cnpj.html",RWS={},RWS_T=[];
+var SITC=marcas("postos_sit_cnpj");
+function hojeISO(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+function sitVal(x){var e=String(x.situacao_especial||"").replace(/\*/g,"").trim();return [String(x.situacao||"").trim().toUpperCase(),e.toUpperCase(),hojeISO()].join("|")}
+function sitDe(p){var a=String(RCONT[p.ck+":sit"]||""),d=dig(cnpjDe(p)),b=d.length===14?String(SITC[d]||""):"";if(!b)return a;if(!a)return b;return (b.split("|")[2]||"")>(a.split("|")[2]||"")?b:a}
+function sitGrava(p,v){if(!v)return;RCONT[p.ck+":sit"]=v;try{localStorage.setItem("postos_receita_contato",JSON.stringify(RCONT))}catch(e){}var d=dig(cnpjDe(p));if(d.length===14){SITC[d]=v;try{localStorage.setItem("postos_sit_cnpj",JSON.stringify(SITC))}catch(e){}}mudou()}
+function sitInfo(p){var v=sitDe(p);if(!v)return null;var q=v.split("|"),s=q[0]||"",e=q[1]||"",dt=q[2]||"";return {baixado:!!s&&s!=="ATIVA",sit:s,rj:/RECUPERA..O JUDICIAL/.test(e),esp:e,data:dt}}
+function sitSelos(p){var i=sitInfo(p),f=document.createDocumentFragment();if(!i)return f;var dt=i.data?i.data.split("-").reverse().join("/"):"";
+ function selo(txt,c){var b=document.createElement("span");b.className="sitrec"+(c?" "+c:"");b.textContent=txt;b.title="Situação na Receita Federal, consultada em "+dt;f.appendChild(b)}
+ if(i.baixado)selo(({BAIXADA:"Baixado",INAPTA:"Inapto",SUSPENSA:"Suspenso",NULA:"Nulo"}[i.sit]||titulo(i.sit))+" na Receita");
+ if(i.rj)selo("Em recuperação judicial","rj");else if(i.esp)selo(titulo(i.esp),"rj");return f}
+function sitImporta(){var m=false;postos.forEach(function(p){var d=dig(cnpjDe(p));if(d.length!==14||!SITC[d])return;var a=String(RCONT[p.ck+":sit"]||"");if((String(SITC[d]).split("|")[2]||"")>(a.split("|")[2]||"")||!a){if(a!==SITC[d]){RCONT[p.ck+":sit"]=SITC[d];m=true}}});if(m){try{localStorage.setItem("postos_receita_contato",JSON.stringify(RCONT))}catch(e){}mudou()}}
+window.addEventListener("storage",function(ev){if(ev.key==="postos_sit_cnpj"){SITC=marcas("postos_sit_cnpj");sitImporta();filtrar()}});
 function rwsConsulta(d){return new Promise(function(ok,no){var nome="__rws_"+Date.now()+"_"+Math.floor(Math.random()*1e6),sc=document.createElement("script");
  var rel=setTimeout(function(){fim();no(new Error("tempo"))},25000);function fim(){clearTimeout(rel);delete window[nome];sc.remove()}
  window[nome]=function(x){fim();ok(x)};sc.onerror=function(){fim();no(new Error("rede"))};sc.src="https://receitaws.com.br/v1/cnpj/"+d+"?callback="+nome;document.head.appendChild(sc)})}
@@ -297,7 +310,7 @@ function usaCap(p,v){if(v)txtSet(CAPITAL,"postos_capital",p.ck,v)}
 function buscaReceita(p){var d=dig(cnpjDe(p));if(d.length!==14)return;var agora=Date.now();RWS_T=RWS_T.filter(function(t){return agora-t<60000});
  if(RWS_T.length>=3){RWS[p.ck]={erro:"A ReceitaWS aceita 3 consultas por minuto. Tente de novo em "+Math.ceil((60000-(agora-RWS_T[0]))/1000)+" s."};filtrar();return}
  RWS_T.push(agora);RWS[p.ck]={carregando:1};filtrar();
- rwsConsulta(d).then(function(x){if(String(x&&x.status).toUpperCase()==="ERROR")RWS[p.ck]={erro:x.message||"A ReceitaWS não devolveu dados para este CNPJ."};else RWS[p.ck]={x:x};filtrar()},
+ rwsConsulta(d).then(function(x){if(String(x&&x.status).toUpperCase()==="ERROR")RWS[p.ck]={erro:x.message||"A ReceitaWS não devolveu dados para este CNPJ."};else{RWS[p.ck]={x:x};sitGrava(p,sitVal(x))}filtrar()},
   function(){RWS[p.ck]={erro:"A ReceitaWS não respondeu. Pode ser o limite de 3 consultas por minuto ou falha de conexão. Aguarde um minuto e tente de novo."};filtrar()})}
 function painelReceita(p){var ck=p.ck,r=RWS[ck],box=document.createElement("div");box.className="edbox rws";
  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
@@ -307,7 +320,8 @@ function painelReceita(p){var ck=p.ck,r=RWS[ck],box=document.createElement("div"
  if(r.erro){box.appendChild(el("p","rwserro",r.erro));box.appendChild(fechar());return box}
  var x=r.x,e=rwsEnd(x),cap=rwsCap(x),sit=String(x.situacao||"").toUpperCase();
  box.appendChild(el("div","rwsnome",x.nome||""));
- box.appendChild(el("div",sit==="ATIVA"?"rwsok":"rwserro","Situação: "+(x.situacao||"não informada")));
+ box.appendChild(el("div",sit==="ATIVA"?"rwsok":"rwserro","Situação: "+(x.situacao||"não informada")+(x.motivo_situacao&&sit!=="ATIVA"?" ("+x.motivo_situacao+")":"")));
+ var spx=String(x.situacao_especial||"").replace(/\*/g,"").trim();if(spx)box.appendChild(el("div","rwserro","Situação especial: "+spx+(x.data_situacao_especial?" desde "+x.data_situacao_especial:"")));
  if(x.nome&&!nomeParecido(p.nome,x.nome+" "+(x.fantasia||"")))box.appendChild(el("p","rwserro","Confira: o nome na Receita é diferente do cadastro ("+titulo(p.nome)+"). Pode ser outra empresa."));
  if(cap){var cl=el("div","rwslin","Capital social: R$ "+cap);var cn=parseFloat(x.capital_social);if(p.tipo==="consumidor"&&cn<CORTE_CAPITAL)cl.appendChild(el("span","capnota baixo"," · abaixo da linha de corte"));box.appendChild(cl)}
  var et=[e.endereco,e.compl,e.bairro,[x.municipio,x.uf].filter(Boolean).join("/"),e.cep?"CEP "+e.cep:""].filter(Boolean).join(" · ");
@@ -495,7 +509,8 @@ function filtrar(){
   if(d&&!p.diesel)return false;
   if(mu&&p.mun!==mu)return false;
   var tv=$("ftipo").value;if(tv==="excluidos"){if(!EXCL[p.ck])return false}else{if(EXCL[p.ck])return false;if(tv&&p.tipo!==tv)return false}
-  var nv=$("fcnpj").value;if(nv){var tc=temCnpj(p);if(nv==="sem"?tc&&!CNPJ_SESSAO[p.ck]:!tc)return false}
+  var nv=$("fcnpj").value;if(nv==="baixado"||nv==="rj"||nv==="regular"){var si=sitInfo(p);if(nv==="baixado"&&!(si&&si.baixado))return false;if(nv==="rj"&&!(si&&si.rj))return false;if(nv==="regular"&&!(si&&!si.baixado&&!si.esp))return false}
+  else if(nv){var tc=temCnpj(p);if(nv==="sem"?tc&&!CNPJ_SESSAO[p.ck]:!tc)return false}
   var kv=$("fcap").value;if(kv){if(p.tipo!=="consumidor")return false;var kn=capNum(p.ck);if(kv==="__sem"?kn!=null:kn==null||(kv==="acima"?kn<CORTE_CAPITAL:kn>=CORTE_CAPITAL))return false}
   var wf=$("wa").value;if(wf){var ts=fonesEfetivos(p),st=ts.map(waGet);
    if(wf==="sim"&&st.indexOf("sim")<0)return false;
@@ -514,7 +529,7 @@ function filtrar(){
  $("tb").textContent="";
  atual.slice(0,limite).forEach(function(p){
   var tr=document.createElement("tr");if(p.diesel)tr.className="diesel";if(p.tipo==="consumidor")tr.className="consumidor";
-  var a=td(p.nome);var s,rl;if(p.cnpj){s=document.createElement("div");s.className="fraco";s.textContent=p.cnpj;rl=linkReceita(p,dig(p.cnpj));s.appendChild(document.createElement("br"));s.appendChild(rl)}else{s=document.createElement("label");s.className="cnpjbox";
+  var a=td(p.nome);a.appendChild(sitSelos(p));var s,rl;if(p.cnpj){s=document.createElement("div");s.className="fraco";s.textContent=p.cnpj;rl=linkReceita(p,dig(p.cnpj));s.appendChild(document.createElement("br"));s.appendChild(rl)}else{s=document.createElement("label");s.className="cnpjbox";
    var cj=document.createElement("input");cj.type="text";cj.className="cnpjin";cj.inputMode="numeric";cj.autocomplete="off";cj.placeholder="CNPJ (digite)";cj.setAttribute("aria-label","CNPJ de "+p.nome);cj.value=cnpjDe(p);
    var cjm=document.createElement("span");cjm.className="cnpjmsg";
    function cjPinta(){var d=dig(CNPJINF[p.ck]);cj.classList.toggle("inf",d.length===14&&cnpjOk(d));cj.classList.toggle("erro",!!d&&!(d.length===14&&cnpjOk(d)));cjm.textContent=!d?"":d.length!==14?"CNPJ incompleto ("+d.length+" de 14 dígitos)":cnpjOk(d)?"":"CNPJ inválido, confira os números";var okd=d.length===14&&cnpjOk(d);if(rl){rl.hidden=!okd}var g2=s.querySelector("a.google");if(g2)g2.hidden=okd}
@@ -669,7 +684,7 @@ $("baixar").addEventListener("click",function(){
    p.produtos.map(function(x){return x.produto+" ("+x.tanc+" m³, "+x.bicos+" bicos)"}).join(" | "),dtLonga(ultima(ckOf(p))),resumoDatas(ckOf(p)).replace(/\n/g," | ")].map(c).join(";")}));
  baixar("postos_anp.csv","\uFEFF"+linhas.join("\r\n"),"text/csv;charset=utf-8");
 });
-listaRedes();listaForn();abreFicha();filtrar();
+listaRedes();listaForn();sitImporta();abreFicha();filtrar();
 /* ---------- Relatório de alterações (imprimir / salvar em PDF) ---------- */
 function valorCampo(p,c){var k=p.ck;switch(c){
  case "endereco":return endTxt(p)+(endEditado(p)?" (original: "+(endOrigTxt(p)||"vazio")+")":"");

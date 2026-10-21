@@ -157,6 +157,18 @@
     return f;
   }
 
+  // Guarda a situação na Receita para o Gestor de Carteira mostrar na ficha do cliente
+  function guardaSituacao(cnpj, d, esp) {
+    try {
+      var k = String(d.cnpj || cnpj).replace(/\D/g, "");
+      if (k.length !== 14) return;
+      var h = new Date(), hoje = h.getFullYear() + "-" + ("0" + (h.getMonth() + 1)).slice(-2) + "-" + ("0" + h.getDate()).slice(-2);
+      var m = JSON.parse(localStorage.getItem("postos_sit_cnpj") || "{}") || {};
+      m[k] = [String(d.situacao || "").trim().toUpperCase(), String(esp || "").toUpperCase(), hoje].join("|");
+      localStorage.setItem("postos_sit_cnpj", JSON.stringify(m));
+    } catch (e) {}
+  }
+
   function fichaOk(cnpj, d) {
     var f = el("article", "ficha");
     var t = el("div", "topo");
@@ -166,7 +178,10 @@
     t.appendChild(esq);
     var sit = (d.situacao || "").toUpperCase();
     t.appendChild(el("span", "selo " + (sit === "ATIVA" ? "ok" : "alerta"), d.situacao || "Situação não informada"));
+    var esp = String(d.situacao_especial || "").replace(/\*/g, "").trim();
+    if (esp) t.appendChild(el("span", "selo alerta", /RECUPERA..O JUDICIAL/i.test(esp) ? "Em recuperação judicial" : esp));
     f.appendChild(t);
+    guardaSituacao(cnpj, d, esp);
 
     var endereco = [
       [d.logradouro, d.numero].filter(Boolean).join(", "), d.complemento, d.bairro,
@@ -180,7 +195,7 @@
       ["Nome fantasia", d.fantasia], ["Abertura", d.abertura], ["Tipo", d.tipo], ["Porte", d.porte],
       ["Natureza jurídica", d.natureza_juridica], ["Atividade principal", ativ], ["Endereço", endereco],
       ["Telefone", d.telefone], ["E-mail", d.email], ["Capital social", capital], ["Sócios", socios],
-      ["Data da situação", d.data_situacao], ["Atualizado em", d.ultima_atualizacao ? new Date(d.ultima_atualizacao).toLocaleDateString("pt-BR") : ""]
+      ["Data da situação", d.data_situacao], ["Motivo da situação", sit !== "ATIVA" ? d.motivo_situacao : ""], ["Situação especial", esp ? esp + (d.data_situacao_especial ? " (desde " + d.data_situacao_especial + ")" : "") : ""], ["Atualizado em", d.ultima_atualizacao ? new Date(d.ultima_atualizacao).toLocaleDateString("pt-BR") : ""]
     ].filter(function (l) { return l[1]; });
 
     var dl = el("dl");
