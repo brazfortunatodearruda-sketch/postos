@@ -178,7 +178,7 @@ button.mais{display:block;margin:0 auto}
    <select id="ord"><option value="dist" selected>Mais perto de Vespasiano</option><option value="arla">Maior potencial de Arla 32</option></select></label>
  </div>
  <div class="filtros filtros2">
-  <label class="campo">Tipo
+  <label class="campo">Tipo de Cliente
    <select id="ftipo"><option value="">Todos</option><option value="revendedor">Revendedores (postos)</option><option value="consumidor">Consumidores (frotas)</option><option value="excluidos">Apagados (lixeira)</option></select></label>
   <label class="campo">Capital social (consumidores)
    <select id="fcap"><option value="">Todos</option><option value="acima">R$ 150 mil ou mais</option><option value="abaixo">Abaixo de R$ 150 mil</option><option value="__sem">Capital não informado</option></select></label>
@@ -188,7 +188,7 @@ button.mais{display:block;margin:0 auto}
    <select id="fvis"><option value="">Todos</option><option value="sim">Já visitados</option><option value="nao">Ainda não visitados</option></select></label>
   <label class="campo">Consumo de Arla
    <select id="fcons"><option value="">Todos</option><option value="granel">A granel (inclui ambos)</option><option value="embalado">Embalado (inclui ambos)</option><option value="nao">Não vende Arla</option><option value="__sem">Não informado</option></select></label>
-  <label class="campo">Perfil
+  <label class="campo">Perfil do Posto
    <select id="fperf"><option value="">Todos</option><option value="rodoviario">Rodoviário</option><option value="misto">Misto</option><option value="urbano">Urbano</option></select></label>
   <label class="campo">Bandeira
    <select id="fband"><option value="">Todas</option></select></label>
@@ -196,8 +196,8 @@ button.mais{display:block;margin:0 auto}
    <select id="fforn"><option value="">Todos</option><option value="__sem">Sem fornecedor informado</option></select></label>
   <label class="campo">Equipamento
    <select id="feq"><option value="">Todos</option><option value="terceiros">De terceiros</option><option value="proprio">Próprio</option><option value="__sem">Não informado</option></select></label>
-  <label class="campo">Automação
-   <select id="faut"><option value="">Todos</option><option value="sim">Com automação</option><option value="nao">Sem automação marcada</option></select></label>
+  <label class="campo">Rede de postos
+   <select id="frede"><option value="">Todas</option><option value="__rede">Só postos de rede</option><option value="__indep">Postos independentes</option></select></label>
   <div class="campo limpar"><button type="button" id="limpar">Limpar filtros</button></div>
  </div>
  <div class="linha">
@@ -227,13 +227,13 @@ button.mais{display:block;margin:0 auto}
 <p>Os telefones da sua agenda aparecem primeiro (passe o mouse sobre o nome do contato para ver a observação). O telefone da Receita Federal aparece embaixo, em cinza, e pode ser o do escritório de contabilidade. Em "Editar telefones" você corrige ou remove números e acrescenta os contatos da visita, que aparecem no bloco Visita.</p>
 <p>Para testar o WhatsApp, clique em "WhatsApp" ao lado do número: se abrir a conversa, o número tem conta; se aparecer "número inválido", não tem. Depois marque o resultado na caixinha.</p>
 <h3>Perfil do posto</h3>
-<p>Rodoviário, misto ou urbano. Começa estimado pela página: rodoviário quando o endereço é de rodovia (BR, km, anel rodoviário, zona rural) e o diesel ocupa pelo menos metade da tancagem; urbano quando o endereço é na cidade e o diesel fica abaixo de 35% da tancagem, ou quando a observação da agenda diz "urbano"; misto nos demais casos. Passe o mouse sobre o campo para ver o motivo. Na visita, escolha o perfil real no campo Perfil, logo abaixo da razão social: ele passa a valer no filtro e na planilha.</p>
+<p>Rodoviário, misto ou urbano. Começa estimado pela página: rodoviário quando o endereço é de rodovia (BR, km, anel rodoviário, zona rural) e o diesel ocupa pelo menos metade da tancagem; urbano quando o endereço é na cidade e o diesel fica abaixo de 35% da tancagem, ou quando a observação da agenda diz "urbano"; misto nos demais casos. Passe o mouse sobre o campo para ver o motivo. Na visita, escolha o perfil real no campo Perfil, logo abaixo da razão social: ele passa a valer no filtro "Perfil do Posto" e na planilha.</p>
 <h3>Visita e consumo de Arla</h3>
-<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social, endereço, telefone e e-mail, com botões para levar esses dados ao cliente (o telefone da Receita entra no grupo "Receita Federal", com teste de WhatsApp, e só completa as vagas vazias). Para quem está sem CNPJ, use o filtro "CNPJ: Sem CNPJ" e o link "Procurar CNPJ no Google", que pesquisa pelo nome e cidade; cole o número no campo e use "Buscar na Receita" para conferir. Se o nome na Receita não bater com o cadastro, o app avisa. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório de alterações (PDF)" lista os clientes que você alterou, com cada campo, valor e data; preencha "só atualizados desde" para limitar o período e, na janela de impressão, escolha "Salvar como PDF". "Apagar registro" (abaixo do nome) tira o registro da lista; ele vai para a lixeira, que você vê no filtro Tipo → "Apagados (lixeira)", onde dá para restaurar. Empresas que vieram repetidas da agenda (vários contatos da mesma empresa) aparecem unificadas, com todos os contatos juntos; o app também unifica sozinho consumidores com o mesmo CNPJ. "Separar" desfaz uma unificação. Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
+<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social, endereço, telefone e e-mail, com botões para levar esses dados ao cliente (o telefone da Receita entra no grupo "Receita Federal", com teste de WhatsApp, e só completa as vagas vazias). Para quem está sem CNPJ, use o filtro "CNPJ: Sem CNPJ" e o link "Procurar CNPJ no Google", que pesquisa pelo nome e cidade; cole o número no campo e use "Buscar na Receita" para conferir. Se o nome na Receita não bater com o cadastro, o app avisa. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório de alterações (PDF)" lista os clientes que você alterou, com cada campo, valor e data; preencha "só atualizados desde" para limitar o período e, na janela de impressão, escolha "Salvar como PDF". "Apagar registro" (abaixo do nome) tira o registro da lista; ele vai para a lixeira, que você vê no filtro Tipo de Cliente → "Apagados (lixeira)", onde dá para restaurar. Empresas que vieram repetidas da agenda (vários contatos da mesma empresa) aparecem unificadas, com todos os contatos juntos; o app também unifica sozinho consumidores com o mesmo CNPJ. "Separar" desfaz uma unificação. Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
 <h3>Marcações e datas</h3>
 <p>Inativo, Posto de Rede (abre um campo para o nome da rede), Equipamento, capacidade do tanque de Arla em litros, Automação, fornecedor atual, preço, volume de S10 e telefones. Cada campo preenchido mostra a data em que foi feito, e o nome do posto mostra a última atualização; passe o mouse sobre ela para ver a data de cada campo.</p>
 <h3>Filtros</h3>
-<p>A lista só aparece depois que você escolhe um município, digita uma busca ou usa um filtro, e mostra 60 registros por vez (botão "Mostrar mais" no fim). O filtro Tipo separa revendedores (postos) de consumidores (transportadoras, ônibus e frotas). Nos consumidores, informe na coluna Vol S10 o diesel da frota em m³ por mês para calcular o potencial de Arla. Município, busca livre, WhatsApp, visita, consumo de Arla, perfil, bandeira, fornecedor atual, equipamento e automação podem ser combinados. "Limpar filtros" volta à lista completa. A lista de fornecedores se monta com os nomes que você digitar nos postos.</p>
+<p>A lista só aparece depois que você escolhe um município, digita uma busca ou usa um filtro, e mostra 60 registros por vez (botão "Mostrar mais" no fim). O filtro "Tipo de Cliente" separa revendedores (postos) de consumidores (transportadoras, ônibus e frotas). Nos consumidores, informe na coluna Vol S10 o diesel da frota em m³ por mês para calcular o potencial de Arla. Município, busca livre, WhatsApp, visita, consumo de Arla, perfil do posto, bandeira, fornecedor atual, equipamento e rede de postos podem ser combinados. O filtro "Rede de postos" mostra só os postos de rede, só os independentes, ou os postos de uma rede específica; a lista de redes se monta com os nomes digitados no campo "Posto de Rede" de cada posto, com a quantidade entre parênteses. "Limpar filtros" volta à lista completa. A lista de fornecedores se monta com os nomes que você digitar nos postos.</p>
 <h3>Salvamento no Google Drive</h3>
 <p>As marcações ficam no arquivo <b>postos-marcacoes.json</b>, na pasta <b>BIOAR › App Consulta de Postos</b> do seu Drive. Toque em “Conectar ao Drive” uma vez ao abrir o app: depois disso, cada alteração vai para o Drive sozinha, poucos segundos depois. O login do Google vale por cerca de uma hora; quando vencer, o botão vira “Reconectar ao Drive” e um toque resolve. Nada se perde nesse intervalo: fica guardado no aparelho.</p>
 <p>Celular e computador usam o mesmo arquivo. Se os dois mexerem ao mesmo tempo, o app junta as alterações de cada um, campo por campo. O app confere o Drive a cada minuto e ao voltar para a tela. O Drive guarda as versões anteriores do arquivo por 30 dias (botão direito no arquivo › Gerenciar versões).</p>
@@ -262,7 +262,10 @@ function marcas(ch){var o={};try{o=JSON.parse(localStorage.getItem(ch)||"{}")||{
 var REDE=marcas("postos_rede"),INAT=marcas("postos_inativo"),AUTO=marcas("postos_automacao"),EQUIP=marcas("postos_equipamento");
 var REDENOME=marcas("postos_rede_nome");
 function redeNomeSet(k,v){carimbo(k,"redeNome",String(v||"").trim(),REDENOME[k]);v=String(v||"").trim();if(v)REDENOME[k]=v;else delete REDENOME[k];try{localStorage.setItem("postos_rede_nome",JSON.stringify(REDENOME))}catch(e){}mudou();listaRedes()}
-function listaRedes(){var dl=document.getElementById("redes");if(!dl)return;var u={};Object.keys(REDENOME).forEach(function(k){u[REDENOME[k]]=1});dl.textContent="";Object.keys(u).sort(function(a,b){return a.localeCompare(b)}).forEach(function(n){var o=document.createElement("option");o.value=n;dl.appendChild(o)})}
+function opRede(){var sl=document.getElementById("frede");if(!sl)return;var cur=sl.value,u={};Object.keys(REDENOME).forEach(function(k){if(!REDE[k])return;var n=String(REDENOME[k]).trim();if(n){var c=sem(n);if(!u[c])u[c]={n:n,q:0};u[c].q++}});
+ while(sl.options.length>3)sl.remove(3);Object.keys(u).sort(function(a,b){return u[a].n.localeCompare(u[b].n)}).forEach(function(c){var o=document.createElement("option");o.value=c;o.textContent=u[c].n+" ("+u[c].q+")";sl.appendChild(o)});
+ sl.value=cur;if(sl.value!==cur){sl.value="";}}
+function listaRedes(){opRede();var dl=document.getElementById("redes");if(!dl)return;var u={};Object.keys(REDENOME).forEach(function(k){u[REDENOME[k]]=1});dl.textContent="";Object.keys(u).sort(function(a,b){return a.localeCompare(b)}).forEach(function(n){var o=document.createElement("option");o.value=n;dl.appendChild(o)})}
 var FORN=marcas("postos_fornecedor"),PRECO=marcas("postos_preco"),VOL=marcas("postos_volume");
 var DATAS=marcas("postos_datas"),PERFIL=marcas("postos_perfil"),TANQ=marcas("postos_tanque_arla"),VISITA=marcas("postos_visita"),CONSUMO=marcas("postos_consumo");
 var CNPJINF=marcas("postos_cnpj"),CMES=marcas("postos_consumo_mes"),CAPITAL=marcas("postos_capital"),ENDER=marcas("postos_endereco"),EDEND={},RCONT=marcas("postos_receita_contato");
@@ -401,7 +404,7 @@ var EQ_TXT={"":"","terceiros":"Terceiros","proprio":"Próprio"};
 function equipSet(k,v){carimbo(k,"equipamento",v,EQUIP[k]);if(v)EQUIP[k]=v;else delete EQUIP[k];try{localStorage.setItem("postos_equipamento",JSON.stringify(EQUIP))}catch(e){}mudou();}
 function marca(obj,ch,k,v){carimbo(k,CAMPO[ch],v?1:"",obj[k]?1:"");if(v)obj[k]=1;else delete obj[k];try{localStorage.setItem(ch,JSON.stringify(obj))}catch(e){}mudou();}
 function caixa(txt,obj,ch,k,quando){var l=document.createElement("label");l.className="chk";var i=document.createElement("input");i.type="checkbox";i.checked=!!obj[k];
- i.addEventListener("change",function(){marca(obj,ch,k,i.checked);if(quando)quando(i.checked)});l.appendChild(i);l.appendChild(document.createTextNode(txt));if(CAMPO[ch])l.appendChild(dtSpan(k,CAMPO[ch]));return l}
+ i.addEventListener("change",function(){marca(obj,ch,k,i.checked);if(ch==="postos_rede")opRede();if(quando)quando(i.checked)});l.appendChild(i);l.appendChild(document.createTextNode(txt));if(CAMPO[ch])l.appendChild(dtSpan(k,CAMPO[ch]));return l}
 function waTxt(t){var v=waGet(t);return !t?"":v==="sim"?"tem":v==="nao"?"não tem":"não testado"}
 function tipoFone(t){t=String(t||"").replace(/\D/g,"");if(t.length===11&&t[2]==="9")return "celular";if(t.length===10)return /[6-9]/.test(t[2])?"celular antigo":"fixo";return ""}
 function cnpj(c){return c.slice(0,2)+"."+c.slice(2,5)+"."+c.slice(5,8)+"/"+c.slice(8,12)+"-"+c.slice(12)}
@@ -481,7 +484,7 @@ function filtrar(){
  postos.forEach(aplicaEnd);calcular();
  var termos=sem($("q").value).split(",").map(function(t){return t.trim()}).filter(Boolean);
  var soDig=$("q").value.replace(/\D/g,"");
- var d=false,mu=$("mun").value,FILTROS=["wa","fvis","fcons","fperf","fband","fforn","feq","faut","ftipo","fcap","fcnpj"];
+ var d=false,mu=$("mun").value,FILTROS=["wa","fvis","fcons","fperf","fband","fforn","feq","frede","ftipo","fcap","fcnpj"];
  var chave=[mu,$("q").value].concat(FILTROS.map(function(id){return $(id).value})).join("|");if(chave!==ultChave){limite=60;ultChave=chave}
  if(!mu&&!termos.length&&!(soDig.length>=8)&&!FILTROS.some(function(id){return $(id).value})){
   atual=[];$("tb").textContent="";$("mais").hidden=true;$("vazio").hidden=false;
@@ -504,7 +507,7 @@ function filtrar(){
   var bv=$("fband").value;if(bv&&p.bandeira!==bv)return false;
   var ckf=ckOf(p),fv=$("fforn").value,fx=FORN[ckf]||"";if(fv&&(fv==="__sem"?fx:sem(fx)!==fv))return false;
   var ev=$("feq").value,ex=EQUIP[ckf]||"";if(ev&&(ev==="__sem"?ex:ex!==ev))return false;
-  var av=$("faut").value;if(av==="sim"&&!AUTO[ckf])return false;if(av==="nao"&&AUTO[ckf])return false;
+  var rv=$("frede").value;if(rv){if(p.tipo==="consumidor")return false;var ehRede=!!REDE[p.ck];if(rv==="__rede"&&!ehRede)return false;if(rv==="__indep"&&ehRede)return false;if(rv!=="__rede"&&rv!=="__indep"&&(!ehRede||sem(REDENOME[p.ck]||"")!==rv))return false;}
   if(!termos.length)return true;
   var rnb=(REDE[p.ck]?sem(REDENOME[p.ck]||""):"")+" "+sem(FORN[p.ck]||"")+" "+sem(FNOME[ckOf(p)]||"")+" "+String(FADD[ckOf(p)]||"")+" "+String(CNPJINF[p.ck]||"")+" "+sem(cnpjDe(p))+(endEditado(p)?" "+sem(p.endereco+" "+p.bairro+" "+p.compl):"")+" "+String(RCONT[p.ck+":tel"]||"")+" "+sem(RCONT[p.ck+":email"]||"");rnb=rnb.trim();
   return termos.some(function(t){return p.busca.indexOf(t)>=0||(rnb&&rnb.indexOf(t)>=0)})||(soDig.length>=8&&(p.busca.indexOf(soDig)>=0||String(CNPJINF[p.ck]||"").indexOf(soDig)>=0))});
@@ -649,9 +652,9 @@ Object.keys(NOMES).sort(function(a,b){return a.localeCompare(b)}).forEach(functi
  var o=document.createElement("option");o.value=m;
  o.textContent=NOMES[m]+" ("+postos.filter(function(p){return p.mun===m}).length+")";
  $("mun").appendChild(o)});
-$("mun").addEventListener("change",filtrar);["fvis","fcons","fperf","fband","fforn","feq","faut","ftipo","fcap","fcnpj"].forEach(function(id){$(id).addEventListener("change",filtrar)});
+$("mun").addEventListener("change",filtrar);["fvis","fcons","fperf","fband","fforn","feq","frede","ftipo","fcap","fcnpj"].forEach(function(id){$(id).addEventListener("change",filtrar)});
 (function(){var u={};postos.forEach(function(p){u[p.bandeira]=(u[p.bandeira]||0)+1});Object.keys(u).sort(function(a,b){return (a==="BANDEIRA BRANCA")-(b==="BANDEIRA BRANCA")||u[b]-u[a]||a.localeCompare(b)}).forEach(function(b){var o=document.createElement("option");o.value=b;o.textContent=({"ALE":"ALE","RAIZEN":"Raízen","TORRAO":"Torrão","SIM DISTRIBUIDOR":"SIM Distribuidor"}[b]||titulo(b))+" ("+u[b]+")";$("fband").appendChild(o)})})();
-$("limpar").addEventListener("click",function(){["mun","wa","fvis","fcons","fperf","fband","fforn","feq","faut","ftipo","fcap","fcnpj"].forEach(function(id){$(id).value=""});$("q").value="";$("desde").value="";filtrar()});
+$("limpar").addEventListener("click",function(){["mun","wa","fvis","fcons","fperf","fband","fforn","feq","frede","ftipo","fcap","fcnpj"].forEach(function(id){$(id).value=""});$("q").value="";$("desde").value="";filtrar()});
 $("ajuda").addEventListener("click",function(){var d=$("dlg");if(d.showModal)d.showModal();else d.setAttribute("open","")});
 $("dlgx").addEventListener("click",function(){var d=$("dlg");if(d.close)d.close();else d.removeAttribute("open")});
 $("dlg").addEventListener("click",function(e){if(e.target===this&&this.close)this.close()});$("wa").addEventListener("change",filtrar);$("ord").addEventListener("change",filtrar);
