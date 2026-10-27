@@ -244,7 +244,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Sem internet</h3>
 <p>Depois de instalado e aberto uma vez com internet, o app abre e funciona sem sinal: filtros, busca e marcações. O que você preencher fica no aparelho e vai para o Drive quando a conexão voltar e o login estiver válido.</p>
 <h3>Planilha e Google Contatos</h3>
-<p>"Baixar planilha (CSV)" exporta a lista atual com todas as informações. "Exportar para Google Contatos" gera um arquivo com razão social, contato, telefones (+55), e-mails, endereço, CNPJ e o link para a ficha do posto nesta página; o resumo comercial fica só aqui. Use "só atualizados desde" para não repetir quem já foi importado, ou o botão "Google Contatos" na linha de um posto para exportar só ele. Importe o arquivo em contacts.google.com, opção Importar.</p>
+<p>"Baixar planilha (CSV)" exporta a lista atual com todas as informações. "Exportar para Google Contatos" gera um arquivo no formato do Google. Revendedores: nome = razão social, empresa = CNPJ, telefones, e-mails, endereço, marcador = município e os campos personalizados Bandeira, Perfil do Posto, Rede, Equipamento e Tancagem Arla. Consumidores: contato, telefones, e-mails, endereço, CNPJ e o link para a ficha. O Google cria sozinho um marcador "Importado em…"; depois de conferir, apague só o marcador e mantenha os contatos. Reimportar não atualiza contato existente: cria outro em duplicado. Use "só atualizados desde" para não repetir quem já foi importado, ou o botão "Google Contatos" na linha de um posto para exportar só ele. Importe o arquivo em contacts.google.com, opção Importar.</p>
 <h3>Fontes</h3>
 <p>Postos revendedores autorizados pela ANP nos 107 municípios da sua lista de contatos (dados de <span class="d-anp"></span>). Códigos de cliente conforme a Carteira de Clientes de <span class="d-cart"></span>. Agenda exportada em <span class="d-ag"></span>.</p><p id="origem-bases" class="fraco"></p>
 </div></dialog>
@@ -937,20 +937,50 @@ function contatoGoogle(p){var ck=ckOf(p),fones=[],emails=[];
   rua:rua,bairro:titulo(p.bairro),cidade:p.cidade,cep:p.cep,
   fmt:rua+", "+titulo(p.bairro)+", "+p.cidade+" - MG, "+p.cep+", Brasil",
   rotulos:[p.tipo==="consumidor"?"Consumidor":"Revendedor",sit,p.cidade].filter(Boolean),cnpj:cnpjDe(p),ficha:FICHA+"#c"+ck}}
+/* Padrão REVENDEDOR (definido em 27/10/2026): Nome = razão social, Empresa = CNPJ, marcador = município,
+   campos personalizados Bandeira, Perfil do Posto, Rede, Equipamento e Tancagem Arla. */
+var BAND_GC={"VIBRA":"Vibra","BANDEIRA BRANCA":"Bandeira Branca","RAIZEN":"Shell","IPIRANGA":"Ipiranga","ALE":"ALE","NEXTA":"Nexta","RIO BRANCO":"Rio Branco","POTENCIAL":"Potencial","TORRAO":"Torrão","SIM DISTRIBUIDOR":"SIM Distribuidor","CHARRUA":"Charrua","RODOIL":"Rodoil"};
+function foneGC(t){var d=dig(t).replace(/^0+/,"");if(d.length===10&&/[6-9]/.test(d.charAt(2)))d=d.slice(0,2)+"9"+d.slice(2);
+ if((d.length!==10&&d.length!==11)||/^0+$/.test(d.slice(2)))return "";var n=d.slice(2);return "("+d.slice(0,2)+") "+n.slice(0,-4)+"-"+n.slice(-4)}
+function revendedorGoogle(p){var ck=ckOf(p),fones=[],emails=[];
+ function addT(t){var v=foneGC(t);if(v&&!fones.some(function(x){return x[1]===v}))fones.push([/^\(\d\d\) 9\d{4}-/.test(v)?"Mobile":"Work",v])}
+ function addE(e){e=String(e||"").trim().toLowerCase();if(e&&!emails.some(function(x){return x[1]===e}))emails.push(["Work",e])}
+ p.agenda.forEach(function(g){efList(p,g.fones).forEach(addT)});
+ [foneEf(ck,p.tel1),foneEf(ck,p.tel2)].forEach(function(t){if(t)addT(t)});
+ novos(ck).forEach(addT);
+ p.agenda.forEach(function(g){addE(g.email)});addE(p.email);
+ var rua=[p.endereco,p.compl].filter(function(x){return x&&String(x).trim()}).join(", "),uf="MG";
+ var fmt=[[rua,p.bairro].filter(Boolean).join(" - "),p.cidade?p.cidade+" - "+uf:uf,p.cep].filter(Boolean).join(", ");
+ var tq=TANQ[ck]||"";
+ return {nome:p.nome,org:cnpjDe(p),rotulos:[p.cidade].filter(Boolean),notas:"",fones:fones,emails:emails,
+  end:{rotulo:"Work",fmt:fmt,rua:rua,cidade:p.cidade,uf:uf,cep:p.cep,bairro:p.bairro},site:null,
+  campos:[[BAND_GC[p.bandeira]||titulo(p.bandeira),"Bandeira"],[PERF_TXT[perfilDe(p)]||"","Perfil do Posto"],
+   [REDE[ck]?(REDENOME[ck]||"Sim (nome não informado)"):"Independente","Rede"],
+   [EQ_TXT[EQUIP[ck]||""]||"Não informado","Equipamento"],[tq?tq+" L":"Não informado","Tancagem Arla"]].filter(function(c){return c[0]})}}
+function consumidorGoogle(p){var c=contatoGoogle(p);
+ return {nome:c.nome,org:c.org,rotulos:c.rotulos,notas:"Ficha comercial: "+c.ficha,fones:c.fones,emails:c.emails,
+  end:{rotulo:"Trabalho",fmt:c.fmt,rua:c.rua,cidade:c.cidade,uf:"MG",cep:c.cep,bairro:c.bairro},site:["Ficha comercial",c.ficha],campos:[["CNPJ",c.cnpj]]}}
 function csvGoogle(lista){
- var cs=lista.map(contatoGoogle),nf=Math.max(1,Math.max.apply(null,cs.map(function(c){return c.fones.length}))),ne=Math.max(1,Math.max.apply(null,cs.map(function(c){return c.emails.length})));
- var cab=["First Name","Last Name","Organization Name","Organization Title","Notes","Labels"];
- for(var i=1;i<=ne;i++)cab.push("Email "+i+" - Label","Email "+i+" - Value");
+ var cs=lista.map(function(p){return p.tipo==="consumidor"?consumidorGoogle(p):revendedorGoogle(p)});
+ function mx(f){return Math.max(1,Math.max.apply(null,cs.map(f)))}
+ var ne=mx(function(c){return c.emails.length}),nf=mx(function(c){return c.fones.length}),nc=mx(function(c){return c.campos.length}),temSite=cs.some(function(c){return c.site});
+ /* Cabeçalho completo do Google Contatos: com cabeçalho reduzido o Google joga tudo nas Observações */
+ var cab=["First Name","Middle Name","Last Name","Phonetic First Name","Phonetic Middle Name","Phonetic Last Name","Name Prefix","Name Suffix","Nickname","File As","Organization Name","Organization Title","Organization Department","Birthday","Notes","Photo","Labels"];
+ for(var i=1;i<=ne;i++)cab.push("E-mail "+i+" - Label","E-mail "+i+" - Value");
  for(i=1;i<=nf;i++)cab.push("Phone "+i+" - Label","Phone "+i+" - Value");
- cab.push("Address 1 - Label","Address 1 - Street","Address 1 - Extended Address","Address 1 - City","Address 1 - Region","Address 1 - Postal Code","Address 1 - Country","Website 1 - Label","Website 1 - Value","Custom Field 1 - Label","Custom Field 1 - Value");
- function q(v){v=String(v==null?"":v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+ cab.push("Address 1 - Label","Address 1 - Formatted","Address 1 - Street","Address 1 - City","Address 1 - PO Box","Address 1 - Region","Address 1 - Postal Code","Address 1 - Country","Address 1 - Extended Address");
+ if(temSite)cab.push("Website 1 - Label","Website 1 - Value");
+ for(i=1;i<=nc;i++)cab.push("Custom Field "+i+" - Label","Custom Field "+i+" - Value");
+ function q(v){v=String(v==null?"":v);return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
  var linhas=[cab.map(q).join(",")];
- cs.forEach(function(c){var r=[c.nome,"",c.org,"","Ficha comercial: "+c.ficha,c.rotulos.concat(["* myContacts"]).join(" ::: ")];
-  for(var i=0;i<ne;i++){var e=c.emails[i]||["",""];r.push(e[0],e[1])}
+ cs.forEach(function(c){var e=c.end,r=[c.nome,"","","","","","","","","",c.org,"","","",c.notas,"",c.rotulos.concat(["* myContacts"]).join(" ::: ")];
+  for(var i=0;i<ne;i++){var m=c.emails[i]||["",""];r.push(m[0],m[1])}
   for(i=0;i<nf;i++){var t=c.fones[i]||["",""];r.push(t[0],t[1])}
-  r.push("Trabalho",c.rua,c.bairro,c.cidade,"MG",c.cep,"Brasil","Ficha comercial",c.ficha,"CNPJ",c.cnpj);
+  if(e.rua||e.cidade)r.push(e.rotulo,e.fmt,e.rua,e.cidade,"",e.uf,e.cep,"Brasil",e.bairro);else r.push("","","","","","","","","");
+  if(temSite){var s=c.site||["",""];r.push(s[0],s[1])}
+  for(i=0;i<nc;i++){var k=c.campos[i]||["",""];r.push(k[0],k[1])}
   linhas.push(r.map(q).join(","))});
- return "﻿"+linhas.join("\r\n")}
+ return linhas.join("\r\n")}
 function nomeArq(t){return sem(t).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40)}
 $("gc").addEventListener("click",function(){
  var ds=$("desde").value,lista=atual.filter(function(p){return !ds||ultima(ckOf(p))>=ds});
