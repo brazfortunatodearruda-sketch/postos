@@ -204,6 +204,8 @@ button.mais{display:block;margin:0 auto}
  <div class="linha">
   <button type="button" id="baixar">Baixar planilha (CSV)</button>
   <button type="button" id="gc">Exportar para Google Contatos</button>
+  <button type="button" id="atuag">Atualizar agenda</button>
+  <input type="file" id="agin" accept=".csv,text/csv" hidden>
   <label class="desde">só atualizados desde <input type="date" id="desde"></label>
   <button type="button" id="relpdf">Relatório de alterações (PDF)</button>
   <button type="button" id="bkp">Salvar arquivo de backup</button>
@@ -241,6 +243,8 @@ button.mais{display:block;margin:0 auto}
 <p>“Salvar arquivo de backup” guarda uma cópia no aparelho; “Carregar arquivo de backup” soma o arquivo às marcações atuais, sem apagar nada. É assim que se trazem as marcações da versão 23.</p>
 <h3>Bases no Drive</h3>
 <p>Na mesma pasta podem ficar <b>postos-carteira.json</b>, <b>postos-agenda.json</b> e <b>postos-anp.json</b>. Quando um deles é trocado, o app baixa a versão nova ao conectar e mostra o botão “Recarregar com as bases novas”. Sem esses arquivos, valem as bases que vêm dentro do app.</p>
+<h3>Atualizar agenda</h3>
+<p>Quando você corrigir contatos direto no Google Contatos, exporte-os (Google Contatos › Exportar › CSV do Google) e toque em <b>Atualizar agenda</b> para escolher o arquivo. O app liga cada contato ao posto pelo CNPJ (campo Empresa), pelo código de cliente no início do nome ou pela razão social com o marcador do município; os demais vão para os consumidores pelo CNPJ ou pelo nome. Contatos com o marcador Transp Cargas ou Trans Passag que ainda não existiam entram como consumidores novos. Telefones, e-mails e observações dos registros encontrados passam a ser os do arquivo; quem não aparece no arquivo mantém a agenda anterior, e as suas marcações não mudam. Com o Drive conectado, a agenda nova é gravada na pasta do app (postos-agenda.json e postos-consumidores.json) e chega ao outro aparelho ao conectar.</p>
 <h3>Sem internet</h3>
 <p>Depois de instalado e aberto uma vez com internet, o app abre e funciona sem sinal: filtros, busca e marcações. O que você preencher fica no aparelho e vai para o Drive quando a conexão voltar e o login estiver válido.</p>
 <h3>Planilha e Google Contatos</h3>
@@ -252,7 +256,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=14; /* manter igual ao número do CACHE em sw.js */
+var VERSAO_APP=15; /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
 function sem(s){return String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase()}
@@ -919,6 +923,85 @@ $("arqin").addEventListener("change",function(){
   arqMsg("Backup carregado: "+n+" marcações somadas às atuais."+(conectado()?" Salvando no Drive…":""))};
  r.onerror=function(){arqMsg("Não consegui abrir o arquivo.")};
  r.readAsText(f)});
+
+/* ---------- Atualizar agenda a partir de um CSV exportado do Google Contatos ---------- */
+function lerCSV(t){t=String(t).replace(/^﻿/,"");var L=[],l=[],c="",q=false;
+ for(var i=0;i<t.length;i++){var ch=t[i];
+  if(q){if(ch==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=ch}
+  else if(ch==='"')q=true;else if(ch===","){l.push(c);c=""}else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t[i+1]==="\n")i++;l.push(c);c="";if(l.length>1||l[0]!=="")L.push(l);l=[]}else c+=ch}
+ if(c!==""||l.length){l.push(c);L.push(l)}return L}
+function partes(v){return String(v||"").split(":::").map(function(s){return s.trim()}).filter(Boolean)}
+function foneAg(t){t=dig(t);if((t.length===12||t.length===13)&&t.slice(0,2)==="55")t=t.slice(2);
+ if(t[0]==="0"&&(t.length===13||t.length===14))t=t.slice(3);else if(t[0]==="0"&&(t.length===11||t.length===12))t=t.slice(1);
+ return t.length===10||t.length===11?t:""}
+function nomeChave(s){return sem(s).replace(/[^A-Z0-9 ]/g," ").replace(/\b(LTDA|EIRELI|EPP|ME|S ?A|LIMITADA)\b/g," ").replace(/\s+/g," ").trim()}
+function contatosDoCSV(txt){var L=lerCSV(txt);if(L.length<2)return null;var H=L[0].map(function(h){return h.trim()}),ix={};H.forEach(function(h,i){ix[h]=i});
+ if(!("Labels" in ix)&&!("Group Membership" in ix))return null;
+ function v(r,k){return k in ix?String(r[ix[k]]||"").trim():""}
+ var colF=H.filter(function(h){return /^Phone \d+ - Value$/.test(h)}),colE=H.filter(function(h){return /^E-mail \d+ - Value$/.test(h)});
+ return L.slice(1).map(function(r){
+  var nome=[v(r,"First Name")||v(r,"Given Name"),v(r,"Middle Name")||v(r,"Additional Name"),v(r,"Last Name")||v(r,"Family Name")].filter(Boolean).join(" ")||v(r,"Name");
+  var org=v(r,"Organization Name")||v(r,"Organization 1 - Name"),notas=v(r,"Notes"),cargo=v(r,"Organization Title")||v(r,"Organization 1 - Title");
+  var marc=partes(v(r,"Labels")||v(r,"Group Membership")).map(function(m){return m.replace(/^\*\s*/,"")});
+  var fones=[];colF.forEach(function(h){partes(r[ix[h]]).forEach(function(t){t=foneAg(t);if(t&&fones.indexOf(t)<0)fones.push(t)})});
+  var emails=[];colE.forEach(function(h){partes(r[ix[h]]).forEach(function(e){e=e.toLowerCase();if(/@/.test(e)&&emails.indexOf(e)<0)emails.push(e)})});
+  var mun="";marc.forEach(function(m){var k=sem(m);if(!mun&&NOMES[k])mun=k});
+  var cid=partes(v(r,"Address 1 - City"))[0]||"";if(!mun&&cid&&NOMES[sem(cid)])mun=sem(cid);
+  var seg="";marc.forEach(function(m){if(/TRANS\w*\s*CARG/i.test(sem(m)))seg="Transporte de cargas";else if(/TRANS\w*\s*PASS/i.test(sem(m)))seg="Passageiros"});
+  var cnpjs=[];(org+" "+nome+" "+notas+" "+cargo).replace(/\d[\d.\/\-\s]{12,20}\d/g,function(m){var d=dig(m);if(d.length===14&&cnpjOk(d)&&cnpjs.indexOf(d)<0)cnpjs.push(d);return m});
+  var fst=v(r,"First Name")||v(r,"Given Name"),rest=[v(r,"Middle Name")||v(r,"Additional Name"),v(r,"Last Name")||v(r,"Family Name")].filter(Boolean).join(" ");
+  var razao=org&&dig(org).length<8?org.replace(/^CNPJ:?\s*/i,""):rest&&fst?rest:nome,pessoa=razao===nome?"":(org&&dig(org).length<8?nome:fst);
+  return {nome:nome,razao:razao,pessoa:pessoa,org:org,notas:notas.replace(/https?:\/\/\S+/g,"").replace(/\s+/g," ").trim(),fones:fones,email:emails[0]||"",mun:mun,cidade:cid||NOMES[mun]||"",seg:seg,cnpjs:cnpjs,
+   rua:partes(v(r,"Address 1 - Street"))[0]||"",cep:partes(v(r,"Address 1 - Postal Code"))[0]||""}}).filter(function(c){return c.nome||c.org})}
+function hashCk(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%9007199254;return String(1e12+h).slice(0,13)}
+function montarAgenda(cs){
+ var anp={},porNome={},porCod={};DADOS.forEach(function(r){anp[r[0]]=r;porNome[r[6]+"|"+nomeChave(r[1])]=r[0]});
+ Object.keys(CARTEIRA||{}).forEach(function(k){var c=String((CARTEIRA[k]||[])[0]||"").split(/[^0-9]/)[0];if(c)porCod[c]=k});
+ var cons=(B.consumidores||[]).map(function(r){return r.slice()}),cK={},cN={};
+ cons.forEach(function(r,i){if(r[1])cK[dig(r[1])]=i;cN[nomeChave(r[2])]=i;(r[9]||[]).forEach(function(g){if(g[0])cN[nomeChave(g[0])]=i})});
+ var ag={},novaAg={},novoCons={},novos=0,semPar=0,n={posto:0,cons:0};
+ cs.forEach(function(c){
+  var ck="",como="";
+  c.cnpjs.some(function(d){if(anp[d]){ck=d;como="CNPJ";return true}});
+  if(!ck){var cod=(c.nome.match(/^\s*(\d{4,6})\b/)||[])[1];if(cod&&porCod[cod]&&anp[porCod[cod]]){ck=porCod[cod];como="código de cliente"}}
+  if(!ck&&c.mun){[c.org,c.nome].some(function(s){var k=porNome[c.mun+"|"+nomeChave(s)];if(s&&k){ck=k;como="razão social e cidade";return true}})}
+  if(ck){var nm=nomeChave(c.nome)===nomeChave(anp[ck][1])?"":c.nome;(novaAg[ck]=novaAg[ck]||[]).push([nm,c.fones,c.email,c.notas,como]);n.posto++;return}
+  var i=-1;c.cnpjs.some(function(d){if(d in cK){i=cK[d];return true}});
+  if(i<0)[c.org,c.nome,c.razao].some(function(s){var k=nomeChave(s);if(s&&k in cN){i=cN[k];return true}});
+  if(i>=0){(novoCons[i]=novoCons[i]||[]).push([c.nome,c.fones,c.email,c.notas,"contatos"]);n.cons++;return}
+  if(!c.seg){semPar++;return}
+  var cn=c.cnpjs[0]||"",razao=c.razao,key=cn||hashCk(nomeChave(razao)+"|"+c.mun);
+  var r=[key,cn,razao,c.seg,c.rua,c.mun,c.cidade,c.cep,"",[[c.pessoa,c.fones,c.email,c.notas,"contatos"]]];
+  cons.push(r);i=cons.length-1;if(cn)cK[cn]=i;cN[nomeChave(razao)]=i;novos++});
+ Object.keys(AGENDA||{}).forEach(function(k){ag[k]=AGENDA[k]});
+ function unico(l){var v={};return l.filter(function(g){var s=JSON.stringify(g);if(v[s])return false;v[s]=1;return true})}
+ Object.keys(novaAg).forEach(function(k){ag[k]=unico(novaAg[k])});
+ Object.keys(novoCons).forEach(function(i){cons[i][9]=unico(novoCons[i])});
+ return {agenda:ag,consumidores:cons,postos:Object.keys(novaAg).length,consAtual:Object.keys(novoCons).length,novos:novos,semPar:semPar}}
+function gravarBaseDrive(nome,txt){
+ return (pastaId?Promise.resolve(pastaId):acharPasta()).then(function(){return buscar("name='"+nome+"' and '"+pastaId+"' in parents and trashed=false","id")}).then(function(f){
+  if(f[0])return api(UP+"/"+f[0].id+"?uploadType=media&fields=id,modifiedTime",{method:"PATCH",headers:{"Content-Type":"application/json; charset=UTF-8"},body:txt}).then(json);
+  var bd="lim"+Math.random().toString(36).slice(2),meta={name:nome,parents:[pastaId],mimeType:"application/json"};
+  var b="--"+bd+"\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n"+JSON.stringify(meta)+"\r\n--"+bd+"\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n"+txt+"\r\n--"+bd+"--";
+  return api(UP+"?uploadType=multipart&fields=id,modifiedTime",{method:"POST",headers:{"Content-Type":"multipart/related; boundary="+bd},body:b}).then(json)})
+ .then(function(j){var meta={};try{meta=JSON.parse(lsGet("bases_meta")||"{}")||{}}catch(e){}meta[nome]=j.modifiedTime;lsSet("bases_meta",JSON.stringify(meta))})}
+$("atuag").addEventListener("click",function(){$("agin").value="";$("agin").click()});
+$("agin").addEventListener("change",function(){
+ var f=this.files&&this.files[0];if(!f)return;arqMsg("Lendo "+f.name+"…");
+ var rd=new FileReader();
+ rd.onload=function(){var cs;try{cs=contatosDoCSV(rd.result)}catch(e){cs=null}
+  if(!cs||!cs.length){arqMsg("Esse arquivo não parece uma exportação do Google Contatos. No Google Contatos use Exportar › CSV do Google e escolha o arquivo gerado.");return}
+  var R=montarAgenda(cs),d=new Date(),hoje=String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear();
+  var tA=JSON.stringify({tipo:"postos-agenda",data:hoje,dados:R.agenda}),tC=JSON.stringify({tipo:"postos-consumidores",data:hoje,dados:R.consumidores});
+  if(!lsSet("base_agenda",tA)||!lsSet("base_consumidores",tC)){arqMsg("Sem espaço neste aparelho para guardar a agenda nova.");return}
+  var res="Agenda atualizada com "+cs.length+" contatos: "+R.postos+" postos, "+R.consAtual+" consumidores atualizados"+(R.novos?", "+R.novos+" consumidores novos":"")+(R.semPar?"; "+R.semPar+" contatos sem posto ou consumidor correspondente ficaram de fora":"")+".";
+  var fim=function(extra){arqMsg(res+extra+" Recarregando…");setTimeout(function(){location.reload()},2500)};
+  if(!conectado()||navigator.onLine===false){fim(" Vale só neste aparelho até você conectar ao Drive e atualizar de novo.");return}
+  arqMsg(res+" Enviando ao Drive…");
+  gravarBaseDrive("postos-agenda.json",tA).then(function(){return gravarBaseDrive("postos-consumidores.json",tC)})
+   .then(function(){fim(" Salva no Drive: o outro aparelho recebe ao conectar.")},function(){fim(" Não consegui enviar ao Drive; vale neste aparelho.")})};
+ rd.onerror=function(){arqMsg("Não consegui abrir o arquivo.")};
+ rd.readAsText(f,"UTF-8")});
 
 /* ---------- Exportação para o Google Contatos (CSV no formato do Google) ---------- */
 var FICHA=location.origin+location.pathname;
