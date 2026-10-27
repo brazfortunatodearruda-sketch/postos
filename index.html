@@ -207,7 +207,7 @@ button.mais{display:block;margin:0 auto}
   <button type="button" id="atuag">Atualizar agenda</button>
   <input type="file" id="agin" accept=".csv,text/csv" hidden>
   <label class="desde">só atualizados desde <input type="date" id="desde"></label>
-  <button type="button" id="relpdf">Relatório de alterações (PDF)</button>
+  <button type="button" id="relpdf">Relatório (PDF)</button>
   <button type="button" id="bkp">Salvar arquivo de backup</button>
   <button type="button" id="carregar">Carregar arquivo de backup</button>
   <input type="file" id="arqin" accept=".json,application/json" hidden>
@@ -232,7 +232,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Perfil do posto</h3>
 <p>Rodoviário, misto ou urbano. Começa estimado pela página: rodoviário quando o endereço é de rodovia (BR, km, anel rodoviário, zona rural) e o diesel ocupa pelo menos metade da tancagem; urbano quando o endereço é na cidade e o diesel fica abaixo de 35% da tancagem, ou quando a observação da agenda diz "urbano"; misto nos demais casos. Passe o mouse sobre o campo para ver o motivo. Na visita, escolha o perfil real no campo Perfil, logo abaixo da razão social: ele passa a valer no filtro "Perfil do Posto" e na planilha.</p>
 <h3>Visita e consumo de Arla</h3>
-<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social, endereço, telefone e e-mail, com botões para levar esses dados ao cliente (o telefone da Receita entra no grupo "Receita Federal", com teste de WhatsApp, e só completa as vagas vazias). Para quem está sem CNPJ, use o filtro "CNPJ: Sem CNPJ" e o link "Procurar CNPJ no Google", que pesquisa pelo nome e cidade; cole o número no campo e use "Buscar na Receita" para conferir. Se o nome na Receita não bater com o cadastro, o app avisa. Toda consulta à Receita (pelo botão "Buscar na Receita" ou pela página Consulta de CNPJs) grava a situação do CNPJ no cliente: se estiver baixado, inapto ou suspenso, aparece um aviso vermelho logo abaixo do nome; se estiver em recuperação judicial, um aviso laranja. Passe o mouse sobre o aviso para ver a data da consulta. No filtro CNPJ, as opções "Baixados/inaptos na Receita", "Em recuperação judicial" e "Sem restrição na Receita" ajudam a definir a prioridade de visita; elas consideram só os clientes já consultados. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório de alterações (PDF)" lista os clientes que você alterou, com cada campo, valor e data; preencha "só atualizados desde" para limitar o período e, na janela de impressão, escolha "Salvar como PDF". "Apagar registro" (abaixo do nome) tira o registro da lista; ele vai para a lixeira, que você vê no filtro Tipo de Cliente → "Apagados (lixeira)", onde dá para restaurar. Empresas que vieram repetidas da agenda (vários contatos da mesma empresa) aparecem unificadas, com todos os contatos juntos; o app também unifica sozinho consumidores com o mesmo CNPJ. "Separar" desfaz uma unificação. Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
+<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social, endereço, telefone e e-mail, com botões para levar esses dados ao cliente (o telefone da Receita entra no grupo "Receita Federal", com teste de WhatsApp, e só completa as vagas vazias). Para quem está sem CNPJ, use o filtro "CNPJ: Sem CNPJ" e o link "Procurar CNPJ no Google", que pesquisa pelo nome e cidade; cole o número no campo e use "Buscar na Receita" para conferir. Se o nome na Receita não bater com o cadastro, o app avisa. Toda consulta à Receita (pelo botão "Buscar na Receita" ou pela página Consulta de CNPJs) grava a situação do CNPJ no cliente: se estiver baixado, inapto ou suspenso, aparece um aviso vermelho logo abaixo do nome; se estiver em recuperação judicial, um aviso laranja. Passe o mouse sobre o aviso para ver a data da consulta. No filtro CNPJ, as opções "Baixados/inaptos na Receita", "Em recuperação judicial" e "Sem restrição na Receita" ajudam a definir a prioridade de visita; elas consideram só os clientes já consultados. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório (PDF)" segue o filtro da tela: com um município, busca ou filtro escolhido, sai um relatório de todos os clientes da lista (por exemplo, os consumidores de Congonhas), com tipo, CNPJ, endereço, telefones e as alterações de cada um; sem filtro, lista só os clientes que você alterou, com cada campo, valor e data. Preencha "só atualizados desde" para limitar as alterações ao período e, na janela de impressão, escolha "Salvar como PDF". "Apagar registro" (abaixo do nome) tira o registro da lista; ele vai para a lixeira, que você vê no filtro Tipo de Cliente → "Apagados (lixeira)", onde dá para restaurar. Empresas que vieram repetidas da agenda (vários contatos da mesma empresa) aparecem unificadas, com todos os contatos juntos; o app também unifica sozinho consumidores com o mesmo CNPJ. "Separar" desfaz uma unificação. Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
 <h3>Marcações e datas</h3>
 <p>Inativo, Posto de Rede (abre um campo para o nome da rede), Equipamento, capacidade do tanque de Arla em litros, Automação, fornecedor atual, preço, volume de S10 e telefones. Cada campo preenchido mostra a data em que foi feito, e o nome do posto mostra a última atualização; passe o mouse sobre ela para ver a data de cada campo.</p>
 <h3>Filtros</h3>
@@ -256,7 +256,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=15; /* manter igual ao número do CACHE em sw.js */
+var VERSAO_APP=16; /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
 function sem(s){return String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase()}
@@ -711,16 +711,21 @@ function valorCampo(p,c){var k=p.ck;switch(c){
  case "telefones":return [FNOME[k]?"Contato: "+FNOME[k]:"",fonesEfetivos(p).join(", ")].filter(Boolean).join(" · ")||"sem telefone";
  case "whatsapp":return fonesEfetivos(p).map(function(t){return t+": "+waTxt(t)}).join(", ");
  default:return ""}}
+function descFiltro(){var o=[],mu=$("mun");if(mu.value)o.push("Município: "+mu.options[mu.selectedIndex].text);if($("q").value.trim())o.push("Busca: “"+$("q").value.trim()+"”");
+ ["ftipo","fcap","fcnpj","fvis","fcons","fperf","fband","fforn","feq","frede","wa"].forEach(function(id){var s=$(id);if(s&&s.value){var lb=s.closest("label");var nm=lb?lb.firstChild.textContent.trim():id;o.push(nm+": "+s.options[s.selectedIndex].text)}});return o.join(" · ")}
 function relatorio(){
  var ds=$("desde").value;postos.forEach(aplicaEnd);
- var lista=postos.filter(function(p){var u=ultima(p.ck);if(EXCL[p.ck]&&!(DATAS[p.ck+":excluido"]))return false;return u&&(!ds||u>=ds)});
+ var filtro=atual.length>0,lista;
+ if(filtro)lista=atual.slice();
+ else lista=postos.filter(function(p){var u=ultima(p.ck);if(EXCL[p.ck]&&!(DATAS[p.ck+":excluido"]))return false;return u&&(!ds||u>=ds)});
  if(!lista.length){arqMsg(ds?"Nenhum cliente alterado desde "+dtLonga(ds)+".":"Você ainda não alterou nenhum cliente.");return}
  lista.sort(function(a,b){return (a.cidade||"").localeCompare(b.cidade||"")||a.nome.localeCompare(b.nome)});
  var R=$("rel");R.textContent="";
  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
- var h=el("div","rel-cab");h.appendChild(el("h1",null,"Relatório de clientes alterados"));
+ var h=el("div","rel-cab");h.appendChild(el("h1",null,filtro?"Relatório de clientes":"Relatório de clientes alterados"));
  var nc=lista.filter(function(p){return p.tipo==="consumidor"}).length,nr=lista.length-nc;
  h.appendChild(el("p",null,"Arruda Representações · Arla 32 · gerado em "+dtLonga(hojeISO())+" · "+(ds?"alterações desde "+dtLonga(ds):"todas as alterações registradas")));
+ if(filtro)h.appendChild(el("p",null,"Filtro: "+(descFiltro()||"lista atual")));
  h.appendChild(el("p",null,lista.length+(lista.length>1?" clientes":" cliente")+" ("+[nr?nr+(nr>1?" revendedores":" revendedor"):"",nc?nc+(nc>1?" consumidores":" consumidor"):""].filter(Boolean).join(" e ")+")"));
  R.appendChild(h);
  var cid="";
@@ -731,12 +736,15 @@ function relatorio(){
   var info=[p.tipo==="consumidor"?"Consumidor"+(p.segmento?" · "+p.segmento:""):"Revendedor · "+titulo(p.bandeira),cnpjDe(p)?"CNPJ "+cnpjDe(p):"sem CNPJ",p.cart&&p.cart.ok?"Cliente cód. "+p.cart.cod:"",INAT[p.ck]?"INATIVO":""].filter(Boolean).join(" · ");
   b.appendChild(el("p","rel-info",info));
   b.appendChild(el("p","rel-info",endTxt(p)||"endereço não informado"));
-  var t=el("table"),th=el("tr");["Campo","Valor atual","Alterado em"].forEach(function(x){th.appendChild(el("th",null,x))});t.appendChild(th);
-  Object.keys(ROT).forEach(function(c){var d=DATAS[p.ck+":"+c];if(!d||(ds&&d<ds))return;
+  if(filtro){var fs=fonesEfetivos(p),ct=p.agenda.map(function(g){return g.nome}).filter(Boolean).concat(FNOME[ckOf(p)]?[FNOME[ckOf(p)]]:[]);
+   b.appendChild(el("p","rel-info","Telefones: "+(fs.length?fs.join(", "):"sem telefone")+(ct.length?" · Contato: "+ct.join(", "):"")))}
+  var t=el("table"),th=el("tr"),nl=0;["Campo","Valor atual","Alterado em"].forEach(function(x){th.appendChild(el("th",null,x))});t.appendChild(th);
+  Object.keys(ROT).forEach(function(c){var d=DATAS[p.ck+":"+c];if(!d||(ds&&d<ds))return;nl++;
    var tr=el("tr");tr.appendChild(el("td",null,ROT[c]));tr.appendChild(el("td",null,valorCampo(p,c)));tr.appendChild(el("td","n",dtLonga(d)));t.appendChild(tr)});
-  b.appendChild(t);R.appendChild(b)});
+  if(nl)b.appendChild(t);else b.appendChild(el("p","rel-info",ds?"Sem alterações desde "+dtLonga(ds)+".":"Sem alterações registradas."));
+  R.appendChild(b)});
  R.hidden=false;document.body.classList.add("imprimindo");
- var t0=document.title;document.title="relatorio-clientes-alterados-"+hojeISO();
+ var t0=document.title;document.title=(filtro?"relatorio-clientes-":"relatorio-clientes-alterados-")+hojeISO();
  function fim(){document.body.classList.remove("imprimindo");R.hidden=true;document.title=t0;window.removeEventListener("afterprint",fim)}
  window.addEventListener("afterprint",fim);
  setTimeout(function(){window.print();arqMsg("Relatório com "+lista.length+(lista.length>1?" clientes":" cliente")+". Na janela de impressão, escolha \"Salvar como PDF\".")},50)}
