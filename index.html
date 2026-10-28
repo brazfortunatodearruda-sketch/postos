@@ -10,7 +10,7 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--fundo);color:var(--texto);font:16px/1.5 var(--fonte);padding-block:32px 120px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 main{max-width:1100px;margin:0 auto;display:grid;gap:20px}
-h1{font-size:1.6rem;margin:0}.sub{color:var(--suave);margin:4px 0 0}
+h1{font-size:1.6rem;margin:0}h1 .versao{font-size:.8rem;font-weight:500;color:var(--suave);white-space:nowrap}.destaque{min-height:3.5em;margin:4px 0 0}.sub{color:var(--suave);margin:4px 0 0}
 form{background:var(--papel);border:1px solid var(--linha);border-radius:10px;padding:20px;display:grid;gap:14px}
 label.campo{display:grid;gap:4px;font-size:.85rem;color:var(--suave)}
 input[type=text]{font:1.05rem var(--fonte);padding:10px 12px;width:100%;border:1px solid var(--linha);
@@ -165,8 +165,8 @@ td.tel .equip.consumo{margin-top:8px;padding-top:8px;border-top:1px dashed var(-
 tr.consumidor td:first-child{box-shadow:inset 3px 0 0 #b26b00}
 button.mais{display:block;margin:0 auto}
 </style><main>
-<header><div class="topo"><h1>Gestor de Carteira Arla 32</h1><span class="topo-acoes"><a id="lkreceita" href="consulta-cnpj.html" target="receitaws" rel="noopener">Consulta de CNPJs</a><button type="button" id="ajuda">Como funciona</button></span></div>
-<p class="sub">Sua carteira de Arla 32: clientes, revendedores e consumidores em um só lugar. Postos revendedores autorizados pela ANP nos 107 municípios da sua lista de contatos. Dados de <span class="d-anp"></span>. Códigos de cliente conforme a Carteira de Clientes de <span class="d-cart"></span>. Telefones da sua agenda (exportação de <span class="d-ag"></span>) aparecem primeiro. Consumidores (transportadoras, ônibus e frotas) vêm dos seus contatos, base de <span class="d-cons"></span>.</p></header>
+<header><div class="topo"><h1>Gestor de Carteira Arla 32 <span class="versao">versão <span id="vapp"></span></span></h1><span class="topo-acoes"><a id="lkreceita" href="consulta-cnpj.html" target="receitaws" rel="noopener">Consulta de CNPJs</a><button type="button" id="ajuda">Como funciona</button></span></div>
+<div id="destaque" class="destaque" aria-hidden="true"></div></header>
 <form id="f">
  <div class="filtros">
   <label class="campo">Município
@@ -222,6 +222,8 @@ button.mais{display:block;margin:0 auto}
 </main>
 <dialog id="dlg" aria-labelledby="dlgt"><div class="dlgcab"><h2 id="dlgt">Como funciona a consulta</h2><button type="button" id="dlgx" aria-label="Fechar">Fechar</button></div>
 <div class="dlgcorpo">
+<h3>Sobre o app</h3>
+<p>Sua carteira de Arla 32: clientes, revendedores e consumidores em um só lugar. Postos revendedores autorizados pela ANP nos 107 municípios da sua lista de contatos. Dados de <span class="d-anp"></span>. Códigos de cliente conforme a Carteira de Clientes de <span class="d-cart"></span>. Telefones da sua agenda (exportação de <span class="d-ag"></span>) aparecem primeiro. Consumidores (transportadoras, ônibus e frotas) vêm dos seus contatos, base de <span class="d-cons"></span>.</p>
 <h3>Potencial de Arla 32</h3>
 <p>Potencial = volume de S10 por mês × 5%. O volume começa estimado pela tancagem de S10 × 4 giros do tanque por mês, porque a ANP não informa a venda de cada posto. Na visita, digite o volume real na coluna Vol S10: o potencial passa a usar o seu número. Apague o campo para voltar à estimativa. Postos com potencial estimado abaixo de 3.000 L por mês não aparecem.</p>
 <h3>Distância</h3>
@@ -256,7 +258,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=18; /* manter igual ao número do CACHE em sw.js */
+var VERSAO_APP=19; /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
 function sem(s){return String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase()}
@@ -1093,7 +1095,7 @@ document.querySelectorAll(".d-anp").forEach(function(e){e.textContent=B.datas.an
 document.querySelectorAll(".d-cart").forEach(function(e){e.textContent=B.datas.carteira});
 document.querySelectorAll(".d-ag").forEach(function(e){e.textContent=B.datas.agenda});
 document.querySelectorAll(".d-cons").forEach(function(e){e.textContent=B.datas.consumidores});
-$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: "+VERSAO_APP+".";
+$("vapp").textContent=VERSAO_APP;$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: "+VERSAO_APP+".";
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});
 botao();if(conectado())sincronizar();else avisoLocal();
