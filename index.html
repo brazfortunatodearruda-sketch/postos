@@ -164,9 +164,28 @@ td.tel .equip.consumo{margin-top:8px;padding-top:8px;border-top:1px dashed var(-
 #arqmsg{font-size:.9rem;color:var(--suave)}
 tr.consumidor td:first-child{box-shadow:inset 3px 0 0 #b26b00}
 button.mais{display:block;margin:0 auto}
+.iris{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-start;margin-top:10px}
+.irisg{border-collapse:collapse;width:auto;font-size:.9rem;background:var(--papel);font-variant-numeric:tabular-nums}
+.irisg th,.irisg td{border:1px solid var(--texto)!important;padding:4px 12px;text-align:right;white-space:nowrap;min-width:7.5em;vertical-align:middle;font-size:.9rem;text-transform:none;letter-spacing:0;color:var(--texto)}
+.irisg thead th{text-align:left;font-weight:600}.irisg tbody th{text-align:left;font-weight:600;min-width:3.5em}.irisg #ir-data{font-weight:700}
+.irisg td.ok{color:var(--acento);font-weight:700}.irisg td.baixo{color:#b45a00;font-weight:700}
+.iris-lado{display:grid;gap:6px;max-width:340px}.iris-lado .fraco{font-size:.8rem}
+.vendas{margin-top:6px;padding:5px 8px;border-left:3px solid var(--acento);background:var(--fundo);border-radius:0 4px 4px 0;font-size:.8rem;line-height:1.4}
+.vendas b{font-weight:700}.vendas .vtit{font-weight:700;color:var(--acento)}
+.vsel{display:inline-block;font-size:.75rem;font-weight:700;border-radius:4px;padding:0 6px;margin:2px 0;color:#fff;background:var(--acento)}
+.vsel.churn{background:#b45a00}.vsel.parado{background:var(--suave)}.vsel.tit{background:var(--erro)}
+.vendas details summary{cursor:pointer;color:var(--acento)}.vendas .meses{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:0 10px}
+@media (max-width:600px){.iris{display:grid}.irisg{width:100%}.irisg th,.irisg td{padding:3px 6px;min-width:0;font-size:.82rem}.iris-lado{max-width:none}}
 </style><main>
 <header><div class="topo"><h1>Gestor de Carteira Arla 32 <span class="versao">versão <span id="vapp"></span></span></h1><span class="topo-acoes"><a id="lkreceita" href="consulta-cnpj.html" target="receitaws" rel="noopener">Consulta de CNPJs</a><button type="button" id="ajuda">Como funciona</button></span></div>
-<div id="destaque" class="destaque" aria-hidden="true"></div></header>
+<div id="destaque" class="destaque"><div class="iris">
+ <table class="irisg" aria-label="Resultado do mês no relatório Iris"><thead><tr><th id="ir-data">DATA</th><th>Volume</th><th>Margem</th><th>Churn</th></tr></thead>
+ <tbody><tr><th>Real</th><td id="ir-vr">—</td><td id="ir-mr">—</td><td id="ir-cr">—</td></tr>
+ <tr><th>Meta</th><td id="ir-vm">—</td><td id="ir-mm">—</td><td id="ir-cm">—</td></tr>
+ <tr><th>%</th><td id="ir-vp">—</td><td id="ir-mp">—</td><td id="ir-cp">—</td></tr></tbody></table>
+ <div class="iris-lado"><button type="button" id="iris">Carga Iris</button><input type="file" id="irisin" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+ <div id="irisinfo" class="fraco">Toque em Carga Iris e escolha o Relatório Vendedor Externo (Excel).</div><div id="irismsg" class="fraco" role="status"></div></div>
+</div></div></header>
 <form id="f">
  <div class="filtros">
   <label class="campo">Município
@@ -245,6 +264,8 @@ button.mais{display:block;margin:0 auto}
 <p>“Salvar arquivo de backup” guarda uma cópia no aparelho; “Carregar arquivo de backup” soma o arquivo às marcações atuais, sem apagar nada. É assim que se trazem as marcações da versão 23.</p>
 <h3>Bases no Drive</h3>
 <p>Na mesma pasta podem ficar <b>postos-carteira.json</b>, <b>postos-agenda.json</b> e <b>postos-anp.json</b>. Quando um deles é trocado, o app baixa a versão nova ao conectar e mostra o botão “Recarregar com as bases novas”. Sem esses arquivos, valem as bases que vêm dentro do app.</p>
+<h3>Carga Iris (vendas)</h3>
+<p>No alto da tela, o quadro mostra o resultado do mês no relatório Iris: Volume (realizado × orçado, em litros), Margem (margem unitária realizada × meta, em R$ por litro) e Churn (churn de clientes × meta, com o atingimento calculado pelo próprio Iris). A data é a da atualização do relatório. Toque em <b>Carga Iris</b> e escolha o arquivo Relatorio_Vendedor_Externo (Excel) baixado do Iris. O app liga cada cliente do relatório ao cadastro pelo código de cliente e mostra, abaixo do nome, o volume do mês, do mês anterior e do ano, o preço médio, a margem, o prazo, a última compra, o faturamento do dia anterior e os títulos vencidos; "mês a mês" abre o volume de cada mês e, quando há várias lojas, o volume de cada uma. O selo laranja "Sem compra em …" indica quem comprou no mês anterior e ainda não comprou no mês (risco de churn). Com o Drive conectado, o relatório é gravado na pasta do app (postos-iris.json) e chega ao outro aparelho ao conectar. Cada nova carga substitui a anterior.</p>
 <h3>Atualizar agenda</h3>
 <p>Quando você corrigir contatos direto no Google Contatos, exporte-os (Google Contatos › Exportar › CSV do Google) e toque em <b>Atualizar agenda</b> para escolher o arquivo. O app liga cada contato ao posto pelo CNPJ (campo Empresa), pelo código de cliente no início do nome ou pela razão social com o marcador do município; os demais vão para os consumidores pelo CNPJ ou pelo nome. Contatos com o marcador Transp Cargas ou Trans Passag que ainda não existiam entram como consumidores novos. Telefones, e-mails e observações dos registros encontrados passam a ser os do arquivo; nos consumidores, se o CNPJ do contato (campo Empresa) ou o código de cliente (campo Cargo; na falta dele, número no início do nome) for diferente do cadastrado, o app troca pelo da agenda e avisa quais mudaram (nos postos, o CNPJ vem da ANP e só serve para ligar o contato ao posto); quem não aparece no arquivo mantém a agenda anterior, e as suas marcações não mudam. Com o Drive conectado, a agenda nova é gravada na pasta do app (postos-agenda.json e postos-consumidores.json) e chega ao outro aparelho ao conectar.</p>
 <h3>Sem internet</h3>
@@ -258,7 +279,8 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=19; /* manter igual ao número do CACHE em sw.js */
+var VERSAO_APP=20;
+var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
 function sem(s){return String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase()}
@@ -560,7 +582,7 @@ function filtrar(){
   if(p.cart){var cb=document.createElement("div");var cl=document.createElement("span");
    if(p.cart.ok){cl.className="cli";cl.textContent="Cliente cód. "+p.cart.cod+(p.cart.lojas?" · loja "+p.cart.lojas:"");cl.title="Cadastro confirmado na Carteira de Clientes (razão social e município)";cb.appendChild(cl);
     var inf=[];if(p.cart.ult)inf.push("últ. compra "+p.cart.ult);if(p.cart.vol)inf.push(fmt(p.cart.vol)+" L no ano");
-    if(inf.length){var ci=document.createElement("div");ci.className="cliinfo";ci.textContent=inf.join(" · ");cb.appendChild(ci)}}
+    var vb=vendasBox(p);if(vb)cb.appendChild(vb);else if(inf.length){var ci=document.createElement("div");ci.className="cliinfo";ci.textContent=inf.join(" · ");cb.appendChild(ci)}}
    else{cl.className="cli grupo";cl.textContent="Empresa cliente (cód. "+p.cart.cod+") · filial fora da carteira";cl.title="A mesma empresa está na Carteira de Clientes, mas não com esta unidade/município";cb.appendChild(cl)}
    a.appendChild(cb)}
   var e;if(EDEND[ck]){e=td("");e.appendChild(editorEnd(p,ck))}else e=td([p.endereco+(p.compl&&p.compl.length>1?" · "+p.compl:""),p.bairro].filter(function(x){return x&&x.trim()}).join(" · ")||"endereço não informado");
@@ -777,7 +799,7 @@ function lsSet(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.
 function clientId(){return String(CFG.clientId||lsGet("cfg_client_id")||"").trim()}
 var SCOPE="https://www.googleapis.com/auth/drive";
 var PASTA_APP=CFG.nomePasta||"App Consulta de Postos",ARQ_MARC="postos-marcacoes.json";
-var BASES_ARQ={"postos-anp.json":"anp","postos-carteira.json":"carteira","postos-agenda.json":"agenda","postos-consumidores.json":"consumidores"};
+var BASES_ARQ={"postos-anp.json":"anp","postos-carteira.json":"carteira","postos-agenda.json":"agenda","postos-consumidores.json":"consumidores","postos-iris.json":"iris"};
 var DR="https://www.googleapis.com/drive/v3/files",UP="https://www.googleapis.com/upload/drive/v3/files";
 var sujo=pendente(),corrente=null,deNovo=false,timer=null,retry=null,tc=null,tok=null,tokExp=0;
 var remVer=lsGet("drive_versao")||"",arqId=lsGet("drive_arq")||"",pastaId=lsGet("drive_pasta")||"";
@@ -998,6 +1020,98 @@ function gravarBaseDrive(nome,txt){
   var b="--"+bd+"\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n"+JSON.stringify(meta)+"\r\n--"+bd+"\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n"+txt+"\r\n--"+bd+"--";
   return api(UP+"?uploadType=multipart&fields=id,modifiedTime",{method:"POST",headers:{"Content-Type":"multipart/related; boundary="+bd},body:b}).then(json)})
  .then(function(j){var meta={};try{meta=JSON.parse(lsGet("bases_meta")||"{}")||{}}catch(e){}meta[nome]=j.modifiedTime;lsSet("bases_meta",JSON.stringify(meta))})}
+/* ---------- Carga Iris: relatório de vendas (Relatorio_Vendedor_Externo, Excel) ---------- */
+var MESES=["Dez ant.","Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+function codN(c){return String(c==null?"":c).trim().replace(/^0+(?=\d)/,"")}
+function hN(t){return sem(String(t==null?"":t)).replace(/\s+/g," ").trim()}
+function nIr(v){if(v==null||v==="")return 0;if(typeof v==="number")return isFinite(v)?v:0;v=String(v).trim();if(v.indexOf(",")>=0)v=v.replace(/\./g,"").replace(",",".");var n=parseFloat(v);return isFinite(n)?n:0}
+function pctTxt(v){return v==null||!isFinite(v)?"—":(v*100).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%"}
+function litros(v){return Math.round(v||0).toLocaleString("pt-BR")+" L"}
+function reais(v,d){return "R$ "+(v||0).toLocaleString("pt-BR",{minimumFractionDigits:d==null?2:d,maximumFractionDigits:d==null?2:d})}
+function irisTabela(lin,obrig){for(var i=0;i<lin.length;i++){var h=lin[i].map(hN);if(obrig.every(function(o){return h.indexOf(hN(o))>=0})){var ix={};h.forEach(function(x,j){if(x&&!(x in ix))ix[x]=j});return {i:i,ix:ix}}}return null}
+function irisLer(wb){
+ function folha(n){var k=wb.SheetNames.filter(function(x){return hN(x)===hN(n)})[0];return k?XLSX.utils.sheet_to_json(wb.Sheets[k],{header:1,raw:true,defval:null}):null}
+ function col(t,r,n){var j=t.ix[hN(n)];return j==null?null:r[j]}
+ var con=folha("Consolidado"),ana=folha("Carteira de Clientes-Analitico");if(!con||!ana)return null;
+ var dt="";[con,ana].forEach(function(L){L.forEach(function(r){r.forEach(function(c){var m=/Atualizado em:\s*(\d{2}\/\d{2}\/\d{4})(?:\s+(\d{2}:\d{2}))?/.exec(String(c||""));if(m&&!dt)dt=m[1]+(m[2]?" "+m[2]:"")})})});
+ var t=irisTabela(con,["Volume Orçado","Meta Churn"]);if(!t)return null;var r=con[t.i+1]||[];
+ var R={volMeta:nIr(col(t,r,"Volume Orçado")),volReal:nIr(col(t,r,"Volume Realizado")),volProj:nIr(col(t,r,"Volume Projetado")),volPct:nIr(col(t,r,"% Volume Realizado")),volProjPct:nIr(col(t,r,"% Volume Projetado")),
+  margMeta:nIr(col(t,r,"Meta Margem Unitária")),margReal:nIr(col(t,r,"Margem Unitária Realizada")),churnMeta:nIr(col(t,r,"Meta Churn")),churnReal:nIr(col(t,r,"Churn")),churnAt:nIr(col(t,r,"Atingimento")),
+  vendedor:String(col(t,r,"Nome")||"")};
+ var cc=folha("Carteira de Clientes"),U={};
+ if(cc){var tr=irisTabela(cc,["Clientes Perdidos","Churn De Clientes"]);if(tr){var q=cc[tr.i+1]||[];R.compAnt=nIr(col(tr,q,"Clientes Compradores Mês Anterior"));R.compAtual=nIr(col(tr,q,"Clientes Compradores No Mês Atual"));R.perdidos=nIr(col(tr,q,"Clientes Perdidos"))}
+  var ts=irisTabela(cc,["Código Cliente","Data Última Compra"]);if(ts){for(var i=ts.i+1;i<cc.length;i++){var x=cc[i],k=codN(col(ts,x,"Código Cliente")),d=String(col(ts,x,"Data Última Compra")||"").trim();if(!k||!d)continue;
+   if(!U[k]||d.split("/").reverse().join("")>U[k].split("/").reverse().join(""))U[k]=d}}}
+ var ta=irisTabela(ana,["Código Do Cliente","Volume Acumulado No Ano"]);if(!ta)return null;
+ var mc=["Volume Realizado - Dezembro Anterior","Volume Realizado - Janeiro","Volume Realizado - Fevereiro","Volume Realizado - Março","Volume Realizado - Abril","Volume Realizado - Maio","Volume Realizado - Junho","Volume Realizado - Julho","Volume Realizado - Agosto","Volume Realizado - Setembro","Volume Realizado - Outubro","Volume Realizado - Novembro","Volume Realizado - Dezembro"];
+ var C={};
+ for(var i=ta.i+1;i<ana.length;i++){var x=ana[i],k=codN(col(ta,x,"Código Do Cliente"));if(!k)continue;
+  var c=C[k]||(C[k]={n:String(col(ta,x,"Nome Cliente")||""),l:[],f:[],t:[]});
+  c.l.push([String(col(ta,x,"Loja")||""),String(col(ta,x,"Cidade")||""),nIr(col(ta,x,"Preço Médio")),nIr(col(ta,x,"Ult. Preço Médio")),nIr(col(ta,x,"Margem")),nIr(col(ta,x,"Prazo")),mc.map(function(m){return nIr(col(ta,x,m))}),nIr(col(ta,x,"Volume Acumulado No Ano"))])}
+ var fa=folha("Fat. Dia Anterior");if(fa){var tf=irisTabela(fa,["Código Do Cliente","Data Faturamento"]);if(tf)for(var i=tf.i+1;i<fa.length;i++){var x=fa[i],k=codN(col(tf,x,"Código Do Cliente"));if(!k)continue;
+  (C[k]=C[k]||{n:String(col(tf,x,"Nome Do Cliente")||""),l:[],f:[],t:[]}).f.push([String(col(tf,x,"Loja")||""),nIr(col(tf,x,"Volume Realizado")),nIr(col(tf,x,"Preço Médio")),String(col(tf,x,"Data Faturamento")||"")])}}
+ var tv=folha("Titulos Vencidos");if(tv){var tt=irisTabela(tv,["Código Do Cliente","Dias Em Atraso"]);if(tt)for(var i=tt.i+1;i<tv.length;i++){var x=tv[i],k=codN(col(tt,x,"Código Do Cliente"));if(!k)continue;
+  (C[k]=C[k]||{n:String(col(tt,x,"Nome Do Cliente")||""),l:[],f:[],t:[]}).t.push([String(col(tt,x,"Loja")||""),String(col(tt,x,"Data De Vencimento")||""),nIr(col(tt,x,"Valor Do Título")),nIr(col(tt,x,"Dias Em Atraso"))])}}
+ Object.keys(U).forEach(function(k){if(C[k])C[k].u=U[k]});
+ var dd=dt.slice(0,10).split("/"),ref=new Date(+dd[2],+dd[1]-1,+dd[0]);ref.setDate(ref.getDate()-1);
+ R.mes=isFinite(ref.getMonth())?ref.getMonth()+1:new Date().getMonth()+1;
+ return {tipo:"postos-iris",data:dt,resumo:R,dados:C}}
+function irisCli(p){if(!IRIS||!p.cart||!p.cart.ok)return null;var c=IRIS.dados[codN(p.cart.cod)];if(!c)return null;
+ var l=c.l;if(p.tipo==="revendedor"&&p.cart.lojas){var lj=String(p.cart.lojas).split(/\D+/).filter(Boolean).map(Number),f=l.filter(function(x){return lj.indexOf(+x[0])>=0});if(f.length)l=f}
+ return {c:c,l:l}}
+function vendasBox(p){var ic=irisCli(p);if(!ic)return null;var c=ic.c,l=ic.l,R=IRIS.resumo,mi=R.mes,box=document.createElement("div");box.className="vendas";
+ function soma(i){return l.reduce(function(a,x){return a+(x[6][i]||0)},0)}
+ var at=soma(mi),an=soma(mi-1),ac=l.reduce(function(a,x){return a+x[7]},0),fat=c.f.filter(function(x){return !l.length||l.some(function(y){return y[0]===x[0]})||!c.l.length});
+ function linha(h){var d=document.createElement("div");d.innerHTML=h;box.appendChild(d);return d}
+ function e(t){return String(t).replace(/[&<>"]/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]})}
+ linha('<span class="vtit">Vendas Iris</span> <span class="fraco">('+e(IRIS.data.slice(0,5))+')</span>');
+ var sel=document.createElement("span");
+ if(at>0){sel.className="vsel";sel.textContent="Comprou em "+MESES[mi].toLowerCase()}
+ else if(an>0){sel.className="vsel churn";sel.textContent="Sem compra em "+MESES[mi].toLowerCase()+" (comprou em "+MESES[mi-1].toLowerCase()+")"}
+ else{sel.className="vsel parado";sel.textContent=ac>0?"Sem compra há mais de um mês":"Sem compra no ano"}
+ box.appendChild(sel);
+ if(c.u&&!(at>0))linha("Última compra: <b>"+e(c.u)+"</b>");
+ fat.forEach(function(x){linha("Faturado em "+e(x[3])+": <b>"+litros(x[1])+"</b> a "+reais(x[2],3)+(c.l.length>1?" · loja "+e(x[0]):""))});
+ linha(MESES[mi]+": <b>"+litros(at)+"</b> · "+MESES[mi-1]+": "+litros(an)+" · Ano: <b>"+litros(ac)+"</b>");
+ var pr=l.filter(function(x){return x[2]>0}),ref=pr.length?pr:l.filter(function(x){return x[3]>0});
+ if(ref.length){var x=ref.reduce(function(a,b){return (b[6][mi]||0)>(a[6][mi]||0)?b:a});
+  linha((pr.length?"Preço médio no mês: ":"Último preço: ")+"<b>"+reais(pr.length?x[2]:x[3],3)+"</b>"+(x[4]?" · Margem "+reais(x[4],3)+"/L":"")+(x[5]?" · Prazo "+x[5]+" dias":""))}
+ if(c.t.length){var tt=c.t.filter(function(x){return !c.l.length||l.some(function(y){return y[0]===x[0]})});if(!tt.length)tt=c.t;
+  var tot=tt.reduce(function(a,x){return a+x[2]},0),mx=Math.max.apply(null,tt.map(function(x){return x[3]}));
+  var s2=document.createElement("span");s2.className="vsel tit";s2.textContent=tt.length+(tt.length>1?" títulos vencidos":" título vencido")+" · "+reais(tot)+" · até "+mx+(mx>1?" dias":" dia");
+  s2.title=tt.map(function(x){return "Venc. "+x[1]+" · "+reais(x[2])+" · "+x[3]+" dias"}).join("\n");var d2=document.createElement("div");d2.appendChild(s2);box.appendChild(d2)}
+ var det=document.createElement("details"),sm=document.createElement("summary");sm.textContent="mês a mês"+(l.length>1?" ("+l.length+" lojas)":"");det.appendChild(sm);
+ var g=document.createElement("div");g.className="meses";for(var i=0;i<=mi;i++){var v=soma(i),s=document.createElement("span");s.textContent=MESES[i]+": "+(v?Math.round(v).toLocaleString("pt-BR"):"–");g.appendChild(s)}det.appendChild(g);
+ if(l.length>1)l.forEach(function(x){var d=document.createElement("div");d.className="fraco";d.textContent="Loja "+x[0]+" · "+titulo(x[1])+": "+MESES[mi]+" "+litros(x[6][mi])+" · ano "+litros(x[7]);det.appendChild(d)});
+ box.appendChild(det);return box}
+function irisPinta(){if(!IRIS){return}var R=IRIS.resumo;
+ function put(id,t,cl){var e=$(id);e.textContent=t;e.className=cl||""}
+ function nivel(v){return v>=1?"ok":"baixo"}
+ put("ir-data",IRIS.data.slice(0,10));
+ put("ir-vr",litros(R.volReal));put("ir-vm",litros(R.volMeta));put("ir-vp",pctTxt(R.volPct||(R.volMeta?R.volReal/R.volMeta:0)),nivel(R.volPct));
+ var mp=R.margMeta?R.margReal/R.margMeta:0;put("ir-mr",reais(R.margReal,3));put("ir-mm",reais(R.margMeta,3));put("ir-mp",pctTxt(mp),nivel(mp));
+ put("ir-cr",pctTxt(R.churnReal));put("ir-cm",pctTxt(R.churnMeta));put("ir-cp",pctTxt(R.churnAt),nivel(R.churnAt));
+ var ach={},fora=[];postos.forEach(function(p){if(p.cart&&p.cart.ok)ach[codN(p.cart.cod)]=1});
+ Object.keys(IRIS.dados).forEach(function(k){var c=IRIS.dados[k];if(!ach[k]&&c.l.some(function(x){return x[7]>0}))fora.push(titulo(c.n)+" ("+k+")")});
+ var inf="Relatório Iris de "+IRIS.data+". Projeção do mês: "+litros(R.volProj)+" ("+pctTxt(R.volProjPct)+" da meta)."
+  +(R.compAtual!=null?" Compradores: "+R.compAtual+" no mês, "+R.compAnt+" no mês anterior; "+R.perdidos+" perdidos.":"");
+ var ii=$("irisinfo");ii.textContent=inf;
+ if(fora.length){var f=document.createElement("span");f.textContent=" "+fora.length+(fora.length>1?" clientes com compra no ano não estão":" cliente com compra no ano não está")+" no app (toque para ver).";f.style.cursor="pointer";f.style.textDecoration="underline";
+  f.addEventListener("click",function(){$("irismsg").textContent="Sem cadastro no app: "+fora.join("; ")+"."});ii.appendChild(f)}}
+var XLSX_P=null;function carregaXlsx(){if(window.XLSX)return Promise.resolve();if(XLSX_P)return XLSX_P;
+ XLSX_P=new Promise(function(ok,no){var sc=document.createElement("script");sc.src="xlsx.mini.min.js";sc.onload=function(){ok()};sc.onerror=function(){XLSX_P=null;no()};document.head.appendChild(sc)});return XLSX_P}
+$("iris").addEventListener("click",function(){$("irisin").value="";$("irisin").click()});
+$("irisin").addEventListener("change",function(){var f=this.files&&this.files[0];if(!f)return;var msg=$("irismsg");msg.textContent="Lendo "+f.name+"…";
+ carregaXlsx().then(function(){return f.arrayBuffer()}).then(function(buf){var o=irisLer(XLSX.read(buf,{type:"array"}));
+  if(!o){msg.textContent="Esse arquivo não parece o Relatório Vendedor Externo do Iris (faltam as abas Consolidado ou Carteira de Clientes-Analitico).";return}
+  var txt=JSON.stringify(o);if(!lsSet("base_iris",txt)){msg.textContent="Sem espaço neste aparelho para guardar o relatório.";return}
+  IRIS=o;irisPinta();filtrar();
+  var n=0;postos.forEach(function(p){if(irisCli(p))n++});
+  var res="Carga Iris feita: "+Object.keys(o.dados).length+" clientes no relatório, "+n+" ligados a cadastros do app.";
+  if(!conectado()||navigator.onLine===false){msg.textContent=res+" Vale neste aparelho até você conectar ao Drive e carregar de novo.";return}
+  msg.textContent=res+" Enviando ao Drive…";
+  gravarBaseDrive("postos-iris.json",txt).then(function(){msg.textContent=res+" Salvo no Drive: o outro aparelho recebe ao conectar."},function(){msg.textContent=res+" Não consegui enviar ao Drive; vale neste aparelho."})})
+ .catch(function(){msg.textContent="Não consegui ler o arquivo. Confira se é o Excel (.xlsx) do relatório e se há internet na primeira carga."})});
 $("atuag").addEventListener("click",function(){$("agin").value="";$("agin").click()});
 $("agin").addEventListener("change",function(){
  var f=this.files&&this.files[0];if(!f)return;arqMsg("Lendo "+f.name+"…");
@@ -1098,7 +1212,7 @@ document.querySelectorAll(".d-cons").forEach(function(e){e.textContent=B.datas.c
 $("vapp").textContent=VERSAO_APP;$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: "+VERSAO_APP+".";
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});
-botao();if(conectado())sincronizar();else avisoLocal();
+irisPinta();botao();if(conectado())sincronizar();else avisoLocal();
 
 })();
 </script>
