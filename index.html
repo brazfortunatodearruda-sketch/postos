@@ -244,7 +244,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Bases no Drive</h3>
 <p>Na mesma pasta podem ficar <b>postos-carteira.json</b>, <b>postos-agenda.json</b> e <b>postos-anp.json</b>. Quando um deles é trocado, o app baixa a versão nova ao conectar e mostra o botão “Recarregar com as bases novas”. Sem esses arquivos, valem as bases que vêm dentro do app.</p>
 <h3>Atualizar agenda</h3>
-<p>Quando você corrigir contatos direto no Google Contatos, exporte-os (Google Contatos › Exportar › CSV do Google) e toque em <b>Atualizar agenda</b> para escolher o arquivo. O app liga cada contato ao posto pelo CNPJ (campo Empresa), pelo código de cliente no início do nome ou pela razão social com o marcador do município; os demais vão para os consumidores pelo CNPJ ou pelo nome. Contatos com o marcador Transp Cargas ou Trans Passag que ainda não existiam entram como consumidores novos. Telefones, e-mails e observações dos registros encontrados passam a ser os do arquivo; nos consumidores, se o CNPJ do contato (campo Empresa) for diferente do cadastrado, o app troca pelo CNPJ da agenda e avisa quais mudaram (nos postos, o CNPJ vem da ANP e só serve para ligar o contato ao posto); quem não aparece no arquivo mantém a agenda anterior, e as suas marcações não mudam. Com o Drive conectado, a agenda nova é gravada na pasta do app (postos-agenda.json e postos-consumidores.json) e chega ao outro aparelho ao conectar.</p>
+<p>Quando você corrigir contatos direto no Google Contatos, exporte-os (Google Contatos › Exportar › CSV do Google) e toque em <b>Atualizar agenda</b> para escolher o arquivo. O app liga cada contato ao posto pelo CNPJ (campo Empresa), pelo código de cliente no início do nome ou pela razão social com o marcador do município; os demais vão para os consumidores pelo CNPJ ou pelo nome. Contatos com o marcador Transp Cargas ou Trans Passag que ainda não existiam entram como consumidores novos. Telefones, e-mails e observações dos registros encontrados passam a ser os do arquivo; nos consumidores, se o CNPJ do contato (campo Empresa) ou o código de cliente (campo Cargo; na falta dele, número no início do nome) for diferente do cadastrado, o app troca pelo da agenda e avisa quais mudaram (nos postos, o CNPJ vem da ANP e só serve para ligar o contato ao posto); quem não aparece no arquivo mantém a agenda anterior, e as suas marcações não mudam. Com o Drive conectado, a agenda nova é gravada na pasta do app (postos-agenda.json e postos-consumidores.json) e chega ao outro aparelho ao conectar.</p>
 <h3>Sem internet</h3>
 <p>Depois de instalado e aberto uma vez com internet, o app abre e funciona sem sinal: filtros, busca e marcações. O que você preencher fica no aparelho e vai para o Drive quando a conexão voltar e o login estiver válido.</p>
 <h3>Planilha e Google Contatos</h3>
@@ -256,7 +256,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=17; /* manter igual ao número do CACHE em sw.js */
+var VERSAO_APP=18; /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
 function sem(s){return String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase()}
@@ -959,7 +959,8 @@ function contatosDoCSV(txt){var L=lerCSV(txt);if(L.length<2)return null;var H=L[
   var cnpjs=[];(org+" "+nome+" "+notas+" "+cargo).replace(/\d[\d.\/\-\s]{12,20}\d/g,function(m){var d=dig(m);if(d.length===14&&cnpjOk(d)&&cnpjs.indexOf(d)<0)cnpjs.push(d);return m});
   var fst=v(r,"First Name")||v(r,"Given Name"),rest=[v(r,"Middle Name")||v(r,"Additional Name"),v(r,"Last Name")||v(r,"Family Name")].filter(Boolean).join(" ");
   var razao=org&&dig(org).length<8?org.replace(/^CNPJ:?\s*/i,""):rest&&fst?rest:nome,pessoa=razao===nome?"":(org&&dig(org).length<8?nome:fst);
-  return {nome:nome,razao:razao,pessoa:pessoa,org:org,notas:notas.replace(/https?:\/\/\S+/g,"").replace(/\s+/g," ").trim(),fones:fones,email:emails[0]||"",mun:mun,cidade:cid||NOMES[mun]||"",seg:seg,cnpjs:cnpjs,
+  var cod=(String(cargo).match(/^\s*(\d{4,6})\b/)||String(nome).match(/^\s*(\d{4,6})\b/)||[])[1]||"";
+  return {nome:nome,razao:razao,pessoa:pessoa,org:org,cod:cod,notas:notas.replace(/https?:\/\/\S+/g,"").replace(/\s+/g," ").trim(),fones:fones,email:emails[0]||"",mun:mun,cidade:cid||NOMES[mun]||"",seg:seg,cnpjs:cnpjs,
    rua:partes(v(r,"Address 1 - Street"))[0]||"",cep:partes(v(r,"Address 1 - Postal Code"))[0]||""}}).filter(function(c){return c.nome||c.org})}
 function hashCk(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%9007199254;return String(1e12+h).slice(0,13)}
 function montarAgenda(cs){
@@ -967,7 +968,7 @@ function montarAgenda(cs){
  Object.keys(CARTEIRA||{}).forEach(function(k){var c=String((CARTEIRA[k]||[])[0]||"").split(/[^0-9]/)[0];if(c)porCod[c]=k});
  var cons=(B.consumidores||[]).map(function(r){return r.slice()}),cK={},cN={};
  cons.forEach(function(r,i){if(r[1])cK[dig(r[1])]=i;cN[nomeChave(r[2])]=i;(r[9]||[]).forEach(function(g){if(g[0])cN[nomeChave(g[0])]=i})});
- var ag={},novaAg={},novoCons={},novos=0,semPar=0,n={posto:0,cons:0},trocaCnpj=[];
+ var ag={},novaAg={},novoCons={},novos=0,semPar=0,n={posto:0,cons:0},trocaCnpj=[],trocaCod=[];
  cs.forEach(function(c){
   var ck="",como="";
   c.cnpjs.some(function(d){if(anp[d]){ck=d;como="CNPJ";return true}});
@@ -977,16 +978,17 @@ function montarAgenda(cs){
   var i=-1;c.cnpjs.some(function(d){if(d in cK){i=cK[d];return true}});
   if(i<0)[c.org,c.nome,c.razao].some(function(s){var k=nomeChave(s);if(s&&k in cN){i=cN[k];return true}});
   if(i>=0){var nc=c.cnpjs[0]||"",vc=dig(cons[i][1]||"");if(nc&&nc!==vc&&!(cK[nc]>=0&&cK[nc]!==i)){if(vc&&cK[vc]===i)delete cK[vc];cons[i][1]=nc;cK[nc]=i;trocaCnpj.push({ck:cons[i][0],nome:cons[i][2],de:vc,para:nc})}
+   if(c.cod&&c.cod!==String(cons[i][8]||"")){trocaCod.push({nome:cons[i][2],de:String(cons[i][8]||""),para:c.cod});cons[i][8]=c.cod}
    (novoCons[i]=novoCons[i]||[]).push([c.nome,c.fones,c.email,c.notas,"contatos"]);n.cons++;return}
   if(!c.seg){semPar++;return}
   var cn=c.cnpjs[0]||"",razao=c.razao,key=cn||hashCk(nomeChave(razao)+"|"+c.mun);
-  var r=[key,cn,razao,c.seg,c.rua,c.mun,c.cidade,c.cep,"",[[c.pessoa,c.fones,c.email,c.notas,"contatos"]]];
+  var r=[key,cn,razao,c.seg,c.rua,c.mun,c.cidade,c.cep,c.cod,[[c.pessoa,c.fones,c.email,c.notas,"contatos"]]];
   cons.push(r);i=cons.length-1;if(cn)cK[cn]=i;cN[nomeChave(razao)]=i;novos++});
  Object.keys(AGENDA||{}).forEach(function(k){ag[k]=AGENDA[k]});
  function unico(l){var v={};return l.filter(function(g){var s=JSON.stringify(g);if(v[s])return false;v[s]=1;return true})}
  Object.keys(novaAg).forEach(function(k){ag[k]=unico(novaAg[k])});
  Object.keys(novoCons).forEach(function(i){cons[i][9]=unico(novoCons[i])});
- return {agenda:ag,consumidores:cons,postos:Object.keys(novaAg).length,consAtual:Object.keys(novoCons).length,novos:novos,semPar:semPar,trocaCnpj:trocaCnpj}}
+ return {agenda:ag,consumidores:cons,postos:Object.keys(novaAg).length,consAtual:Object.keys(novoCons).length,novos:novos,semPar:semPar,trocaCnpj:trocaCnpj,trocaCod:trocaCod}}
 function gravarBaseDrive(nome,txt){
  return (pastaId?Promise.resolve(pastaId):acharPasta()).then(function(){return buscar("name='"+nome+"' and '"+pastaId+"' in parents and trashed=false","id")}).then(function(f){
   if(f[0])return api(UP+"/"+f[0].id+"?uploadType=media&fields=id,modifiedTime",{method:"PATCH",headers:{"Content-Type":"application/json; charset=UTF-8"},body:txt}).then(json);
@@ -1004,7 +1006,8 @@ $("agin").addEventListener("change",function(){
   var tA=JSON.stringify({tipo:"postos-agenda",data:hoje,dados:R.agenda}),tC=JSON.stringify({tipo:"postos-consumidores",data:hoje,dados:R.consumidores});
   if(!lsSet("base_agenda",tA)||!lsSet("base_consumidores",tC)){arqMsg("Sem espaço neste aparelho para guardar a agenda nova.");return}
   var res="Agenda atualizada com "+cs.length+" contatos: "+R.postos+" postos, "+R.consAtual+" consumidores atualizados"+(R.novos?", "+R.novos+" consumidores novos":"")+(R.semPar?"; "+R.semPar+" contatos sem posto ou consumidor correspondente ficaram de fora":"")+"."
-   +(R.trocaCnpj.length?" CNPJ corrigido pela agenda: "+R.trocaCnpj.map(function(t){return titulo(t.nome)+" ("+(t.de?cnpj(t.de):"sem CNPJ")+" → "+cnpj(t.para)+")"}).join("; ")+".":"");
+   +(R.trocaCnpj.length?" CNPJ corrigido pela agenda: "+R.trocaCnpj.map(function(t){return titulo(t.nome)+" ("+(t.de?cnpj(t.de):"sem CNPJ")+" → "+cnpj(t.para)+")"}).join("; ")+".":"")
+   +(R.trocaCod.length?" Código de cliente atualizado pela agenda: "+R.trocaCod.map(function(t){return titulo(t.nome)+" ("+(t.de||"sem código")+" → "+t.para+")"}).join("; ")+".":"");
   R.trocaCnpj.forEach(function(t){carimbo(t.ck,"cnpj",t.para,t.de);if(CNPJINF[t.ck]){delete CNPJINF[t.ck];try{localStorage.setItem("postos_cnpj",JSON.stringify(CNPJINF))}catch(e){}}});
   var fim=function(extra){arqMsg(res+extra+" Recarregando…");setTimeout(function(){location.reload()},2500)};
   if(!conectado()||navigator.onLine===false){fim(" Vale só neste aparelho até você conectar ao Drive e atualizar de novo.");return}
