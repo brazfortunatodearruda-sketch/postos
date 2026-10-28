@@ -155,6 +155,15 @@ input.cnpjin.erro{border-style:solid;border-color:#c0392b}
 input.dvis{font:.8rem var(--fonte);padding:2px 4px;border:1px solid var(--linha);border-radius:4px;background:var(--fundo);color:var(--texto);max-width:140px}
 input.dvis.inf{border-color:var(--acento);font-weight:600}
 button.hoje{font-size:.72rem;padding:2px 6px}
+button.foto{white-space:nowrap}
+dialog#dlgfoto{max-width:min(560px,calc(100vw - 24px));max-height:calc(100vh - 32px);padding:0;border:1px solid var(--linha);border-radius:10px;background:var(--papel);color:var(--texto)}
+dialog#dlgfoto::backdrop{background:rgba(10,20,16,.55)}
+.fotocorpo{padding:12px 16px 16px;display:grid;gap:10px}
+.fotocorpo img{display:block;width:100%;height:auto;max-height:58vh;object-fit:contain;border-radius:6px;background:#000}
+.fotoacoes{display:flex;flex-wrap:wrap;gap:8px}
+#fotomsg{font-size:.88rem;color:var(--suave);margin:0}
+#fotomsg.ok{color:var(--acento);font-weight:600}
+#fotomsg.erro{color:var(--erro)}
 .ficha{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:flex-start;margin-top:10px;padding-top:8px;border-top:1px dashed var(--linha)}
 .ficha .equip{margin-top:0}
 .ficha .chk{margin-top:0}
@@ -253,7 +262,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Perfil do posto</h3>
 <p>Rodoviário, misto ou urbano. Começa estimado pela página: rodoviário quando o endereço é de rodovia (BR, km, anel rodoviário, zona rural) e o diesel ocupa pelo menos metade da tancagem; urbano quando o endereço é na cidade e o diesel fica abaixo de 35% da tancagem, ou quando a observação da agenda diz "urbano"; misto nos demais casos. Passe o mouse sobre o campo para ver o motivo. Na visita, escolha o perfil real no campo Perfil, logo abaixo da razão social: ele passa a valer no filtro "Perfil do Posto" e na planilha.</p>
 <h3>Visita e consumo de Arla</h3>
-<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social, endereço, telefone e e-mail, com botões para levar esses dados ao cliente (o telefone da Receita entra no grupo "Receita Federal", com teste de WhatsApp, e só completa as vagas vazias). Para quem está sem CNPJ, use o filtro "CNPJ: Sem CNPJ" e o link "Procurar CNPJ no Google", que pesquisa pelo nome e cidade; cole o número no campo e use "Buscar na Receita" para conferir. Se o nome na Receita não bater com o cadastro, o app avisa. Toda consulta à Receita (pelo botão "Buscar na Receita" ou pela página Consulta de CNPJs) grava a situação do CNPJ no cliente: se estiver baixado, inapto ou suspenso, aparece um aviso vermelho logo abaixo do nome; se estiver em recuperação judicial, um aviso laranja. Passe o mouse sobre o aviso para ver a data da consulta. No filtro CNPJ, as opções "Baixados/inaptos na Receita", "Em recuperação judicial" e "Sem restrição na Receita" ajudam a definir a prioridade de visita; elas consideram só os clientes já consultados. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório (PDF)" segue o filtro da tela: com um município, busca ou filtro escolhido, sai um relatório de todos os clientes da lista (por exemplo, os consumidores de Congonhas), com tipo, CNPJ, endereço, telefones e as alterações de cada um; sem filtro, lista só os clientes que você alterou, com cada campo, valor e data. Preencha "só atualizados desde" para limitar as alterações ao período e, na janela de impressão, escolha "Salvar como PDF". "Apagar registro" (abaixo do nome) tira o registro da lista; ele vai para a lixeira, que você vê no filtro Tipo de Cliente → "Apagados (lixeira)", onde dá para restaurar. Empresas que vieram repetidas da agenda (vários contatos da mesma empresa) aparecem unificadas, com todos os contatos juntos; o app também unifica sozinho consumidores com o mesmo CNPJ. "Separar" desfaz uma unificação. Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
+<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). O botão "📷 Foto" abre a câmera do celular e grava na foto uma faixa com a razão social, a data e a hora em que ela foi tirada; se a data da visita estiver vazia, ela é preenchida com o dia. A foto pode ser salva no aparelho, compartilhada (WhatsApp, e-mail) e, com o Drive conectado, vai sozinha para a pasta "Fotos das visitas" dentro da pasta do app na BIOAR. Imagens antigas da galeria (mais de 15 minutos) não são aceitas, para que a legenda corresponda ao momento da visita. Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social, endereço, telefone e e-mail, com botões para levar esses dados ao cliente (o telefone da Receita entra no grupo "Receita Federal", com teste de WhatsApp, e só completa as vagas vazias). Para quem está sem CNPJ, use o filtro "CNPJ: Sem CNPJ" e o link "Procurar CNPJ no Google", que pesquisa pelo nome e cidade; cole o número no campo e use "Buscar na Receita" para conferir. Se o nome na Receita não bater com o cadastro, o app avisa. Toda consulta à Receita (pelo botão "Buscar na Receita" ou pela página Consulta de CNPJs) grava a situação do CNPJ no cliente: se estiver baixado, inapto ou suspenso, aparece um aviso vermelho logo abaixo do nome; se estiver em recuperação judicial, um aviso laranja. Passe o mouse sobre o aviso para ver a data da consulta. No filtro CNPJ, as opções "Baixados/inaptos na Receita", "Em recuperação judicial" e "Sem restrição na Receita" ajudam a definir a prioridade de visita; elas consideram só os clientes já consultados. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório (PDF)" segue o filtro da tela: com um município, busca ou filtro escolhido, sai um relatório de todos os clientes da lista (por exemplo, os consumidores de Congonhas), com tipo, CNPJ, endereço, telefones e as alterações de cada um; sem filtro, lista só os clientes que você alterou, com cada campo, valor e data. Preencha "só atualizados desde" para limitar as alterações ao período e, na janela de impressão, escolha "Salvar como PDF". "Apagar registro" (abaixo do nome) tira o registro da lista; ele vai para a lixeira, que você vê no filtro Tipo de Cliente → "Apagados (lixeira)", onde dá para restaurar. Empresas que vieram repetidas da agenda (vários contatos da mesma empresa) aparecem unificadas, com todos os contatos juntos; o app também unifica sozinho consumidores com o mesmo CNPJ. "Separar" desfaz uma unificação. Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
 <h3>Marcações e datas</h3>
 <p>Inativo, Posto de Rede (abre um campo para o nome da rede), Equipamento, capacidade do tanque de Arla em litros, Automação, fornecedor atual, preço, volume de S10 e telefones. Cada campo preenchido mostra a data em que foi feito, e o nome do posto mostra a última atualização; passe o mouse sobre ela para ver a data de cada campo.</p>
 <h3>Filtros</h3>
@@ -277,11 +286,16 @@ button.mais{display:block;margin:0 auto}
 <h3>Fontes</h3>
 <p>Postos revendedores autorizados pela ANP nos 107 municípios da sua lista de contatos (dados de <span class="d-anp"></span>). Códigos de cliente conforme a Carteira de Clientes de <span class="d-cart"></span>. Agenda exportada em <span class="d-ag"></span>.</p><p id="origem-bases" class="fraco"></p>
 </div></dialog>
+<input type="file" id="fotoin" accept="image/*" capture="environment" hidden>
+<dialog id="dlgfoto" aria-labelledby="fotot"><div class="dlgcab"><h2 id="fotot">Foto da visita</h2><button type="button" id="fotox" aria-label="Fechar">Fechar</button></div>
+<div class="fotocorpo"><img id="fotoimg" alt="Foto da visita com a legenda">
+<p id="fotomsg" role="status" aria-live="polite"></p>
+<div class="fotoacoes"><button type="button" id="fotoshare" class="cheio">Compartilhar</button><button type="button" id="fotosalva">Salvar no aparelho</button><button type="button" id="fotodrive">Enviar ao Drive</button><button type="button" id="fotonova">Tirar outra</button></div></div></dialog>
 <div id="rel" hidden></div>
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=22;
+var VERSAO_APP=23;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -663,7 +677,8 @@ function filtrar(){
   function setVis(v){txtSet(VISITA,"postos_visita",ck,v);vd.value=VISITA[ck]||"";vd.classList.toggle("inf",!!VISITA[ck])}
   vd.addEventListener("change",function(){setVis(vd.value)});
   var hj=document.createElement("button");hj.type="button";hj.className="hoje";hj.textContent="Hoje";hj.title="Preenche com a data de hoje";hj.addEventListener("click",function(){setVis(hojeISO())});
-  vr.appendChild(vd);vr.appendChild(hj);vl.appendChild(vr);vlt.appendChild(dtSpan(ck,"visita"));fx.insertBefore(vl,fx.firstChild);
+  var fb=document.createElement("button");fb.type="button";fb.className="hoje foto";fb.textContent="📷 Foto";fb.title="Tira uma foto da visita com a razão social, a data e a hora na legenda";fb.addEventListener("click",function(){fotoAbrir(p,ck,setVis)});
+  vr.appendChild(vd);vr.appendChild(hj);vr.appendChild(fb);vl.appendChild(vr);vlt.appendChild(dtSpan(ck,"visita"));fx.insertBefore(vl,fx.firstChild);
   tr.appendChild(bd);tr.appendChild(e);
   var tc=td("","tel");var vistos=[];function addF(t,alvo,orig){if(t&&vistos.indexOf(t)<0){vistos.push(t);var dg=t.replace(/\D/g,"");
    var bx=document.createElement("div");bx.className="fone";
@@ -966,6 +981,77 @@ window.addEventListener("online",function(){if(conectado()){if(sujo||pendente())
 window.addEventListener("offline",avisoLocal);
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden"){if(sujo&&conectado())gravar()}else verificar()});
 window.addEventListener("pagehide",function(){if(sujo&&conectado())gravar()});
+
+/* Foto da visita: câmera do celular, legenda com razão social, data e hora; salva no aparelho e na pasta "Fotos das visitas" do Drive */
+var FOTO_PASTA="Fotos das visitas",fotoPastaId=lsGet("drive_pasta_fotos")||"",FOTO_IDADE_MAX=15*60000;
+var FOTO={alvo:null,blob:null,nome:"",desc:"",url:"",enviada:false,enviando:false};
+function fotoDH(d){return {data:d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"}),hora:d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}}
+function fotoMsg(t,tipo){var e=$("fotomsg");e.textContent=t;e.className=tipo||""}
+function fotoAbrir(p,ck,setVis){FOTO.alvo={p:p,ck:ck,setVis:setVis};var i=$("fotoin");i.value="";i.click()}
+function fotoQuebra(ctx,txt,larg,max){var pal=String(txt).split(/\s+/).filter(Boolean),ls=[],l="";
+ pal.forEach(function(w){var t=l?l+" "+w:w;if(ctx.measureText(t).width<=larg||!l)l=t;else{ls.push(l);l=w}});if(l)ls.push(l);
+ if(ls.length>max){ls=ls.slice(0,max);var u=ls[max-1];while(u.length>1&&ctx.measureText(u+"…").width>larg)u=u.slice(0,-1);ls[max-1]=u.trim()+"…"}
+ ls=ls.map(function(x){while(x.length>1&&ctx.measureText(x).width>larg)x=x.slice(0,-1);return x});return ls}
+function fotoMonta(f,razao,quando){return new Promise(function(res,rej){var u=URL.createObjectURL(f),im=new Image();
+ im.onerror=function(){URL.revokeObjectURL(u);rej(new Error("img"))};
+ im.onload=function(){URL.revokeObjectURL(u);
+  var W=im.naturalWidth,H=im.naturalHeight,k=Math.min(1,2048/Math.max(W,H));W=Math.round(W*k);H=Math.round(H*k);
+  var fs=Math.max(20,Math.round(Math.min(W,H)*0.045)),pad=Math.round(fs*0.75),fam='"Segoe UI",Roboto,Arial,sans-serif';
+  var cv=document.createElement("canvas"),ctx=cv.getContext("2d");ctx.font="700 "+fs+"px "+fam;
+  var ls=fotoQuebra(ctx,razao,W-2*pad,2),f2=Math.round(fs*0.82),bh=pad*2+ls.length*Math.round(fs*1.25)+Math.round(f2*1.35);
+  cv.width=W;cv.height=H+bh;ctx=cv.getContext("2d");ctx.drawImage(im,0,0,W,H);
+  ctx.fillStyle="#0e1714";ctx.fillRect(0,H,W,bh);ctx.fillStyle="#0b6b4f";ctx.fillRect(0,H,W,Math.max(3,Math.round(fs*0.12)));
+  ctx.textBaseline="top";ctx.fillStyle="#ffffff";ctx.font="700 "+fs+"px "+fam;
+  var y=H+pad;ls.forEach(function(l){ctx.fillText(l,pad,y);y+=Math.round(fs*1.25)});
+  var dh=fotoDH(quando);ctx.font="400 "+f2+"px "+fam;ctx.fillStyle="#cfe3da";ctx.fillText("Data: "+dh.data+"   Hora: "+dh.hora,pad,y+Math.round(f2*0.15));
+  cv.toBlob(function(b){if(b)res(b);else rej(new Error("blob"))},"image/jpeg",0.86)};
+ im.src=u})}
+function fotoNome(razao,quando){var d=quando,z=function(n){return String(n).padStart(2,"0")};
+ return d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate())+"_"+z(d.getHours())+"h"+z(d.getMinutes())+"_"+(nomeArq(razao)||"visita")+".jpg"}
+function fotoBotoes(){var pode=!!(navigator.canShare&&FOTO.blob&&navigator.canShare({files:[new File([FOTO.blob],FOTO.nome,{type:"image/jpeg"})]}));
+ $("fotoshare").hidden=!pode;$("fotosalva").className=pode?"":"cheio";
+ var d=$("fotodrive");d.hidden=FOTO.enviada;d.disabled=FOTO.enviando;d.textContent=FOTO.enviando?"Enviando…":conectado()?"Enviar ao Drive":(lsGet("drive_ligado")?"Reconectar e enviar ao Drive":"Conectar e enviar ao Drive")}
+function fotoPasta(){return acharPasta().then(function(pai){
+  var ok=fotoPastaId?api(DR+"/"+fotoPastaId+"?fields=id,trashed,parents").then(json).then(function(j){return !j.trashed&&(j.parents||[]).indexOf(pai)>=0?j.id:""},function(e){if(e&&e.code==="auth")throw e;return ""}):Promise.resolve("");
+  return ok.then(function(id){if(id)return id;
+   return buscar("name='"+esc(FOTO_PASTA)+"' and '"+pai+"' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false","id").then(function(f){if(f[0])return f[0].id;
+    return api(DR+"?fields=id",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:FOTO_PASTA,mimeType:"application/vnd.google-apps.folder",parents:[pai]})}).then(json).then(function(j){return j.id})})})})
+ .then(function(id){fotoPastaId=id;lsSet("drive_pasta_fotos",id);return id})}
+function fotoEnviar(){if(!FOTO.blob||FOTO.enviada||FOTO.enviando)return;
+ if(navigator.onLine===false){fotoMsg("Sem internet agora. Salve a foto no aparelho; o envio ao Drive precisa de sinal (depois você pode subir a foto salva pelo app do Google Drive).","erro");return}
+ var blob=FOTO.blob,nome=FOTO.nome,desc=FOTO.desc;
+ var ini=conectado()?Promise.resolve():(clientId()?pedirToken():Promise.reject({code:"semid"}));
+ FOTO.enviando=true;fotoBotoes();fotoMsg("Enviando ao Drive…","");
+ ini.then(fotoPasta).then(function(pid){var bd="lim"+Math.random().toString(36).slice(2),meta={name:nome,parents:[pid],mimeType:"image/jpeg",description:desc};
+   var corpo=new Blob(["--"+bd+"\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n"+JSON.stringify(meta)+"\r\n--"+bd+"\r\nContent-Type: image/jpeg\r\n\r\n",blob,"\r\n--"+bd+"--"]);
+   return api(UP+"?uploadType=multipart&fields=id",{method:"POST",headers:{"Content-Type":"multipart/related; boundary="+bd},body:corpo}).then(json)})
+ .then(function(){if(FOTO.blob!==blob)return;FOTO.enviada=true;fotoMsg("Foto salva no Drive, na pasta BIOAR › "+PASTA_APP+" › "+FOTO_PASTA+".","ok")},
+  function(e){if(FOTO.blob!==blob)return;var c=(e&&e.code)||"";
+   fotoMsg(c==="semid"?"O Drive ainda não está configurado neste aparelho. Toque em “Conectar ao Drive” na barra de baixo e depois envie a foto.":c==="auth"?"A conexão com o Drive expirou. Toque em “Reconectar e enviar ao Drive”.":/popup|negado|access_denied/.test(c)?"O login do Google não foi concluído. Toque no botão de novo.":"Não consegui enviar ao Drive ("+(c||"sem conexão")+"). Salve no aparelho e tente de novo com sinal.","erro")})
+ .then(function(){if(FOTO.blob!==blob)return;FOTO.enviando=false;fotoBotoes();botao()})}
+$("fotoin").addEventListener("change",function(){var f=this.files&&this.files[0],alvo=FOTO.alvo;if(!f||!alvo)return;
+ var agora=Date.now(),lm=f.lastModified||agora;
+ if(agora-lm>FOTO_IDADE_MAX){var dh=fotoDH(new Date(lm));fotoAvisoAbre();fotoMsg("Essa imagem é de "+dh.data+" às "+dh.hora+", não da visita de agora. Use a câmera na hora da visita para a legenda sair com a data e a hora certas.","erro");$("fotoimg").hidden=true;FOTO.blob=null;$("fotoshare").hidden=true;$("fotosalva").hidden=true;$("fotodrive").hidden=true;return}
+ var quando=new Date(Math.min(lm,agora)),p=alvo.p,razao=String(p.nome||"").trim()||"Razão social não informada";
+ fotoAvisoAbre();$("fotoimg").hidden=true;fotoMsg("Preparando a foto…","");["fotoshare","fotosalva","fotodrive"].forEach(function(i){$(i).hidden=true});
+ fotoMonta(f,razao,quando).then(function(b){var dh=fotoDH(quando);
+   if(FOTO.url)URL.revokeObjectURL(FOTO.url);
+   FOTO.blob=b;FOTO.nome=fotoNome(razao,quando);FOTO.enviada=false;FOTO.enviando=false;FOTO.url=URL.createObjectURL(b);
+   FOTO.desc=["Visita: "+razao,cnpjDe(p)?"CNPJ: "+cnpjDe(p):"",p.cidade?"Município: "+p.cidade+"/MG":"","Data: "+dh.data+" "+dh.hora].filter(Boolean).join("\n");
+   var im=$("fotoimg");im.src=FOTO.url;im.hidden=false;$("fotosalva").hidden=false;
+   if(!VISITA[alvo.ck]&&alvo.setVis)alvo.setVis(hojeISO());
+   fotoBotoes();
+   if(conectado()&&navigator.onLine!==false)fotoEnviar();
+   else fotoMsg("Foto pronta. "+(navigator.onLine===false?"Sem internet: salve no aparelho agora.":"Salve no aparelho ou envie ao Drive."),"")},
+  function(){fotoMsg("Não consegui abrir a foto. Tente tirar de novo.","erro")})});
+function fotoAvisoAbre(){var d=$("dlgfoto");if(!d.open){if(d.showModal)d.showModal();else d.setAttribute("open","")}}
+$("fotox").addEventListener("click",function(){$("dlgfoto").close()});
+$("fotosalva").addEventListener("click",function(){if(!FOTO.blob)return;var a=document.createElement("a");a.href=FOTO.url;a.download=FOTO.nome;document.body.appendChild(a);a.click();a.remove();
+ if(!FOTO.enviada&&!FOTO.enviando)fotoMsg("Foto salva no aparelho ("+FOTO.nome+").","ok")});
+$("fotoshare").addEventListener("click",function(){if(!FOTO.blob)return;var fl=new File([FOTO.blob],FOTO.nome,{type:"image/jpeg"});
+ navigator.share({files:[fl],title:FOTO.nome}).catch(function(e){if(e&&e.name!=="AbortError")fotoMsg("Não consegui compartilhar. Use “Salvar no aparelho”.","erro")})});
+$("fotodrive").addEventListener("click",fotoEnviar);
+$("fotonova").addEventListener("click",function(){if(!FOTO.alvo)return;$("dlgfoto").close();var i=$("fotoin");i.value="";i.click()});
 
 /* Downloads (CSV e backup) */
 function arqMsg(t){$("arqmsg").textContent=t}
