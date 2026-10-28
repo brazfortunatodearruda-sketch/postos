@@ -281,7 +281,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=21;
+var VERSAO_APP=22;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -813,7 +813,7 @@ function contar(s){var n=0;Object.keys(LS).forEach(function(k){if(s&&s[k])n+=Obj
 function aplicaEstado(s,mesclar){var m=mapas(),n=0;
  Object.keys(m).forEach(function(k){var src=(s&&typeof s[k]==="object"&&s[k])||{};
   if(!mesclar)Object.keys(m[k]).forEach(function(x){delete m[k][x]});
-  Object.keys(src).forEach(function(x){var v=src[x];if(!/^\d{8,14}(:(\d{6,13}|[A-Za-z]{2,20}))?$/.test(x))return;
+  Object.keys(src).forEach(function(x){var v=src[x];if(!/^(\d{8,14}|iris\d{1,10})(:(\d{6,13}|[A-Za-z]{2,20}))?$/.test(x))return;
    if(v===true)v=1;if(v===1||(typeof v==="string"&&v.length>0&&v.length<=400)){m[k][x]=v;n++}});
   try{localStorage.setItem(LS[k],JSON.stringify(m[k]))}catch(e){}});
  listaRedes();listaForn();filtrar();return n}
