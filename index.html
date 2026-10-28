@@ -33,7 +33,7 @@ input[type=number]{font:1rem var(--fonte);padding:8px 10px;width:110px;border:1p
 .nota{color:var(--suave);font-size:.85rem;margin:0;flex:1 1 260px}
 td.arla{font-weight:600}
 td.tel{white-space:nowrap}td.tel a{display:block}td.tel a.wa{display:inline}
-.fone{margin-bottom:6px}.fone .wa{font-size:.82rem;margin-right:6px}
+.fone{margin-bottom:6px}.fone .wa{font-size:.82rem;margin-right:6px}.fone .ligar{white-space:nowrap}
 .fone select{font:.8rem var(--fonte);padding:2px 4px;width:auto;border-radius:4px}
 .fone select.sim{border-color:var(--acento);color:var(--acento);font-weight:600}.fone select.nao{color:var(--erro)}
 .tipo{font-size:.72rem;color:var(--suave);margin-left:4px}
@@ -258,7 +258,7 @@ button.mais{display:block;margin:0 auto}
 <p>Em linha reta, a partir do centro de Vespasiano. Pela estrada costuma ser de 20% a 40% maior; o link "rota" abre o trajeto no Google Maps.</p>
 <h3>Telefones e WhatsApp</h3>
 <p>Os telefones da sua agenda aparecem primeiro (passe o mouse sobre o nome do contato para ver a observação). O telefone da Receita Federal aparece embaixo, em cinza, e pode ser o do escritório de contabilidade. Em "Editar telefones" você corrige ou remove números e acrescenta os contatos da visita, que aparecem no bloco Visita.</p>
-<p>Para testar o WhatsApp, clique em "WhatsApp" ao lado do número: se abrir a conversa, o número tem conta; se aparecer "número inválido", não tem. Depois marque o resultado na caixinha.</p>
+<p>Para testar o WhatsApp, clique em "WhatsApp" ao lado do número: se abrir a conversa, o número tem conta; se aparecer "número inválido", não tem. Depois marque o resultado na caixinha. No celular, tocar no número abre direto a conversa no WhatsApp; para fazer uma ligação comum, use "📞 Ligar" ao lado. Números marcados como "não tem" WhatsApp voltam a ligar ao toque.</p>
 <h3>Perfil do posto</h3>
 <p>Rodoviário, misto ou urbano. Começa estimado pela página: rodoviário quando o endereço é de rodovia (BR, km, anel rodoviário, zona rural) e o diesel ocupa pelo menos metade da tancagem; urbano quando o endereço é na cidade e o diesel fica abaixo de 35% da tancagem, ou quando a observação da agenda diz "urbano"; misto nos demais casos. Passe o mouse sobre o campo para ver o motivo. Na visita, escolha o perfil real no campo Perfil, logo abaixo da razão social: ele passa a valer no filtro "Perfil do Posto" e na planilha.</p>
 <h3>Visita e consumo de Arla</h3>
@@ -295,7 +295,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=23;
+var VERSAO_APP=24;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -465,6 +465,9 @@ function marca(obj,ch,k,v){carimbo(k,CAMPO[ch],v?1:"",obj[k]?1:"");if(v)obj[k]=1
 function caixa(txt,obj,ch,k,quando){var l=document.createElement("label");l.className="chk";var i=document.createElement("input");i.type="checkbox";i.checked=!!obj[k];
  i.addEventListener("change",function(){marca(obj,ch,k,i.checked);if(ch==="postos_rede")opRede();if(quando)quando(i.checked)});l.appendChild(i);l.appendChild(document.createTextNode(txt));if(CAMPO[ch])l.appendChild(dtSpan(k,CAMPO[ch]));return l}
 function waTxt(t){var v=waGet(t);return !t?"":v==="sim"?"tem":v==="nao"?"não tem":"não testado"}
+/* No celular, tocar no número abre o WhatsApp; só liga direto quando o número está marcado "não tem" WhatsApp */
+var CELULAR=!!(window.matchMedia&&matchMedia("(pointer:coarse)").matches);
+function foneHref(a,dg,t){var wa=CELULAR&&waGet(t)!=="nao";a.href=wa?"https://wa.me/55"+dg:"tel:"+dg;if(wa){a.target="_blank";a.rel="noopener";a.title="Abre a conversa no WhatsApp"}else{a.removeAttribute("target");a.title=CELULAR?"Número marcado sem WhatsApp: toque para ligar":""}}
 function tipoFone(t){t=String(t||"").replace(/\D/g,"");if(t.length===11&&t[2]==="9")return "celular";if(t.length===10)return /[6-9]/.test(t[2])?"celular antigo":"fixo";return ""}
 function cnpj(c){return c.slice(0,2)+"."+c.slice(2,5)+"."+c.slice(5,8)+"/"+c.slice(8,12)+"-"+c.slice(12)}
 var NOMES={"ABAETE":"Abaeté","ALVINOPOLIS":"Alvinópolis","ALVORADA DE MINAS":"Alvorada de Minas","ANTONIO DIAS":"Antônio Dias","ARACAI":"Araçaí","ARAUJOS":"Araújos","ARAXA":"Araxá","ARCOS":"Arcos","AUGUSTO DE LIMA":"Augusto de Lima","BALDIM":"Baldim","BARAO DE COCAIS":"Barão de Cocais","BELA VISTA DE MINAS":"Bela Vista de Minas","BELO HORIZONTE":"Belo Horizonte","BELO VALE":"Belo Vale","BETIM":"Betim","BIQUINHAS":"Biquinhas","BOCAIUVA":"Bocaiúva","BOM DESPACHO":"Bom Despacho","BOM JESUS DO AMPARO":"Bom Jesus do Amparo","BONFIM":"Bonfim","BRUMADINHO":"Brumadinho","BUENOPOLIS":"Buenópolis","CACHOEIRA DA PRATA":"Cachoeira da Prata","CAETANOPOLIS":"Caetanópolis","CAETE":"Caeté","CAMPOS ALTOS":"Campos Altos","CAPIM BRANCO":"Capim Branco","CARANDAI":"Carandaí","CARMO DA MATA":"Carmo da Mata","CARMOPOLIS DE MINAS":"Carmópolis de Minas","CATAS ALTAS":"Catas Altas","CATAS ALTAS DA NORUEGA":"Catas Altas da Noruega","CENTRALINA":"Centralina","CLAUDIO":"Cláudio","CONCEICAO DO MATO DENTRO":"Conceição do Mato Dentro","CONFINS":"Confins","CONGONHAS":"Congonhas","CONSELHEIRO LAFAIETE":"Conselheiro Lafaiete","CONTAGEM":"Contagem","CORINTO":"Corinto","CURVELO":"Curvelo","DESTERRO DE ENTRE RIOS":"Desterro de Entre Rios","DIVINOPOLIS":"Divinópolis","ENTRE RIOS DE MINAS":"Entre Rios de Minas","ESMERALDAS":"Esmeraldas","FELIXLANDIA":"Felixlândia","FORMIGA":"Formiga","IBIRITE":"Ibirité","IGARAPE":"Igarapé","IGUATAMA":"Iguatama","INIMUTABA":"Inimutaba","IPATINGA":"Ipatinga","ITABIRA":"Itabira","ITABIRITO":"Itabirito","ITAGUARA":"Itaguara","ITAPECERICA":"Itapecerica","ITATIAIUCU":"Itatiaiuçu","ITAUNA":"Itaúna","ITAVERAVA":"Itaverava","JEQUITIBA":"Jequitibá","JOAO MONLEVADE":"João Monlevade","JUATUBA":"Juatuba","LAGOA DA PRATA":"Lagoa da Prata","LAGOA SANTA":"Lagoa Santa","LAVRAS":"Lavras","LUZ":"Luz","MARAVILHAS":"Maravilhas","MARIANA":"Mariana","MARTINHO CAMPOS":"Martinho Campos","MATEUS LEME":"Mateus Leme","MATOZINHOS":"Matozinhos","MONTES CLAROS":"Montes Claros","MORADA NOVA DE MINAS":"Morada Nova de Minas","MORRO DO PILAR":"Morro do Pilar","NOVA LIMA":"Nova Lima","NOVA SERRANA":"Nova Serrana","NOVA UNIAO":"Nova União","OURO BRANCO":"Ouro Branco","OURO PRETO":"Ouro Preto","PAPAGAIOS":"Papagaios","PARA DE MINAS":"Pará de Minas","PARAOPEBA":"Paraopeba","PATOS DE MINAS":"Patos de Minas","PEDRA DO INDAIA":"Pedra do Indaiá","PEDRO LEOPOLDO":"Pedro Leopoldo","PITANGUI":"Pitangui","POMPEU":"Pompéu","RAPOSOS":"Raposos","RIBEIRAO DAS NEVES":"Ribeirão das Neves","RIO ACIMA":"Rio Acima","SABARA":"Sabará","SANTA BARBARA":"Santa Bárbara","SANTA LUZIA":"Santa Luzia","SANTANA DO RIACHO":"Santana do Riacho","SANTO ANTONIO DO ITAMBE":"Santo Antônio do Itambé","SANTO ANTONIO DO MONTE":"Santo Antônio do Monte","SANTO HIPOLITO":"Santo Hipólito","SAO BRAS DO SUACUI":"São Brás do Suaçuí","SAO GONCALO DO RIO ABAIXO":"São Gonçalo do Rio Abaixo","SAO JOAQUIM DE BICAS":"São Joaquim de Bicas","SAO JOSE DA LAPA":"São José da Lapa","SAO JOSE DO GOIABAL":"São José do Goiabal","SARZEDO":"Sarzedo","SERRA AZUL DE MINAS":"Serra Azul de Minas","SETE LAGOAS":"Sete Lagoas","TRES MARIAS":"Três Marias","VESPASIANO":"Vespasiano"};
@@ -682,15 +685,16 @@ function filtrar(){
   tr.appendChild(bd);tr.appendChild(e);
   var tc=td("","tel");var vistos=[];function addF(t,alvo,orig){if(t&&vistos.indexOf(t)<0){vistos.push(t);var dg=t.replace(/\D/g,"");
    var bx=document.createElement("div");bx.className="fone";
-   var x=document.createElement("a");x.href="tel:"+dg;x.textContent=t;var tp=tipoFone(t);
+   var x=document.createElement("a");x.className="num";x.setAttribute("data-t",dg);foneHref(x,dg,t);x.textContent=t;var tp=tipoFone(t);
    if(tp){var sp=document.createElement("span");sp.className="tipo";sp.textContent=tp;x.appendChild(sp)}bx.appendChild(x);
    if(orig&&orig!==t){var cg=document.createElement("span");cg.className="tipo corr";cg.textContent="corrigido";cg.title="Número original: "+orig;bx.appendChild(cg);bx.appendChild(document.createTextNode(" "))}
    var w=document.createElement("a");w.className="wa";w.target="whatsapp";w.rel="noopener";w.textContent="WhatsApp";
-   w.href="https://web.whatsapp.com/send?phone=55"+dg;w.title="Abre o WhatsApp Web (sempre na mesma aba) para testar se este número tem conta";bx.appendChild(w);
+   w.href=CELULAR?"https://wa.me/55"+dg:"https://web.whatsapp.com/send?phone=55"+dg;w.title=CELULAR?"Abre a conversa no WhatsApp":"Abre o WhatsApp Web (sempre na mesma aba) para testar se este número tem conta";
+   if(CELULAR){var lg=document.createElement("a");lg.className="wa ligar";lg.href="tel:"+dg;lg.textContent="📞 Ligar";lg.title="Faz uma ligação comum para este número";bx.appendChild(lg)}else bx.appendChild(w);
    var sl=document.createElement("select");sl.setAttribute("aria-label","WhatsApp do número "+t);
    [["","não testado"],["sim","tem WhatsApp"],["nao","não tem"]].forEach(function(o){var op=document.createElement("option");op.value=o[0];op.textContent=o[1];sl.appendChild(op)});
    sl.value=waGet(t);sl.className=sl.value;
-   sl.addEventListener("change",function(){carimbo(ck,"whatsapp",1,0);waSet(t,sl.value);document.querySelectorAll(".fone select[data-t='"+dg+"']").forEach(function(o){o.value=sl.value;o.className=sl.value})});
+   sl.addEventListener("change",function(){carimbo(ck,"whatsapp",1,0);waSet(t,sl.value);document.querySelectorAll(".fone select[data-t='"+dg+"']").forEach(function(o){o.value=sl.value;o.className=sl.value});document.querySelectorAll(".fone a.num[data-t='"+dg+"']").forEach(function(a){foneHref(a,dg,t)})});
    sl.setAttribute("data-t",dg);bx.appendChild(sl);alvo.appendChild(bx)}}
   if(EDITANDO[ck]){tc.appendChild(editorFones(p,ck))}else{
   var nv=novos(ck);
