@@ -199,7 +199,7 @@ button.mais{display:block;margin:0 auto}
  </div>
  <div class="filtros filtros2">
   <label class="campo">Tipo de Cliente
-   <select id="ftipo"><option value="">Todos</option><option value="revendedor">Revendedores (postos)</option><option value="consumidor">Consumidores (frotas)</option><option value="excluidos">Apagados (lixeira)</option></select></label>
+   <select id="ftipo"><option value="">Todos</option><option value="revendedor">Revendedores (postos)</option><option value="consumidor">Consumidores (frotas)</option><option value="iris">Clientes da carteira (Iris)</option><option value="irischurn">Sem compra no mês (comprou no anterior)</option><option value="irisparado">Sem compra no mês</option><option value="irisnovo">Criados pelo Iris (completar cadastro)</option><option value="excluidos">Apagados (lixeira)</option></select></label>
   <label class="campo">Capital social (consumidores)
    <select id="fcap"><option value="">Todos</option><option value="acima">R$ 150 mil ou mais</option><option value="abaixo">Abaixo de R$ 150 mil</option><option value="__sem">Capital não informado</option></select></label>
   <label class="campo">CNPJ
@@ -266,8 +266,10 @@ button.mais{display:block;margin:0 auto}
 <p>Na mesma pasta podem ficar <b>postos-carteira.json</b>, <b>postos-agenda.json</b> e <b>postos-anp.json</b>. Quando um deles é trocado, o app baixa a versão nova ao conectar e mostra o botão “Recarregar com as bases novas”. Sem esses arquivos, valem as bases que vêm dentro do app.</p>
 <h3>Carga Iris (vendas)</h3>
 <p>No alto da tela, o quadro mostra o resultado do mês no relatório Iris: Volume (realizado × orçado, em litros), Margem (margem unitária realizada × meta, em R$ por litro) e Churn (churn de clientes × meta, com o atingimento calculado pelo próprio Iris). A data é a da atualização do relatório. Toque em <b>Carga Iris</b> e escolha o arquivo Relatorio_Vendedor_Externo (Excel) baixado do Iris. O app liga cada cliente do relatório ao cadastro pelo código de cliente e mostra, abaixo do nome, o volume do mês, do mês anterior e do ano, o preço médio, a margem, o prazo, a última compra, o faturamento do dia anterior e os títulos vencidos; "mês a mês" abre o volume de cada mês e, quando há várias lojas, o volume de cada uma. O selo laranja "Sem compra em …" indica quem comprou no mês anterior e ainda não comprou no mês (risco de churn). Com o Drive conectado, o relatório é gravado na pasta do app (postos-iris.json) e chega ao outro aparelho ao conectar. Cada nova carga substitui a anterior.</p>
+<h3>Mescla do Iris com o cadastro</h3>
+<p>A cada carga, o app liga os clientes do relatório Iris aos cadastros: primeiro pelo código de cliente; depois, para quem está sem código, pela razão social e pelo município (nos postos, cada loja do Iris vai para o posto da ANP da mesma cidade). Os ligados pelo nome mostram o aviso "Ligado ao Iris pelo nome": confira e grave o código no campo Cargo do Google Contatos. Clientes do Iris que não existem no app são criados com o código, a razão social e o município (tipo Revendedor quando o nome indica posto ou distribuidora; Consumidor nos demais); complete CNPJ, telefones e endereço. No filtro Tipo de Cliente: "Clientes da carteira (Iris)", "Sem compra no mês (comprou no anterior)", "Sem compra no mês" e "Criados pelo Iris". A exportação para o Google Contatos leva o código de cliente no campo Cargo. Postos clientes aparecem mesmo com potencial estimado abaixo de 3.000 L.</p>
 <h3>Atualizar agenda</h3>
-<p>Quando você corrigir contatos direto no Google Contatos, exporte-os (Google Contatos › Exportar › CSV do Google) e toque em <b>Atualizar agenda</b> para escolher o arquivo. O app liga cada contato ao posto pelo CNPJ (campo Empresa), pelo código de cliente no início do nome ou pela razão social com o marcador do município; os demais vão para os consumidores pelo CNPJ ou pelo nome. Contatos com o marcador Transp Cargas ou Trans Passag que ainda não existiam entram como consumidores novos. Telefones, e-mails e observações dos registros encontrados passam a ser os do arquivo; nos consumidores, se o CNPJ do contato (campo Empresa) ou o código de cliente (campo Cargo; na falta dele, número no início do nome) for diferente do cadastrado, o app troca pelo da agenda e avisa quais mudaram (nos postos, o CNPJ vem da ANP e só serve para ligar o contato ao posto); quem não aparece no arquivo mantém a agenda anterior, e as suas marcações não mudam. Com o Drive conectado, a agenda nova é gravada na pasta do app (postos-agenda.json e postos-consumidores.json) e chega ao outro aparelho ao conectar.</p>
+<p>Quando você corrigir contatos direto no Google Contatos, exporte-os (Google Contatos › Exportar › CSV do Google) e toque em <b>Atualizar agenda</b> para escolher o arquivo. O app liga cada contato ao posto pelo CNPJ (campo Empresa), pelo código de cliente no início do nome ou pela razão social com o marcador do município; os demais vão para os consumidores pelo CNPJ ou pelo nome. Contatos com o marcador Transp Cargas ou Trans Passag, ou com código de cliente (campo Cargo ou número no início do nome), que ainda não existiam entram como cadastros novos (revendedor quando o contato tem o marcador Revendedor). Telefones, e-mails e observações dos registros encontrados passam a ser os do arquivo; nos consumidores, se o CNPJ do contato (campo Empresa) ou o código de cliente (campo Cargo; na falta dele, número no início do nome) for diferente do cadastrado, o app troca pelo da agenda e avisa quais mudaram (nos postos, o CNPJ vem da ANP e só serve para ligar o contato ao posto); quem não aparece no arquivo mantém a agenda anterior, e as suas marcações não mudam. Com o Drive conectado, a agenda nova é gravada na pasta do app (postos-agenda.json e postos-consumidores.json) e chega ao outro aparelho ao conectar.</p>
 <h3>Sem internet</h3>
 <p>Depois de instalado e aberto uma vez com internet, o app abre e funciona sem sinal: filtros, busca e marcações. O que você preencher fica no aparelho e vai para o Drive quando a conexão voltar e o login estiver válido.</p>
 <h3>Planilha e Google Contatos</h3>
@@ -279,7 +281,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=20;
+var VERSAO_APP=21;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -465,7 +467,7 @@ var postos=DADOS.map(function(r){
  p.busca=sem([r[0],ct?"COD "+ct[0]:"",p.cnpj,p.nome,p.bandeira,p.endereco,p.bairro,p.mun,p.tel1,p.tel2,(r[12]||[])[0],(r[12]||[])[1]].concat(p.agenda.map(function(g){return g.nome+" "+g.email+" "+g.fones.join(" ")+" "+g.fones.map(function(t){return t.replace(/\D/g,"")}).join(" ")})).join(" "));
  return p});
 (B.consumidores||[]).forEach(function(r){var mun=r[5]||"";if(mun&&!NOMES[mun])NOMES[mun]=r[6]||mun;
- var p={tipo:"consumidor",ck:r[0],cnpj:r[1]?cnpj(r[1]):"",nome:r[2],bandeira:"",segmento:r[3]||"",endereco:r[4]||"",compl:"",bairro:"",mun:mun,cidade:r[6]||"",cep:r[7]||"",
+ var p={tipo:r[10]==="revendedor"?"revendedor":"consumidor",ck:r[0],cnpj:r[1]?cnpj(r[1]):"",nome:r[2],bandeira:"",segmento:r[3]||"",endereco:r[4]||"",compl:"",bairro:"",mun:mun,cidade:r[6]||"",cep:r[7]||"",
   lat:"",lon:"",vinculo:"",produtos:[],tel1:"",tel2:"",email:"",diesel:false,s10:false,tancDiesel:0,tancS10:0,bicosDiesel:0};
  p.agenda=(r[9]||[]).map(function(g){return {nome:g[0],fones:g[1].map(function(t){return fone(t.length===10&&/[6-9]/.test(t[2])?t.slice(0,2)+"9"+t.slice(2):t)}),email:g[2],obs:g[3],como:g[4]}});
  p.todos=[];p.agenda.forEach(function(g){g.fones.forEach(function(t){if(p.todos.indexOf(t)<0)p.todos.push(t)})});
@@ -495,6 +497,36 @@ var EXCL=marcas("postos_excluido"),SEPAR=marcas("postos_separado");
 function excluir(p){EXCL[p.ck]=1;carimbo(p.ck,"excluido",1,0);setLS("postos_excluido",EXCL);filtrar()}
 function restaurar(p){delete EXCL[p.ck];carimbo(p.ck,"excluido","","x");setLS("postos_excluido",EXCL);filtrar()}
 function separar(p){(p.unidos||[]).forEach(function(u){SEPAR[u.ck]=1});setLS("postos_separado",SEPAR);setTimeout(function(){location.reload()},600)}
+/* ---------- Mescla com o relatório Iris: liga pelo código, depois pelo nome e município; cria no app quem falta ---------- */
+var IRIS_LIG={cod:0,nome:0,criados:0};
+(function(){if(!IRIS||!IRIS.dados)return;
+ function cidK(t){return sem(t).replace(/[^A-Z]/g,"")}
+ function nk(t){return nomeChave(String(t||"").replace(/^\s*\d{3,6}(-\d+)?\s*-?\s*/,""))}
+ function casa(a,b){if(!a||!b)return 0;if(a===b)return 2;var ia=" "+a+" ",ib=" "+b+" ";return (b.split(" ").length>=2&&b.length>=12&&ia.indexOf(ib)>=0)||(a.split(" ").length>=3&&a.length>=12&&ib.indexOf(ia)>=0)?1:0}
+ var porCod={};postos.forEach(function(p){if(p.cart&&p.cart.ok)porCod[codN(p.cart.cod)]=p});
+ var idx=postos.filter(function(p){return !(p.cart&&p.cart.ok)}).map(function(p){return {p:p,ns:[p.nome,p.nomeAgenda].concat(p.agenda.map(function(g){return g.nome})).filter(Boolean).map(nk).filter(Boolean),c:cidK(p.cidade),usado:false}});
+ var m=mapas(),RE_POSTO=/\b(POSTO|POSTOS|COMBUSTIVEIS|COMBUSTIVEL|PETROLEO|DERIVADOS|ABASTECEDORA|ABASTECIMENTO|DISTRIBUIDORA|DISTRIBUICAO|LUBRIFICANTES|AUTOPOSTO)\b/;
+ function migra(de,para){if(de===para)return;Object.keys(m).forEach(function(n){var o=m[n];if(n==="whatsapp")return;Object.keys(o).forEach(function(k){if(k===de||k.indexOf(de+":")===0){var nk2=para+k.slice(de.length);if(!(nk2 in o))o[nk2]=o[k]}})})}
+ Object.keys(IRIS.dados).forEach(function(cod){var c=IRIS.dados[cod];if(!c.l||!c.l.length)return;
+  if(porCod[cod]){IRIS_LIG.cod++;return}
+  var key=nk(c.n),cands=idx.filter(function(x){return !x.usado&&x.ns.some(function(n){return casa(n,key)})});
+  var lig=[];
+  c.l.forEach(function(lj){var ck2=cidK(lj[1]);
+   var ja=lig.filter(function(y){return y.x.p.tipo==="consumidor"})[0];if(ja){ja.lojas.push(lj[0]);return}
+   var s=cands.filter(function(x){return x.c===ck2&&lig.every(function(y){return y.x!==x})});
+   if(!s.length&&cands.length===1&&cands[0].ns.some(function(n){return casa(n,key)===2}))s=cands;
+   if(!s.length)return;s.sort(function(a,b){return (b.ns.indexOf(key)>=0?1:0)-(a.ns.indexOf(key)>=0?1:0)});
+   var x=s[0],y=lig.filter(function(z){return z.x===x})[0];if(y)y.lojas.push(lj[0]);else lig.push({x:x,lojas:[lj[0]]})});
+  if(lig.length){IRIS_LIG.nome++;lig.forEach(function(y){var p=y.x.p;y.x.usado=true;
+    p.cart={cod:cod,lojas:p.tipo==="consumidor"?"":y.lojas.join(", "),ult:"",vol:0,ok:true,via:"nome"};p.busca+=" COD "+cod+" "+sem(c.n);migra("iris"+cod,p.ck)});return}
+  var princ=c.l.slice().sort(function(a,b){return b[7]-a[7]})[0],mun=sem(princ[1]).replace(/\s+/g," ").trim();if(mun&&!NOMES[mun])NOMES[mun]=titulo(princ[1]);
+  var tipo=RE_POSTO.test(sem(c.n))?"revendedor":"consumidor";
+  var p={tipo:tipo,ck:"iris"+cod,cnpj:"",nome:c.n,bandeira:"",segmento:"",endereco:"",compl:"",bairro:"",mun:mun,cidade:NOMES[mun]||titulo(princ[1]),cep:"",
+   lat:"",lon:"",vinculo:"",produtos:[],tel1:"",tel2:"",email:"",diesel:false,s10:false,tancDiesel:0,tancS10:0,bicosDiesel:0,agenda:[],todos:[],irisNovo:true,
+   cart:{cod:cod,lojas:tipo==="revendedor"?c.l.map(function(x){return x[0]}).join(", "):"",ult:"",vol:0,ok:true,via:"criado"}};
+  p.busca=sem([p.ck,"COD "+cod,cod,c.n,p.cidade,mun,"IRIS"].concat(c.l.map(function(x){return x[1]})).join(" "));
+  postos.push(p);IRIS_LIG.criados++})})();
+function irisMes(p){var ic=irisCli(p);if(!ic)return null;var mi=IRIS.resumo.mes;function soma(i){return ic.l.reduce(function(a,x){return a+(x[6][i]||0)},0)}return {at:soma(mi),an:soma(mi-1),ac:ic.l.reduce(function(a,x){return a+x[7]},0)}}
 postos.forEach(aplicaEnd);
 var PERF_TXT={rodoviario:"Rodoviário",misto:"Misto",urbano:"Urbano"};
 postos.forEach(function(p){if(p.tipo==="consumidor")return;var tot=p.produtos.reduce(function(a,x){return a+x.tanc},0),sh=tot?p.tancDiesel/tot:0;
@@ -518,7 +550,7 @@ function calcular(){var g=GIRO,pc=PCT;postos.forEach(function(p){var k=p.ck,v=vo
  var o=document.getElementById("ord"),porDist=o&&o.value==="dist";
  postos.sort(function(a,b){if(porDist){var x=a.dist==null?1e9:a.dist,y=b.dist==null?1e9:b.dist;if(x!==y)return x-y}
   return b.arla-a.arla||b.tancDiesel-a.tancDiesel||a.nome.localeCompare(b.nome)})}
-var MIN_ARLA=3000;calcular();postos=postos.filter(function(p){return p.tipo==="consumidor"||p.s10Est*1000*PCT/100>=MIN_ARLA});
+var MIN_ARLA=3000;calcular();postos=postos.filter(function(p){return p.tipo==="consumidor"||(p.cart&&p.cart.ok)||p.s10Est*1000*PCT/100>=MIN_ARLA});
 var atual=[],limite=60,ultChave="";
 function contaTxt(l){var r=0,c=0;l.forEach(function(p){if(p.tipo==="consumidor")c++;else r++});return [r?r+(r>1?" postos":" posto"):"",c?c+(c>1?" consumidores":" consumidor"):""].filter(Boolean).join(" e ")||"Nenhum registro"}
 function totalBase(){return contaTxt(postos.filter(function(p){return !EXCL[p.ck]}))+" na base. A lista aparece quando você escolhe um critério."}
@@ -537,7 +569,7 @@ function filtrar(){
  atual=postos.filter(function(p){
   if(d&&!p.diesel)return false;
   if(mu&&p.mun!==mu)return false;
-  var tv=$("ftipo").value;if(tv==="excluidos"){if(!EXCL[p.ck])return false}else{if(EXCL[p.ck])return false;if(tv&&p.tipo!==tv)return false}
+  var tv=$("ftipo").value;if(tv==="excluidos"){if(!EXCL[p.ck])return false}else{if(EXCL[p.ck])return false;if(tv==="iris"){if(!irisCli(p))return false}else if(tv==="irischurn"||tv==="irisparado"){var im=irisMes(p);if(!im||im.at>0||(tv==="irischurn"&&!(im.an>0)))return false}else if(tv==="irisnovo"){if(!p.irisNovo)return false}else if(tv&&p.tipo!==tv)return false}
   var nv=$("fcnpj").value;if(nv==="baixado"||nv==="rj"||nv==="regular"){var si=sitInfo(p);if(nv==="baixado"&&!(si&&si.baixado))return false;if(nv==="rj"&&!(si&&si.rj))return false;if(nv==="regular"&&!(si&&!si.baixado&&!si.esp))return false}
   else if(nv){var tc=temCnpj(p);if(nv==="sem"?tc&&!CNPJ_SESSAO[p.ck]:!tc)return false}
   var kv=$("fcap").value;if(kv){if(p.tipo!=="consumidor")return false;var kn=capNum(p.ck);if(kv==="__sem"?kn!=null:kn==null||(kv==="acima"?kn<CORTE_CAPITAL:kn>=CORTE_CAPITAL))return false}
@@ -983,15 +1015,15 @@ function contatosDoCSV(txt){var L=lerCSV(txt);if(L.length<2)return null;var H=L[
   var cnpjs=[];(org+" "+nome+" "+notas+" "+cargo).replace(/\d[\d.\/\-\s]{12,20}\d/g,function(m){var d=dig(m);if(d.length===14&&cnpjOk(d)&&cnpjs.indexOf(d)<0)cnpjs.push(d);return m});
   var fst=v(r,"First Name")||v(r,"Given Name"),rest=[v(r,"Middle Name")||v(r,"Additional Name"),v(r,"Last Name")||v(r,"Family Name")].filter(Boolean).join(" ");
   var razao=org&&dig(org).length<8?org.replace(/^CNPJ:?\s*/i,""):rest&&fst?rest:nome,pessoa=razao===nome?"":(org&&dig(org).length<8?nome:fst);
-  var cod=(String(cargo).match(/^\s*(\d{4,6})\b/)||String(nome).match(/^\s*(\d{4,6})\b/)||[])[1]||"";
-  return {nome:nome,razao:razao,pessoa:pessoa,org:org,cod:cod,notas:notas.replace(/https?:\/\/\S+/g,"").replace(/\s+/g," ").trim(),fones:fones,email:emails[0]||"",mun:mun,cidade:cid||NOMES[mun]||"",seg:seg,cnpjs:cnpjs,
+  var cod=(String(cargo).match(/^\s*(\d{4,6})\b/)||String(nome).match(/^\s*(\d{5,6})\b/)||[])[1]||"";
+  return {nome:nome,razao:razao,pessoa:pessoa,org:org,cod:cod,rev:marc.some(function(m){return sem(m)==="REVENDEDOR"}),notas:notas.replace(/https?:\/\/\S+/g,"").replace(/\s+/g," ").trim(),fones:fones,email:emails[0]||"",mun:mun,cidade:cid||NOMES[mun]||"",seg:seg,cnpjs:cnpjs,
    rua:partes(v(r,"Address 1 - Street"))[0]||"",cep:partes(v(r,"Address 1 - Postal Code"))[0]||""}}).filter(function(c){return c.nome||c.org})}
 function hashCk(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%9007199254;return String(1e12+h).slice(0,13)}
 function montarAgenda(cs){
  var anp={},porNome={},porCod={};DADOS.forEach(function(r){anp[r[0]]=r;porNome[r[6]+"|"+nomeChave(r[1])]=r[0]});
  Object.keys(CARTEIRA||{}).forEach(function(k){var c=String((CARTEIRA[k]||[])[0]||"").split(/[^0-9]/)[0];if(c)porCod[c]=k});
  var cons=(B.consumidores||[]).map(function(r){return r.slice()}),cK={},cN={};
- cons.forEach(function(r,i){if(r[1])cK[dig(r[1])]=i;cN[nomeChave(r[2])]=i;(r[9]||[]).forEach(function(g){if(g[0])cN[nomeChave(g[0])]=i})});
+ var cCod={};cons.forEach(function(r,i){if(r[8])cCod[codN(r[8])]=i;if(r[1])cK[dig(r[1])]=i;cN[nomeChave(r[2])]=i;(r[9]||[]).forEach(function(g){if(g[0])cN[nomeChave(g[0])]=i})});
  var ag={},novaAg={},novoCons={},novos=0,semPar=0,n={posto:0,cons:0},trocaCnpj=[],trocaCod=[];
  cs.forEach(function(c){
   var ck="",como="";
@@ -1000,14 +1032,16 @@ function montarAgenda(cs){
   if(!ck&&c.mun){[c.org,c.nome].some(function(s){var k=porNome[c.mun+"|"+nomeChave(s)];if(s&&k){ck=k;como="razão social e cidade";return true}})}
   if(ck){var nm=nomeChave(c.nome)===nomeChave(anp[ck][1])?"":c.nome;(novaAg[ck]=novaAg[ck]||[]).push([nm,c.fones,c.email,c.notas,como]);n.posto++;return}
   var i=-1;c.cnpjs.some(function(d){if(d in cK){i=cK[d];return true}});
-  if(i<0)[c.org,c.nome,c.razao].some(function(s){var k=nomeChave(s);if(s&&k in cN){i=cN[k];return true}});
+  if(i<0&&c.cod&&codN(c.cod) in cCod)i=cCod[codN(c.cod)];
+  if(i<0)[c.org,c.nome,c.razao].some(function(s){var k=nomeChave(s);if(s&&k in cN&&!/^(TRANSPORTES?|TRANSPORTADORA|LOGISTICA|POSTO|AUTO POSTO|COMERCIO|SERVICOS|MINERACAO|CONSTRUTORA|VIACAO|EMPRESA|CONTATO)$/.test(k)&&k.length>=4){i=cN[k];return true}});
   if(i>=0){var nc=c.cnpjs[0]||"",vc=dig(cons[i][1]||"");if(nc&&nc!==vc&&!(cK[nc]>=0&&cK[nc]!==i)){if(vc&&cK[vc]===i)delete cK[vc];cons[i][1]=nc;cK[nc]=i;trocaCnpj.push({ck:cons[i][0],nome:cons[i][2],de:vc,para:nc})}
    if(c.cod&&c.cod!==String(cons[i][8]||"")){trocaCod.push({nome:cons[i][2],de:String(cons[i][8]||""),para:c.cod});cons[i][8]=c.cod}
    (novoCons[i]=novoCons[i]||[]).push([c.nome,c.fones,c.email,c.notas,"contatos"]);n.cons++;return}
-  if(!c.seg){semPar++;return}
-  var cn=c.cnpjs[0]||"",razao=c.razao,key=cn||hashCk(nomeChave(razao)+"|"+c.mun);
-  var r=[key,cn,razao,c.seg,c.rua,c.mun,c.cidade,c.cep,c.cod,[[c.pessoa,c.fones,c.email,c.notas,"contatos"]]];
-  cons.push(r);i=cons.length-1;if(cn)cK[cn]=i;cN[nomeChave(razao)]=i;novos++});
+  if(!c.seg&&!c.cod){semPar++;return}
+  var cn=c.cnpjs[0]||"",razao=String(c.razao||"").replace(/^\s*\d{4,6}(-\d+)?\s*-?\s*/,"").trim();if(razao.length<3)razao=String(c.nome||c.org).replace(/^\s*\d{4,6}(-\d+)?\s*-?\s*/,"").trim()||c.nome;
+  var key=cn||hashCk(nomeChave(razao)+"|"+c.mun);
+  var r=[key,cn,razao,c.seg,c.rua,c.mun,c.cidade,c.cep,c.cod,[[c.pessoa,c.fones,c.email,c.notas,"contatos"]]];if(c.rev&&!c.seg)r[10]="revendedor";
+  cons.push(r);i=cons.length-1;if(cn)cK[cn]=i;cN[nomeChave(razao)]=i;if(c.cod)cCod[codN(c.cod)]=i;novos++});
  Object.keys(AGENDA||{}).forEach(function(k){ag[k]=AGENDA[k]});
  function unico(l){var v={};return l.filter(function(g){var s=JSON.stringify(g);if(v[s])return false;v[s]=1;return true})}
  Object.keys(novaAg).forEach(function(k){ag[k]=unico(novaAg[k])});
@@ -1065,6 +1099,8 @@ function vendasBox(p){var ic=irisCli(p);if(!ic)return null;var c=ic.c,l=ic.l,R=I
  function linha(h){var d=document.createElement("div");d.innerHTML=h;box.appendChild(d);return d}
  function e(t){return String(t).replace(/[&<>"]/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]})}
  linha('<span class="vtit">Vendas Iris</span> <span class="fraco">('+e(IRIS.data.slice(0,5))+')</span>');
+ if(p.irisNovo)linha('<span class="fraco">Cadastro criado pelo Iris'+(c.l.length>1?" ("+c.l.map(function(x){return "loja "+e(x[0])+" "+e(titulo(x[1]))}).join(", ")+")":"")+'. Complete CNPJ, telefones e endereço.</span>');
+ else if(p.cart.via==="nome")linha('<span class="fraco">Ligado ao Iris pelo nome'+(c.n?" ("+e(titulo(c.n))+")":"")+'. Confira e grave o código '+e(p.cart.cod)+' no Cargo do Google Contatos.</span>');
  var sel=document.createElement("span");
  if(at>0){sel.className="vsel";sel.textContent="Comprou em "+MESES[mi].toLowerCase()}
  else if(an>0){sel.className="vsel churn";sel.textContent="Sem compra em "+MESES[mi].toLowerCase()+" (comprou em "+MESES[mi-1].toLowerCase()+")"}
@@ -1091,13 +1127,10 @@ function irisPinta(){if(!IRIS){return}var R=IRIS.resumo;
  put("ir-vr",litros(R.volReal));put("ir-vm",litros(R.volMeta));put("ir-vp",pctTxt(R.volPct||(R.volMeta?R.volReal/R.volMeta:0)),nivel(R.volPct));
  var mp=R.margMeta?R.margReal/R.margMeta:0;put("ir-mr",reais(R.margReal,3));put("ir-mm",reais(R.margMeta,3));put("ir-mp",pctTxt(mp),nivel(mp));
  put("ir-cr",pctTxt(R.churnReal));put("ir-cm",pctTxt(R.churnMeta));put("ir-cp",pctTxt(R.churnAt),nivel(R.churnAt));
- var ach={},fora=[];postos.forEach(function(p){if(p.cart&&p.cart.ok)ach[codN(p.cart.cod)]=1});
- Object.keys(IRIS.dados).forEach(function(k){var c=IRIS.dados[k];if(!ach[k]&&c.l.some(function(x){return x[7]>0}))fora.push(titulo(c.n)+" ("+k+")")});
  var inf="Relatório Iris de "+IRIS.data+". Projeção do mês: "+litros(R.volProj)+" ("+pctTxt(R.volProjPct)+" da meta)."
   +(R.compAtual!=null?" Compradores: "+R.compAtual+" no mês, "+R.compAnt+" no mês anterior; "+R.perdidos+" perdidos.":"");
- var ii=$("irisinfo");ii.textContent=inf;
- if(fora.length){var f=document.createElement("span");f.textContent=" "+fora.length+(fora.length>1?" clientes com compra no ano não estão":" cliente com compra no ano não está")+" no app (toque para ver).";f.style.cursor="pointer";f.style.textDecoration="underline";
-  f.addEventListener("click",function(){$("irismsg").textContent="Sem cadastro no app: "+fora.join("; ")+"."});ii.appendChild(f)}}
+ inf+=" Mescla com o cadastro: "+IRIS_LIG.cod+" clientes ligados pelo código, "+IRIS_LIG.nome+" pelo nome e município e "+IRIS_LIG.criados+" criados no app (filtro Tipo de Cliente › Criados pelo Iris).";
+ $("irisinfo").textContent=inf}
 var XLSX_P=null;function carregaXlsx(){if(window.XLSX)return Promise.resolve();if(XLSX_P)return XLSX_P;
  XLSX_P=new Promise(function(ok,no){var sc=document.createElement("script");sc.src="xlsx.mini.min.js";sc.onload=function(){ok()};sc.onerror=function(){XLSX_P=null;no()};document.head.appendChild(sc)});return XLSX_P}
 $("iris").addEventListener("click",function(){$("irisin").value="";$("irisin").click()});
@@ -1105,12 +1138,10 @@ $("irisin").addEventListener("change",function(){var f=this.files&&this.files[0]
  carregaXlsx().then(function(){return f.arrayBuffer()}).then(function(buf){var o=irisLer(XLSX.read(buf,{type:"array"}));
   if(!o){msg.textContent="Esse arquivo não parece o Relatório Vendedor Externo do Iris (faltam as abas Consolidado ou Carteira de Clientes-Analitico).";return}
   var txt=JSON.stringify(o);if(!lsSet("base_iris",txt)){msg.textContent="Sem espaço neste aparelho para guardar o relatório.";return}
-  IRIS=o;irisPinta();filtrar();
-  var n=0;postos.forEach(function(p){if(irisCli(p))n++});
-  var res="Carga Iris feita: "+Object.keys(o.dados).length+" clientes no relatório, "+n+" ligados a cadastros do app.";
-  if(!conectado()||navigator.onLine===false){msg.textContent=res+" Vale neste aparelho até você conectar ao Drive e carregar de novo.";return}
+  var res="Carga Iris feita: "+Object.keys(o.dados).length+" clientes no relatório.",fim=function(x){msg.textContent=res+x+" Recarregando para mesclar com o cadastro…";setTimeout(function(){location.reload()},2000)};
+  if(!conectado()||navigator.onLine===false){fim(" Vale neste aparelho até você conectar ao Drive e carregar de novo.");return}
   msg.textContent=res+" Enviando ao Drive…";
-  gravarBaseDrive("postos-iris.json",txt).then(function(){msg.textContent=res+" Salvo no Drive: o outro aparelho recebe ao conectar."},function(){msg.textContent=res+" Não consegui enviar ao Drive; vale neste aparelho."})})
+  gravarBaseDrive("postos-iris.json",txt).then(function(){fim(" Salvo no Drive.")},function(){fim(" Não consegui enviar ao Drive; vale neste aparelho.")})})
  .catch(function(){msg.textContent="Não consegui ler o arquivo. Confira se é o Excel (.xlsx) do relatório e se há internet na primeira carga."})});
 $("atuag").addEventListener("click",function(){$("agin").value="";$("agin").click()});
 $("agin").addEventListener("change",function(){
@@ -1121,7 +1152,7 @@ $("agin").addEventListener("change",function(){
   var R=montarAgenda(cs),d=new Date(),hoje=String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear();
   var tA=JSON.stringify({tipo:"postos-agenda",data:hoje,dados:R.agenda}),tC=JSON.stringify({tipo:"postos-consumidores",data:hoje,dados:R.consumidores});
   if(!lsSet("base_agenda",tA)||!lsSet("base_consumidores",tC)){arqMsg("Sem espaço neste aparelho para guardar a agenda nova.");return}
-  var res="Agenda atualizada com "+cs.length+" contatos: "+R.postos+" postos, "+R.consAtual+" consumidores atualizados"+(R.novos?", "+R.novos+" consumidores novos":"")+(R.semPar?"; "+R.semPar+" contatos sem posto ou consumidor correspondente ficaram de fora":"")+"."
+  var res="Agenda atualizada com "+cs.length+" contatos: "+R.postos+" postos, "+R.consAtual+" consumidores atualizados"+(R.novos?", "+R.novos+" cadastros novos (marcador de transporte ou código de cliente no Cargo)":"")+(R.semPar?"; "+R.semPar+" contatos sem posto ou consumidor correspondente ficaram de fora":"")+"."
    +(R.trocaCnpj.length?" CNPJ corrigido pela agenda: "+R.trocaCnpj.map(function(t){return titulo(t.nome)+" ("+(t.de?cnpj(t.de):"sem CNPJ")+" → "+cnpj(t.para)+")"}).join("; ")+".":"")
    +(R.trocaCod.length?" Código de cliente atualizado pela agenda: "+R.trocaCod.map(function(t){return titulo(t.nome)+" ("+(t.de||"sem código")+" → "+t.para+")"}).join("; ")+".":"");
   R.trocaCnpj.forEach(function(t){carimbo(t.ck,"cnpj",t.para,t.de);if(CNPJINF[t.ck]){delete CNPJINF[t.ck];try{localStorage.setItem("postos_cnpj",JSON.stringify(CNPJINF))}catch(e){}}});
@@ -1175,7 +1206,7 @@ function consumidorGoogle(p){var c=contatoGoogle(p);
  return {nome:c.nome,org:c.org,rotulos:c.rotulos,notas:"Ficha comercial: "+c.ficha,fones:c.fones,emails:c.emails,
   end:{rotulo:"Trabalho",fmt:c.fmt,rua:c.rua,cidade:c.cidade,uf:"MG",cep:c.cep,bairro:c.bairro},site:["Ficha comercial",c.ficha],campos:[["CNPJ",c.cnpj]]}}
 function csvGoogle(lista){
- var cs=lista.map(function(p){return p.tipo==="consumidor"?consumidorGoogle(p):revendedorGoogle(p)});
+ var cs=lista.map(function(p){var c=p.tipo==="consumidor"?consumidorGoogle(p):revendedorGoogle(p);c.cargo=p.cart&&p.cart.ok?p.cart.cod:"";return c});
  function mx(f){return Math.max(1,Math.max.apply(null,cs.map(f)))}
  var ne=mx(function(c){return c.emails.length}),nf=mx(function(c){return c.fones.length}),nc=mx(function(c){return c.campos.length}),temSite=cs.some(function(c){return c.site});
  /* Cabeçalho completo do Google Contatos: com cabeçalho reduzido o Google joga tudo nas Observações */
@@ -1187,7 +1218,7 @@ function csvGoogle(lista){
  for(i=1;i<=nc;i++)cab.push("Custom Field "+i+" - Label","Custom Field "+i+" - Value");
  function q(v){v=String(v==null?"":v);return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
  var linhas=[cab.map(q).join(",")];
- cs.forEach(function(c){var e=c.end,r=[c.nome,"","","","","","","","","",c.org,"","","",c.notas,"",c.rotulos.concat(["* myContacts"]).join(" ::: ")];
+ cs.forEach(function(c){var e=c.end,r=[c.nome,"","","","","","","","","",c.org,c.cargo||"","","",c.notas,"",c.rotulos.concat(["* myContacts"]).join(" ::: ")];
   for(var i=0;i<ne;i++){var m=c.emails[i]||["",""];r.push(m[0],m[1])}
   for(i=0;i<nf;i++){var t=c.fones[i]||["",""];r.push(t[0],t[1])}
   if(e.rua||e.cidade)r.push(e.rotulo,e.fmt,e.rua,e.cidade,"",e.uf,e.cep,"Brasil",e.bairro);else r.push("","","","","","","","","");
