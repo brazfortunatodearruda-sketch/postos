@@ -291,7 +291,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Sem internet</h3>
 <p>Depois de instalado e aberto uma vez com internet, o app abre e funciona sem sinal: filtros, busca e marcações. O que você preencher fica no aparelho e vai para o Drive quando a conexão voltar e o login estiver válido.</p>
 <h3>Planilha e Google Contatos</h3>
-<p>"Baixar planilha (CSV)" exporta a lista atual com todas as informações. "Exportar para Google Contatos" gera um arquivo no formato do Google. Revendedores: nome = razão social, empresa = CNPJ, telefones, e-mails, endereço, marcador = município e os campos personalizados Bandeira, Perfil do Posto, Rede, Equipamento e Tancagem Arla. Consumidores: contato, telefones, e-mails, endereço, CNPJ e o link para a ficha. O Google cria sozinho um marcador "Importado em…"; depois de conferir, apague só o marcador e mantenha os contatos. Reimportar não atualiza contato existente: cria outro em duplicado. Use "só atualizados desde" para não repetir quem já foi importado, ou o botão "Google Contatos" na linha de um posto para exportar só ele. Importe o arquivo em contacts.google.com, opção Importar.</p>
+<p>"Baixar planilha (CSV)" exporta a lista atual com todas as informações. "Exportar para Google Contatos" gera um arquivo no formato do Google. Padrão (revendedores e consumidores): prefixo = nome do contato (o da visita ou o da agenda), nome = razão social, empresa = CNPJ, cargo = código de cliente do relatório Iris, e-mails, telefones, endereço, marcadores = município e Revendedor/Consumidor, e os campos personalizados preenchidos entre Equipamento, Tanque de Arla, Capital Social, Consumo de Arla, Consumo Mensal, Rota, Atual Fornecedor, Preço Praticado, Prazo, Periodicidade Entrega, Rede/Grupo e Bandeira (só revendedores). No computador, o botão "Google Contatos" de cada cliente gera o mesmo padrão só para ele; no celular, o botão compartilha pelo WhatsApp. O Google cria sozinho um marcador "Importado em…"; depois de conferir, apague só o marcador e mantenha os contatos. Reimportar não atualiza contato existente: cria outro em duplicado. Use "só atualizados desde" para não repetir quem já foi importado, ou o botão "Google Contatos" na linha de um posto para exportar só ele. Importe o arquivo em contacts.google.com, opção Importar.</p>
 <h3>Fontes</h3>
 <p>Postos revendedores autorizados pela ANP nos 107 municípios da sua lista de contatos (dados de <span class="d-anp"></span>). Códigos de cliente conforme a Carteira de Clientes de <span class="d-cart"></span>. Agenda exportada em <span class="d-ag"></span>.</p><p id="origem-bases" class="fraco"></p>
 </div></dialog>
@@ -304,7 +304,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=30;
+var VERSAO_APP=31;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -646,7 +646,7 @@ function filtrar(){
    cj.addEventListener("input",function(){CNPJ_SESSAO[p.ck]=1;txtSet(CNPJINF,"postos_cnpj",p.ck,dig(cj.value));cjPinta()});
    cj.addEventListener("change",function(){cj.value=cnpjDe(p);cjPinta()});
    rl=linkReceita(p,"");var gl=document.createElement("a");gl.className="receita-link google";gl.href=buscaGoogle(p);gl.target="busca";gl.rel="noopener";gl.textContent="Procurar CNPJ no Google";gl.title="Pesquisa o CNPJ pelo nome da empresa e cidade";s.appendChild(cj);s.appendChild(gl);s.appendChild(dtSpan(p.ck,"cnpj"));s.appendChild(cjm);s.appendChild(rl);cjPinta()}a.appendChild(s);if(RWS[p.ck])a.appendChild(painelReceita(p));
-  var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent=CELULAR?"📤 Compartilhar no WhatsApp":"Google Contatos";gb1.title=CELULAR?"Abre o WhatsApp para enviar os dados deste contato":"Baixa o contato deste posto para importar no Google Contatos";gb1.addEventListener("click",function(){if(CELULAR)compartilhaWA(p);else exportaUm(p)});a.appendChild(gb1);if(INAT[ck])tr.classList.add("inativo");
+  var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent=CELULAR?"📤 Compartilhar no WhatsApp":"Google Contatos";gb1.title=CELULAR?"Abre o WhatsApp para enviar os dados deste contato":"Baixa o contato no padrão do Google Contatos (prefixo = contato, nome = razão social, empresa = CNPJ, cargo = código Iris)";gb1.addEventListener("click",function(){if(CELULAR)compartilhaWA(p);else exportaUm(p)});a.appendChild(gb1);if(INAT[ck])tr.classList.add("inativo");
   a.appendChild(caixa("Inativo",INAT,"postos_inativo",ck,function(v){tr.classList.toggle("inativo",v);tr2.classList.toggle("inativo",v)}));
   if(p.unidos){var un=document.createElement("div");un.className="unidos";un.textContent="Unificado: "+[p.nomeAgenda||""].concat(p.unidos.map(function(u){return u.nome})).filter(Boolean).join(" + ");
    var sp=document.createElement("button");sp.type="button";sp.className="lnk";sp.textContent="Separar";sp.title="Desfaz a unificação e volta a mostrar os registros separados";
@@ -1151,6 +1151,7 @@ function contatosDoCSV(txt){var L=lerCSV(txt);if(L.length<2)return null;var H=L[
   var cnpjs=[];(org+" "+nome+" "+notas+" "+cargo).replace(/\d[\d.\/\-\s]{12,20}\d/g,function(m){var d=dig(m);if(d.length===14&&cnpjOk(d)&&cnpjs.indexOf(d)<0)cnpjs.push(d);return m});
   var fst=v(r,"First Name")||v(r,"Given Name"),rest=[v(r,"Middle Name")||v(r,"Additional Name"),v(r,"Last Name")||v(r,"Family Name")].filter(Boolean).join(" ");
   var razao=org&&dig(org).length<8?org.replace(/^CNPJ:?\s*/i,""):rest&&fst?rest:nome,pessoa=razao===nome?"":(org&&dig(org).length<8?nome:fst);
+  var pre=v(r,"Name Prefix");if(pre&&!pessoa&&!/^\d+$/.test(pre))pessoa=pre;
   var cod=(String(cargo).match(/^\s*(\d{4,6})\b/)||String(nome).match(/^\s*(\d{5,6})\b/)||[])[1]||"";
   return {nome:nome,razao:razao,pessoa:pessoa,org:org,cod:cod,rev:marc.some(function(m){return sem(m)==="REVENDEDOR"}),notas:notas.replace(/https?:\/\/\S+/g,"").replace(/\s+/g," ").trim(),fones:fones,email:emails[0]||"",mun:mun,cidade:cid||NOMES[mun]||"",seg:seg,cnpjs:cnpjs,
    rua:partes(v(r,"Address 1 - Street"))[0]||"",cep:partes(v(r,"Address 1 - Postal Code"))[0]||""}}).filter(function(c){return c.nome||c.org})}
@@ -1341,8 +1342,33 @@ function revendedorGoogle(p){var ck=ckOf(p),fones=[],emails=[];
 function consumidorGoogle(p){var c=contatoGoogle(p);
  return {nome:c.nome,org:c.org,rotulos:c.rotulos,notas:"Ficha comercial: "+c.ficha,fones:c.fones,emails:c.emails,
   end:{rotulo:"Trabalho",fmt:c.fmt,rua:c.rua,cidade:c.cidade,uf:"MG",cep:c.cep,bairro:c.bairro},site:["Ficha comercial",c.ficha],campos:[["CNPJ",c.cnpj]]}}
+/* Padrão Google Contatos (definido em 28/10/2026), para revendedores e consumidores:
+   Prefixo = nome próprio do contato · Nome = razão social · Empresa = CNPJ · Cargo = código de cliente do relatório Iris ·
+   E-mail · campos personalizados comerciais (só os preenchidos). */
+function pessoaDe(p){var ck=ckOf(p);if(FNOME[ck])return titulo(FNOME[ck]);
+ var rz=sem(p.nome).replace(/[^A-Z0-9 ]/g," ").split(/\s+/).filter(Boolean);
+ for(var i=0;i<p.agenda.length;i++){var n=String(p.agenda[i].nome||"").trim();if(!n||/^GERAL\b/i.test(sem(n)))continue;
+  var w=n.split(/\s+/),ws=w.map(function(x){return sem(x).replace(/[^A-Z0-9]/g,"")}),corte=w.length;
+  for(var j=0;j<ws.length;j++){if(rz.length>1&&ws[j]===rz[0]&&ws[j+1]===rz[1]){corte=j;break}if(rz.length===1&&ws[j]===rz[0]){corte=j;break}}
+  var s=w.slice(0,corte).join(" ").replace(/[\s\-–\/|]+$/,"").trim();if(s&&sem(s)!==sem(p.nome))return titulo(s)}
+ return ""}
+function padraoGoogle(p){var ck=ckOf(p),fones=[],emails=[],rev=p.tipo!=="consumidor";
+ function addT(t){var v=foneGC(t);if(v&&!fones.some(function(x){return x[1]===v}))fones.push([/^\(\d\d\) 9\d{4}-/.test(v)?"Mobile":"Work",v])}
+ function addE(e){e=String(e||"").trim().toLowerCase();if(/@/.test(e)&&!emails.some(function(x){return x[1]===e}))emails.push(["Work",e])}
+ novos(ck).forEach(addT);p.agenda.forEach(function(g){efList(p,g.fones).forEach(addT)});[foneEf(ck,p.tel1),foneEf(ck,p.tel2)].forEach(function(t){if(t)addT(t)});
+ p.agenda.forEach(function(g){addE(g.email)});addE(p.email);
+ var rua=[p.endereco,p.compl&&p.compl.length>1?p.compl:""].filter(function(x){return x&&String(x).trim()}).join(", "),uf="MG";
+ var fmt=[[rua,p.bairro].filter(Boolean).join(" - "),p.cidade?p.cidade+" - "+uf:uf,p.cep].filter(Boolean).join(", ");
+ function rs(v,d){v=String(v||"").trim();return v?"R$ "+v+(d||""):""}
+ var campos=[["Equipamento",EQ_TXT[EQUIP[ck]||""]||""],["Tanque de Arla",TANQ[ck]?TANQ[ck]+" L":""],["Capital Social",rs(CAPITAL[ck])],
+  ["Consumo de Arla",CONS_TXT[CONSUMO[ck]]||""],["Consumo Mensal",CMES[ck]?CMES[ck]+" L/mês":""],["Rota",rotaEf(p)],
+  ["Atual Fornecedor",FORN[ck]||""],["Preço Praticado",rs(PRECO[ck],"/L")],["Prazo",prazoEf(p)],["Periodicidade Entrega",PERIOD[ck]||""],
+  ["Rede/Grupo",REDE[ck]?(REDENOME[ck]||"Sim"):""],["Bandeira",rev?(BAND_GC[p.bandeira]||titulo(p.bandeira||"")):""]].filter(function(c){return String(c[1]).trim()});
+ return {prefixo:pessoaDe(p),nome:titulo(p.nome),org:cnpjDe(p),cargo:p.cart&&p.cart.ok?p.cart.cod:"",
+  rotulos:[p.cidade,rev?"Revendedor":"Consumidor"].filter(Boolean),notas:"",fones:fones,emails:emails,
+  end:{rotulo:"Work",fmt:fmt,rua:rua,cidade:p.cidade,uf:uf,cep:p.cep,bairro:p.bairro},site:null,campos:campos}}
 function csvGoogle(lista){
- var cs=lista.map(function(p){var c=p.tipo==="consumidor"?consumidorGoogle(p):revendedorGoogle(p);c.cargo=p.cart&&p.cart.ok?p.cart.cod:"";return c});
+ var cs=lista.map(padraoGoogle);
  function mx(f){return Math.max(1,Math.max.apply(null,cs.map(f)))}
  var ne=mx(function(c){return c.emails.length}),nf=mx(function(c){return c.fones.length}),nc=mx(function(c){return c.campos.length}),temSite=cs.some(function(c){return c.site});
  /* Cabeçalho completo do Google Contatos: com cabeçalho reduzido o Google joga tudo nas Observações */
@@ -1354,7 +1380,7 @@ function csvGoogle(lista){
  for(i=1;i<=nc;i++)cab.push("Custom Field "+i+" - Label","Custom Field "+i+" - Value");
  function q(v){v=String(v==null?"":v);return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
  var linhas=[cab.map(q).join(",")];
- cs.forEach(function(c){var e=c.end,r=[c.nome,"","","","","","","","","",c.org,c.cargo||"","","",c.notas,"",c.rotulos.concat(["* myContacts"]).join(" ::: ")];
+ cs.forEach(function(c){var e=c.end,r=[c.nome,"","","","","",c.prefixo||"","","","",c.org,c.cargo||"","","",c.notas,"",c.rotulos.concat(["* myContacts"]).join(" ::: ")];
   for(var i=0;i<ne;i++){var m=c.emails[i]||["",""];r.push(m[0],m[1])}
   for(i=0;i<nf;i++){var t=c.fones[i]||["",""];r.push(t[0],t[1])}
   if(e.rua||e.cidade)r.push(e.rotulo,e.fmt,e.rua,e.cidade,"",e.uf,e.cep,"Brasil",e.bairro);else r.push("","","","","","","","","");
