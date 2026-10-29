@@ -259,7 +259,7 @@ button.mais{display:block;margin:0 auto}
 <p>Em linha reta, a partir do centro de Vespasiano. Pela estrada costuma ser de 20% a 40% maior; o link "rota" abre o trajeto no Google Maps.</p>
 <h3>Telefones e WhatsApp</h3>
 <p>Os telefones da sua agenda aparecem primeiro (passe o mouse sobre o nome do contato para ver a observação). O telefone da Receita Federal aparece embaixo, em cinza, e pode ser o do escritório de contabilidade. Em "Editar telefones" você corrige ou remove números e acrescenta os contatos da visita, que aparecem no bloco Visita.</p>
-<p>Para testar o WhatsApp, clique em "WhatsApp" ao lado do número: se abrir a conversa, o número tem conta; se aparecer "número inválido", não tem. Depois marque o resultado na caixinha. No celular, tocar no número abre direto a conversa no WhatsApp; para fazer uma ligação comum, use "📞 Ligar" ao lado. Números marcados como "não tem" WhatsApp voltam a ligar ao toque.</p>
+<p>Para testar o WhatsApp, clique em "WhatsApp" ao lado do número: se abrir a conversa, o número tem conta; se aparecer "número inválido", não tem. Depois marque o resultado na caixinha. No celular, tocar no número abre direto a conversa no WhatsApp; para fazer uma ligação comum, use "📞 Ligar" ao lado. Números marcados como "não tem" WhatsApp voltam a ligar ao toque. Também no celular, o botão abaixo do nome vira "📤 Compartilhar no WhatsApp": ele abre o WhatsApp com razão social, contato, CNPJ, código de cliente, telefones, e-mail, endereço e link do mapa já escritos; é só escolher a conversa e enviar. No computador o botão continua sendo "Google Contatos".</p>
 <h3>Perfil do posto</h3>
 <p>Rodoviário, misto ou urbano. Começa estimado pela página: rodoviário quando o endereço é de rodovia (BR, km, anel rodoviário, zona rural) e o diesel ocupa pelo menos metade da tancagem; urbano quando o endereço é na cidade e o diesel fica abaixo de 35% da tancagem, ou quando a observação da agenda diz "urbano"; misto nos demais casos. Passe o mouse sobre o campo para ver o motivo. Na visita, escolha o perfil real no campo Perfil, logo abaixo da razão social: ele passa a valer no filtro "Perfil do Posto" e na planilha.</p>
 <h3>Visita e consumo de Arla</h3>
@@ -296,7 +296,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=25;
+var VERSAO_APP=26;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -615,7 +615,7 @@ function filtrar(){
    cj.addEventListener("input",function(){CNPJ_SESSAO[p.ck]=1;txtSet(CNPJINF,"postos_cnpj",p.ck,dig(cj.value));cjPinta()});
    cj.addEventListener("change",function(){cj.value=cnpjDe(p);cjPinta()});
    rl=linkReceita(p,"");var gl=document.createElement("a");gl.className="receita-link google";gl.href=buscaGoogle(p);gl.target="busca";gl.rel="noopener";gl.textContent="Procurar CNPJ no Google";gl.title="Pesquisa o CNPJ pelo nome da empresa e cidade";s.appendChild(cj);s.appendChild(gl);s.appendChild(dtSpan(p.ck,"cnpj"));s.appendChild(cjm);s.appendChild(rl);cjPinta()}a.appendChild(s);if(RWS[p.ck])a.appendChild(painelReceita(p));
-  var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent="Google Contatos";gb1.title="Baixa o contato deste posto para importar no Google Contatos";gb1.addEventListener("click",function(){exportaUm(p)});a.appendChild(gb1);if(INAT[ck])tr.classList.add("inativo");
+  var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent=CELULAR?"📤 Compartilhar no WhatsApp":"Google Contatos";gb1.title=CELULAR?"Abre o WhatsApp para enviar os dados deste contato":"Baixa o contato deste posto para importar no Google Contatos";gb1.addEventListener("click",function(){if(CELULAR)compartilhaWA(p);else exportaUm(p)});a.appendChild(gb1);if(INAT[ck])tr.classList.add("inativo");
   a.appendChild(caixa("Inativo",INAT,"postos_inativo",ck,function(v){tr.classList.toggle("inativo",v);tr2.classList.toggle("inativo",v)}));
   if(p.unidos){var un=document.createElement("div");un.className="unidos";un.textContent="Unificado: "+[p.nomeAgenda||""].concat(p.unidos.map(function(u){return u.nome})).filter(Boolean).join(" + ");
    var sp=document.createElement("button");sp.type="button";sp.className="lnk";sp.textContent="Separar";sp.title="Desfaz a unificação e volta a mostrar os registros separados";
@@ -1322,6 +1322,17 @@ $("gc").addEventListener("click",function(){
  var ds=$("desde").value,lista=atual.filter(function(p){return !ds||ultima(ckOf(p))>=ds});
  if(!lista.length){arqMsg(ds?"Nenhum posto da lista foi atualizado desde "+dtLonga(ds)+".":"Nenhum posto na lista.");return}
  baixar("google-contatos-"+hojeISO()+".csv",csvGoogle(lista),"text/csv;charset=utf-8").then(function(){var m=$("arqmsg").textContent;if(/salvo|baixado/.test(m))arqMsg(lista.length+" contato(s) no arquivo. Importe em contacts.google.com, opção Importar.")})});
+/* No celular, o botão do contato abre o WhatsApp com os dados prontos para enviar (você escolhe a conversa) */
+function textoContato(p){var c=contatoGoogle(p),l=["*"+c.org+"*"];
+ if(c.nome&&sem(c.nome)!==sem(c.org))l.push("Contato: "+c.nome);
+ if(c.cnpj)l.push("CNPJ: "+c.cnpj);
+ if(p.cart&&p.cart.ok&&p.cart.cod)l.push("Cód. cliente: "+p.cart.cod);
+ c.fones.forEach(function(f){l.push("📞 "+f[1]+(f[0]&&f[0]!=="Celular"?" ("+f[0]+")":""))});
+ c.emails.forEach(function(e){l.push("✉️ "+e[1])});
+ var end=endTxt(p);if(end)l.push("📍 "+end);
+ l.push("Mapa: https://www.google.com/maps/search/?api=1&query="+encodeURIComponent((p.endereco||p.nome)+", "+p.cidade+" MG"));
+ return l.join("\n")}
+function compartilhaWA(p){var a=document.createElement("a");a.href="https://wa.me/?text="+encodeURIComponent(textoContato(p));a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove()}
 function exportaUm(p){baixar("contato-"+nomeArq(p.nome)+".csv",csvGoogle([p]),"text/csv;charset=utf-8").then(function(){var m=$("arqmsg").textContent;if(/salvo|baixado/.test(m))arqMsg("Contato de "+titulo(p.nome)+" pronto. Importe em contacts.google.com, opção Importar.")})}
 /* Link direto para a ficha: ...#c<CNPJ> */
 function abreFicha(){var m=/^#c(\d{13,14})$/.exec(location.hash||"");if(!m)return false;$("mun").value="";$("wa").value="";$("q").value=m[1];return true}
