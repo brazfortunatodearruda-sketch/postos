@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b6b4f"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><title>Gestor de Carteira Arla 32</title><script src="config.js"></script><script src="dados.js?v=2"></script><script src="bases.js"></script><script src="https://accounts.google.com/gsi/client" async defer></script><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b6b4f"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><title>Gestor de Carteira Arla 32</title><script src="config.js"></script><script src="dados.js?v=2"></script><script src="bases.js"></script><script src="municipios.js"></script><script src="https://accounts.google.com/gsi/client" async defer></script><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <style>
 :root{--fundo:#f3f5f4;--papel:#fff;--texto:#17211d;--suave:#5b6963;--linha:#d5dcd8;
 --acento:#0b6b4f;--acento-texto:#fff;--erro:#a32222;
@@ -296,7 +296,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=26;
+var VERSAO_APP=27;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -559,6 +559,7 @@ function med(v){v=v.slice().sort(function(a,b){return a-b});var n=v.length;retur
  postos.forEach(function(p){var la=parseFloat(p.lat),lo=parseFloat(p.lon);if(isFinite(la)&&isFinite(lo)){(g[p.mun]=g[p.mun]||[]).push([la,lo])}});
  Object.keys(g).forEach(function(m){CENTRO[m]=CENTRO[m]||[med(g[m].map(function(x){return x[0]})),med(g[m].map(function(x){return x[1]}))]});
  postos.forEach(function(p){var la=parseFloat(p.lat),lo=parseFloat(p.lon),c=CENTRO[p.mun];p.coordAprox=false;
+  if(!c&&window.MUN_MG)c=MUN_MG[String(p.mun||sem(p.cidade||"")).replace(/[^A-Z]/g,"")];
   if(!(isFinite(la)&&isFinite(lo))||(c&&km(la,lo,c[0],c[1])>40)){if(c){la=c[0];lo=c[1];p.coordAprox=true}else{p.dist=null;return}}
   p.la=la;p.lo=lo;p.dist=km(VESP[0],VESP[1],la,lo)})})();
 function num(id,pad){var v=parseFloat(String($(id).value).replace(",","."));return isFinite(v)&&v>0?v:pad}
