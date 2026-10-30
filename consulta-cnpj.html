@@ -50,7 +50,7 @@
   .num { font-family: var(--mono); color: var(--suave); }
   .selo { font-size: .8rem; font-weight: 600; padding: 2px 10px; border-radius: 99px;
           border: 1px solid currentColor; white-space: nowrap; }
-  .selo.ok { color: var(--ok); } .selo.alerta { color: var(--alerta); } .selo.erro { color: var(--erro); }
+  .selo.ok { color: var(--ok); } dd.sit-ok { color: var(--ok); font-weight: 600; } dd.sit-mal { color: var(--erro); font-weight: 600; } .selo.alerta { color: var(--alerta); } .selo.erro { color: var(--erro); }
   dl { margin: 0; display: grid; grid-template-columns: minmax(110px, 170px) 1fr; gap: 6px 14px; }
   dt { color: var(--suave); font-size: .88rem; }
   dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
@@ -72,7 +72,7 @@
 <main>
   <header>
     <h1>Consulta de CNPJs</h1>
-    <p class="sub">Digite até três CNPJs. Os dados vêm da ReceitaWS. <a href="./" style="color:var(--acento);font-weight:600">← Voltar ao Gestor de Carteira</a></p>
+    <p class="sub">Digite até três CNPJs. Os dados vêm da ReceitaWS. <a href="./" style="color:var(--acento);font-weight:600">← Voltar ao Gestor de Carteira</a> · <a href="https://agricopel.portaldocliente.online/?redirect_url=%2Fdashboard" target="portalcliente" rel="noopener" style="color:var(--acento);font-weight:600">Portal do cliente</a></p>
   </header>
 
   <form id="form" novalidate>
@@ -281,7 +281,7 @@
     esq.appendChild(el("span", "num", d.cnpj || formatar(cnpj)));
     t.appendChild(esq);
     var sit = (d.situacao || "").toUpperCase();
-    t.appendChild(el("span", "selo " + (sit === "ATIVA" ? "ok" : "alerta"), d.situacao || "Situação não informada"));
+    t.appendChild(el("span", "selo " + (sit === "ATIVA" ? "ok" : "erro"), sit === "ATIVA" ? "ATIVA" : sit ? "INATIVA (" + sit + ")" : "Situação não informada"));
     var esp = String(d.situacao_especial || "").replace(/\*/g, "").trim();
     if (esp) t.appendChild(el("span", "selo alerta", /RECUPERA..O JUDICIAL/i.test(esp) ? "Em recuperação judicial" : esp));
     f.appendChild(t);
@@ -295,18 +295,23 @@
     var socios = (d.qsa || []).map(function (s) { return s.nome + (s.qual ? " (" + s.qual + ")" : ""); }).join("; ");
     var capital = d.capital_social ? "R$ " + Number(d.capital_social).toLocaleString("pt-BR", { minimumFractionDigits: 2 }) : "";
 
+    var rj = /RECUPERA..O JUDICIAL/i.test(esp);
+    var sitTxt = (sit === "ATIVA" ? "Ativa" : sit ? "Inativa (" + sit.toLowerCase() + ")" + (d.motivo_situacao ? " – " + d.motivo_situacao : "") : "Não informada")
+      + (d.data_situacao ? ", desde " + d.data_situacao : "")
+      + (rj ? " · EM RECUPERAÇÃO JUDICIAL" + (d.data_situacao_especial ? " desde " + d.data_situacao_especial : "") : esp ? " · " + esp : "");
     var linhas = [
+      ["Situação na Receita", sitTxt],
       ["Nome fantasia", d.fantasia], ["Abertura", d.abertura], ["Tipo", d.tipo], ["Porte", d.porte],
       ["Natureza jurídica", d.natureza_juridica], ["Atividade principal", ativ], ["Endereço", endereco],
       ["Telefone", d.telefone], ["E-mail", d.email], ["Capital social", capital], ["Sócios", socios],
-      ["Data da situação", d.data_situacao], ["Motivo da situação", sit !== "ATIVA" ? d.motivo_situacao : ""], ["Situação especial", esp ? esp + (d.data_situacao_especial ? " (desde " + d.data_situacao_especial + ")" : "") : ""], ["Atualizado em", d.ultima_atualizacao ? new Date(d.ultima_atualizacao).toLocaleDateString("pt-BR") : ""]
+      ["Atualizado em", d.ultima_atualizacao ? new Date(d.ultima_atualizacao).toLocaleDateString("pt-BR") : ""]
     ].filter(function (l) { return l[1]; });
 
     var dl = el("dl");
     var copia = [(d.nome || "") + " — " + (d.cnpj || formatar(cnpj)), "Situação: " + (d.situacao || "")];
     linhas.forEach(function (l) {
       dl.appendChild(el("dt", null, l[0]));
-      dl.appendChild(el("dd", null, l[1]));
+      dl.appendChild(el("dd", l[0] === "Situação na Receita" ? (sit === "ATIVA" && !esp ? "sit-ok" : "sit-mal") : null, l[1]));
       copia.push(l[0] + ": " + l[1]);
     });
     f.appendChild(dl);

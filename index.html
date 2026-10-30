@@ -47,7 +47,7 @@ tr.diesel td:first-child{box-shadow:inset 3px 0 0 var(--acento)}
 tr:last-child td{border-bottom:0}
 .fraco{color:var(--suave);font-size:.85rem}a{color:var(--acento)}
 .vazio{padding:24px;color:var(--suave)}
-.sitrec{display:block;width:max-content;max-width:100%;margin:3px 0;font-size:.78rem;font-weight:700;border-radius:4px;padding:1px 7px;color:#fff;background:var(--erro)}.sitrec.rj{background:#b45a00}
+.sitrec{display:block;width:max-content;max-width:100%;margin:3px 0;font-size:.78rem;font-weight:700;border-radius:4px;padding:1px 7px;color:#fff;background:var(--erro)}.sitrec.rj{background:#b45a00}.sitrec.ok{background:#0b6b4f}.pastacli{margin-top:4px;font-size:.8rem}.pastacli a{color:var(--acento);font-weight:600}.pastacli .rwserro{display:block}
 .cli{display:inline-block;margin-top:3px;font-size:.8rem;font-weight:600;color:var(--acento);border:1px solid var(--acento);border-radius:4px;padding:0 6px}
 .cli.grupo{font-weight:400;color:var(--suave);border-color:var(--linha)}
 .cliinfo{color:var(--suave);font-size:.78rem}
@@ -110,7 +110,7 @@ input.tanq{font:.85rem var(--fonte);width:100px;padding:3px 6px;text-align:right
 input.tanq.inf{border-color:var(--acento);font-weight:600}
 input.tanq.capital{width:130px}
 .topo-acoes{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-#lkreceita{font-size:.9rem;color:var(--acento);font-weight:600}
+#lkreceita,#lkportal{font-size:.9rem;color:var(--acento);font-weight:600}
 a.receita-link,button.receita-link{font-size:.75rem;color:var(--acento)}
 button.receita-link{background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;font-weight:600;display:block;margin-top:2px}
 button.receita-link[hidden],a.receita-link[hidden]{display:none}
@@ -187,7 +187,7 @@ button.mais{display:block;margin:0 auto}
 .vendas details summary{cursor:pointer;color:var(--acento)}.vendas .meses{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:0 10px}
 @media (max-width:600px){.iris{display:grid}.irisg{width:100%}.irisg th,.irisg td{padding:3px 6px;min-width:0;font-size:.82rem}.iris-lado{max-width:none}}
 </style><main>
-<header><div class="topo"><h1>Gestor de Carteira Arla 32 <span class="versao">versão <span id="vapp"></span></span></h1><span class="topo-acoes"><a id="lkreceita" href="consulta-cnpj.html" target="receitaws" rel="noopener">Consulta de CNPJs</a><button type="button" id="ajuda">Como funciona</button></span></div>
+<header><div class="topo"><h1>Gestor de Carteira Arla 32 <span class="versao">versão <span id="vapp"></span></span></h1><span class="topo-acoes"><a id="lkreceita" href="consulta-cnpj.html" target="receitaws" rel="noopener">Consulta de CNPJs</a><a id="lkportal" href="https://agricopel.portaldocliente.online/?redirect_url=%2Fdashboard" target="portalcliente" rel="noopener">Portal do cliente</a><button type="button" id="ajuda">Como funciona</button></span></div>
 <div id="destaque" class="destaque"><div class="iris">
  <table class="irisg" aria-label="Resultado do mês no relatório Iris"><thead><tr><th id="ir-data">DATA</th><th>Volume</th><th>Margem</th><th>Churn</th></tr></thead>
  <tbody><tr><th>Real</th><td id="ir-vr">—</td><td id="ir-mr">—</td><td id="ir-cr">—</td></tr>
@@ -213,7 +213,7 @@ button.mais{display:block;margin:0 auto}
   <label class="campo">Capital social (consumidores)
    <select id="fcap"><option value="">Todos</option><option value="acima">R$ 150 mil ou mais</option><option value="abaixo">Abaixo de R$ 150 mil</option><option value="__sem">Capital não informado</option></select></label>
   <label class="campo">CNPJ
-   <select id="fcnpj"><option value="">Todos</option><option value="sem">Sem CNPJ (para pesquisar)</option><option value="com">Com CNPJ</option><option value="baixado">Baixados/inaptos na Receita</option><option value="rj">Em recuperação judicial</option><option value="regular">Sem restrição na Receita</option></select></label>
+   <select id="fcnpj"><option value="">Todos</option><option value="sem">Sem CNPJ (para pesquisar)</option><option value="com">Com CNPJ</option><option value="regular">Ativos na Receita (sem restrição)</option><option value="baixado">Inativos na Receita (baixados, inaptos, suspensos)</option><option value="rj">Em recuperação judicial</option><option value="naoconsult">Situação na Receita não consultada</option></select></label>
   <label class="campo">Visita
    <select id="fvis"><option value="">Todos</option><option value="sim">Já visitados</option><option value="nao">Ainda não visitados</option></select></label>
   <label class="campo">Consumo de Arla
@@ -245,6 +245,8 @@ button.mais{display:block;margin:0 auto}
   <input type="file" id="agin" accept=".csv,text/csv" hidden>
   <label class="desde">só atualizados desde <input type="date" id="desde"></label>
   <button type="button" id="relpdf">Relatório (PDF)</button>
+  <button type="button" id="lotesit" title="Consulta na ReceitaWS a situação (ativa, inativa, recuperação judicial) de todos os clientes da lista, 3 por minuto">Situação na Receita (lista)</button>
+  <button type="button" id="lotepasta" title="Cria no Drive a pasta de cada cliente da lista; postos de rede ficam na pasta da rede">Criar pastas no Drive (lista)</button>
   <button type="button" id="bkp">Salvar arquivo de backup</button>
   <button type="button" id="carregar">Carregar arquivo de backup</button>
   <input type="file" id="arqin" accept=".json,application/json" hidden>
@@ -271,11 +273,15 @@ button.mais{display:block;margin:0 auto}
 <h3>Perfil do posto</h3>
 <p>Rodoviário, misto ou urbano. Começa estimado pela página: rodoviário quando o endereço é de rodovia (BR, km, anel rodoviário, zona rural) e o diesel ocupa pelo menos metade da tancagem; urbano quando o endereço é na cidade e o diesel fica abaixo de 35% da tancagem, ou quando a observação da agenda diz "urbano"; misto nos demais casos. Passe o mouse sobre o campo para ver o motivo. Na visita, escolha o perfil real no campo Perfil, logo abaixo da razão social: ele passa a valer no filtro "Perfil do Posto" e na planilha.</p>
 <h3>Visita e consumo de Arla</h3>
-<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). O botão "📷 Foto" abre a câmera do celular e grava na foto uma faixa com a razão social, a data e a hora em que ela foi tirada; se a data da visita estiver vazia, ela é preenchida com o dia. A foto pode ser salva no aparelho, compartilhada (WhatsApp, e-mail) e, com o Drive conectado, vai sozinha para a pasta "Fotos das visitas" dentro da pasta do app na BIOAR. Imagens antigas da galeria (mais de 15 minutos) não são aceitas, para que a legenda corresponda ao momento da visita. Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social, endereço, telefone e e-mail, com botões para levar esses dados ao cliente (o telefone da Receita entra no grupo "Receita Federal", com teste de WhatsApp, e só completa as vagas vazias). Para quem está sem CNPJ, use o filtro "CNPJ: Sem CNPJ" e o link "Procurar CNPJ no Google", que pesquisa pelo nome e cidade; cole o número no campo e use "Buscar na Receita" para conferir. Se o nome na Receita não bater com o cadastro, o app avisa. Toda consulta à Receita (pelo botão "Buscar na Receita" ou pela página Consulta de CNPJs) grava a situação do CNPJ no cliente: se estiver baixado, inapto ou suspenso, aparece um aviso vermelho logo abaixo do nome; se estiver em recuperação judicial, um aviso laranja. Passe o mouse sobre o aviso para ver a data da consulta. No filtro CNPJ, as opções "Baixados/inaptos na Receita", "Em recuperação judicial" e "Sem restrição na Receita" ajudam a definir a prioridade de visita; elas consideram só os clientes já consultados. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório (PDF)" segue o filtro da tela: com um município, busca ou filtro escolhido, sai um relatório de todos os clientes da lista (por exemplo, os consumidores de Congonhas), com tipo, CNPJ, endereço, telefones e as alterações de cada um; sem filtro, lista só os clientes que você alterou, com cada campo, valor e data. Preencha "só atualizados desde" para limitar as alterações ao período e, na janela de impressão, escolha "Salvar como PDF". "Apagar registro" (abaixo do nome) tira o registro da lista; ele vai para a lixeira, que você vê no filtro Tipo de Cliente → "Apagados (lixeira)", onde dá para restaurar. Empresas que vieram repetidas da agenda (vários contatos da mesma empresa) aparecem unificadas, com todos os contatos juntos; o app também unifica sozinho consumidores com o mesmo CNPJ. "Separar" desfaz uma unificação. Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
+<p>Abaixo do endereço, "Data da visita" registra quando você esteve no posto (o botão "Hoje" preenche a data do dia). O botão "📷 Foto" abre a câmera do celular e grava na foto uma faixa com a razão social, a data e a hora em que ela foi tirada; se a data da visita estiver vazia, ela é preenchida com o dia. A foto pode ser salva no aparelho, compartilhada (WhatsApp, e-mail) e, com o Drive conectado, vai sozinha para a pasta do cliente (ou da rede, nos postos de rede) em BIOAR › App Consulta de Postos › Clientes. Imagens antigas da galeria (mais de 15 minutos) não são aceitas, para que a legenda corresponda ao momento da visita. Abaixo dos telefones, "Consumo de Arla" indica se o posto trabalha a granel, embalado, os dois ou não vende, e "Consumo mensal de Arla" guarda quantos litros o cliente consome por mês. Nos consumidores, "Capital social (R$)" guarda o capital social da empresa. O botão "Editar endereço" abaixo do endereço permite corrigir rua, complemento, bairro e CEP (o município não muda); o endereço corrigido vale no mapa, na rota, na planilha e no Google Contatos. "Buscar na Receita", abaixo do CNPJ, consulta a ReceitaWS (limite de 3 consultas por minuto) e mostra situação, capital social, endereço, telefone e e-mail, com botões para levar esses dados ao cliente (o telefone da Receita entra no grupo "Receita Federal", com teste de WhatsApp, e só completa as vagas vazias). Para quem está sem CNPJ, use o filtro "CNPJ: Sem CNPJ" e o link "Procurar CNPJ no Google", que pesquisa pelo nome e cidade; cole o número no campo e use "Buscar na Receita" para conferir. Se o nome na Receita não bater com o cadastro, o app avisa. Toda consulta à Receita (pelo botão "Buscar na Receita" ou pela página Consulta de CNPJs) grava a situação do CNPJ no cliente: se estiver baixado, inapto ou suspenso, aparece um aviso vermelho logo abaixo do nome; se estiver em recuperação judicial, um aviso laranja. Passe o mouse sobre o aviso para ver a data da consulta. No filtro CNPJ, as opções "Baixados/inaptos na Receita", "Em recuperação judicial" e "Sem restrição na Receita" ajudam a definir a prioridade de visita; elas consideram só os clientes já consultados. O filtro "Capital social (consumidores)" usa a linha de corte de R$ 150 mil e mostra só consumidores; o campo de capital também avisa quando o valor está abaixo dela. "Relatório (PDF)" segue o filtro da tela: com um município, busca ou filtro escolhido, sai um relatório de todos os clientes da lista (por exemplo, os consumidores de Congonhas), com tipo, CNPJ, endereço, telefones e as alterações de cada um; sem filtro, lista só os clientes que você alterou, com cada campo, valor e data. Preencha "só atualizados desde" para limitar as alterações ao período e, na janela de impressão, escolha "Salvar como PDF". "Apagar registro" (abaixo do nome) tira o registro da lista; ele vai para a lixeira, que você vê no filtro Tipo de Cliente → "Apagados (lixeira)", onde dá para restaurar. Empresas que vieram repetidas da agenda (vários contatos da mesma empresa) aparecem unificadas, com todos os contatos juntos; o app também unifica sozinho consumidores com o mesmo CNPJ. "Separar" desfaz uma unificação. Quando o cadastro não traz o CNPJ, aparece um campo em branco para você digitar; o app confere os dígitos e passa a usar esse CNPJ na busca, na planilha e no Google Contatos. Os filtros Visita e Consumo de Arla separam quem já foi visitado e o tipo de consumo; "a granel" e "embalado" incluem os postos marcados com os dois.</p>
 <h3>Marcações e datas</h3>
 <p>Inativo, Posto de Rede (abre um campo para o nome da rede), Equipamento, capacidade do tanque de Arla em litros, Automação, fornecedor atual, preço, prazo de pagamento (quando você não preenche, vem o prazo do relatório Iris, em itálico, com o aviso "do relatório Iris"; o que você digitar passa a valer), periodicidade de entrega, programação automática, rota (escolha uma rota já usada na lista ou digite uma nova; sem rota escolhida, vale a rota escrita nas observações da agenda, como "ROTA BELO HORIZONTE", com o aviso "da agenda") — esses quatro também têm filtro, volume de S10 e telefones. Cada campo preenchido mostra a data em que foi feito, e o nome do posto mostra a última atualização; passe o mouse sobre ela para ver a data de cada campo.</p>
 <h3>Filtros</h3>
 <p>A lista só aparece depois que você escolhe um município, digita uma busca ou usa um filtro, e mostra 60 registros por vez (botão "Mostrar mais" no fim). O filtro "Tipo de Cliente" separa revendedores (postos) de consumidores (transportadoras, ônibus e frotas). Nos consumidores, informe na coluna Vol S10 o diesel da frota em m³ por mês para calcular o potencial de Arla. Município, busca livre, WhatsApp, visita, consumo de Arla, perfil do posto, bandeira, fornecedor atual, equipamento e rede de postos podem ser combinados. O filtro "Rede de postos" mostra só os postos de rede, só os independentes, ou os postos de uma rede específica; a lista de redes se monta com os nomes digitados no campo "Posto de Rede" de cada posto, com a quantidade entre parênteses. "Limpar filtros" volta à lista completa. A lista de fornecedores se monta com os nomes que você digitar nos postos.</p>
+<h3>Situação na Receita</h3>
+<p>Abaixo da razão social aparece a situação do CNPJ na Receita Federal, com a data da consulta: "Ativa na Receita" (verde), "Inativa na Receita" com o motivo (baixada, inapta, suspensa) em vermelho, e "Em recuperação judicial" em laranja. Ela é atualizada quando você toca em "Buscar na Receita" no cliente, quando consulta o CNPJ na página Consulta de CNPJs, ou pelo botão "Situação na Receita (lista)", que consulta todos os clientes da lista filtrada, 3 por minuto (limite da ReceitaWS); toque de novo para parar. O filtro CNPJ separa ativos, inativos, em recuperação judicial e os que ainda não foram consultados. É a situação cadastral do CNPJ, não uma certidão de débitos.</p>
+<h3>Pastas dos clientes no Drive</h3>
+<p>Cada cliente tem o botão "📁 Criar pasta no Drive", que cria a pasta com a razão social em BIOAR › App Consulta de Postos › Clientes; depois o botão vira "📁 Pasta no Drive" e abre a pasta. Postos marcados como Posto de Rede, com o nome da rede preenchido, usam uma pasta só, com o nome da rede ("📁 Pasta da rede"). "Criar pastas no Drive (lista)" cria de uma vez as pastas dos clientes da lista filtrada. As fotos das visitas vão para a pasta do cliente ou da rede. Se você renomear a pasta no Drive, o app continua achando.</p>
 <h3>Cliente novo (fora da base)</h3>
 <p>Abra "Consulta de CNPJs" no topo e consulte o CNPJ. Se ele ainda não estiver no app, a ficha mostra o botão "Cadastrar no Gestor de Carteira": confira o tipo (posto revendedor ou consumidor/frota, sugerido pela atividade na Receita) e toque no botão. Depois toque em "Abrir a ficha no Gestor". Razão social, nome fantasia, endereço, município, telefone, e-mail, atividade e, nos consumidores, o capital social entram como dados originais do cliente e vão para o Drive junto com as marcações. Se o CNPJ já estiver no app, a ficha avisa e leva direto ao cliente; se estiver na lixeira, oferece restaurar. O filtro "Tipo de Cliente › Cadastrados pela Consulta de CNPJs" lista todos os incluídos assim.</p>
 <h3>Salvamento no Google Drive</h3>
@@ -306,7 +312,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=32;
+var VERSAO_APP=33;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -342,8 +348,11 @@ function sitGrava(p,v){if(!v)return;RCONT[p.ck+":sit"]=v;try{localStorage.setIte
 function sitInfo(p){var v=sitDe(p);if(!v)return null;var q=v.split("|"),s=q[0]||"",e=q[1]||"",dt=q[2]||"";return {baixado:!!s&&s!=="ATIVA",sit:s,rj:/RECUPERA..O JUDICIAL/.test(e),esp:e,data:dt}}
 function sitSelos(p){var i=sitInfo(p),f=document.createDocumentFragment();if(!i)return f;var dt=i.data?i.data.split("-").reverse().join("/"):"";
  function selo(txt,c){var b=document.createElement("span");b.className="sitrec"+(c?" "+c:"");b.textContent=txt;b.title="Situação na Receita Federal, consultada em "+dt;f.appendChild(b)}
- if(i.baixado)selo(({BAIXADA:"Baixado",INAPTA:"Inapto",SUSPENSA:"Suspenso",NULA:"Nulo"}[i.sit]||titulo(i.sit))+" na Receita");
- if(i.rj)selo("Em recuperação judicial","rj");else if(i.esp)selo(titulo(i.esp),"rj");return f}
+ var qd=dt?" · "+dt:"";
+ if(i.baixado)selo("Inativa na Receita ("+({BAIXADA:"baixada",INAPTA:"inapta",SUSPENSA:"suspensa",NULA:"nula"}[i.sit]||i.sit.toLowerCase())+")"+qd);
+ if(i.rj)selo("Em recuperação judicial"+qd,"rj");else if(i.esp)selo(titulo(i.esp)+qd,"rj");
+ if(!i.baixado&&!i.esp&&i.sit==="ATIVA")selo("Ativa na Receita"+qd,"ok");
+ return f}
 function sitImporta(){var m=false;postos.forEach(function(p){var d=dig(cnpjDe(p));if(d.length!==14||!SITC[d])return;var a=String(RCONT[p.ck+":sit"]||"");if((String(SITC[d]).split("|")[2]||"")>(a.split("|")[2]||"")||!a){if(a!==SITC[d]){RCONT[p.ck+":sit"]=SITC[d];m=true}}});if(m){try{localStorage.setItem("postos_receita_contato",JSON.stringify(RCONT))}catch(e){}mudou()}}
 window.addEventListener("storage",function(ev){if(ev.key==="postos_sit_cnpj"){SITC=marcas("postos_sit_cnpj");sitImporta();filtrar()}});
 function rwsConsulta(d){return new Promise(function(ok,no){var nome="__rws_"+Date.now()+"_"+Math.floor(Math.random()*1e6),sc=document.createElement("script");
@@ -505,6 +514,22 @@ var postos=DADOS.map(function(r){
  postos.push(p)});
 /* ---------- Clientes cadastrados pela Consulta de CNPJs: ficam nas marcações (postos-marcacoes.json) e vão para o Drive ---------- */
 var CAD=marcas("postos_cadastro");
+var PASTAS=marcas("drive_pastas_cli");   /* chave do cliente/rede -> id da pasta no Drive (cache deste aparelho) */
+function pastaAlvo(p){var rn=REDE[p.ck]?String(REDENOME[p.ck]||"").replace(/\s+/g," ").trim():"";
+ if(rn)return {rede:true,chave:("rede:"+sem(rn)).slice(0,100),nome:rn};
+ return {rede:false,chave:"cli:"+p.ck,nome:String(p.nome||"Cliente").replace(/\s+/g," ").trim()}}
+function garantirDrive(){if(navigator.onLine===false)return Promise.reject({code:"offline"});return conectado()?Promise.resolve():(clientId()?pedirToken():Promise.reject({code:"semid"}))}
+function msgPasta(e){var c=(e&&e.code)||"";return c==="semid"?"O Drive ainda não está configurado neste aparelho. Toque em “Conectar ao Drive” na barra de baixo.":c==="offline"?"Sem internet agora.":c==="auth"?"A conexão com o Drive expirou. Toque de novo.":/popup|negado|access_denied/.test(c)?"O login do Google não foi concluído. Toque de novo.":"Não consegui falar com o Drive ("+(c||"sem conexão")+")."}
+function botaoPasta(p){var w=document.createElement("div");w.className="pastacli";var a=pastaAlvo(p);
+ function link(id){w.textContent="";var l=document.createElement("a");l.href="https://drive.google.com/drive/folders/"+id;l.target="_blank";l.rel="noopener";
+  l.textContent="📁 "+(a.rede?"Pasta da rede "+a.nome:"Pasta no Drive");l.title="Abre no Google Drive a pasta "+a.nome;w.appendChild(l)}
+ if(PASTAS[a.chave]){link(PASTAS[a.chave]);return w}
+ var b=document.createElement("button");b.type="button";b.className="gc1";b.textContent=a.rede?"📁 Criar pasta da rede":"📁 Criar pasta no Drive";
+ b.title=a.rede?"Cria a pasta da rede "+a.nome+", usada por todos os postos da rede":"Cria a pasta deste cliente em BIOAR › App Consulta de Postos › Clientes";
+ b.addEventListener("click",function(){b.disabled=true;b.textContent="Criando pasta…";
+  garantirDrive().then(function(){return pastaCliente(p)}).then(function(r){link(r.id)},function(e){b.disabled=false;b.textContent=a.rede?"📁 Criar pasta da rede":"📁 Criar pasta no Drive";
+   var m=w.querySelector(".rwserro")||document.createElement("span");m.className="rwserro";m.textContent=msgPasta(e);w.appendChild(m)})});
+ w.appendChild(b);return w}
 (function(){var fila=[];try{fila=JSON.parse(localStorage.getItem("postos_cadastro_fila")||"[]")||[]}catch(e){fila=[]}
  if(!Array.isArray(fila)||!fila.length)return;
  function cl(v,n){return String(v==null?"":v).replace(/[|\r\n]+/g," ").replace(/\s+/g," ").trim().slice(0,n)}
@@ -645,7 +670,7 @@ function filtrar(){
   if(d&&!p.diesel)return false;
   if(mu&&p.mun!==mu)return false;
   var tv=$("ftipo").value;if(tv==="excluidos"){if(!EXCL[p.ck])return false}else{if(EXCL[p.ck])return false;if(tv==="iris"){if(!irisCli(p))return false}else if(tv==="irischurn"||tv==="irisparado"){var im=irisMes(p);if(!im||im.at>0||(tv==="irischurn"&&!(im.an>0)))return false}else if(tv==="irisnovo"){if(!p.irisNovo)return false}else if(tv==="cadastrados"){if(!p.cad)return false}else if(tv&&p.tipo!==tv)return false}
-  var nv=$("fcnpj").value;if(nv==="baixado"||nv==="rj"||nv==="regular"){var si=sitInfo(p);if(nv==="baixado"&&!(si&&si.baixado))return false;if(nv==="rj"&&!(si&&si.rj))return false;if(nv==="regular"&&!(si&&!si.baixado&&!si.esp))return false}
+  var nv=$("fcnpj").value;if(nv==="naoconsult"){if(sitInfo(p)||!temCnpj(p))return false}else if(nv==="baixado"||nv==="rj"||nv==="regular"){var si=sitInfo(p);if(nv==="baixado"&&!(si&&si.baixado))return false;if(nv==="rj"&&!(si&&si.rj))return false;if(nv==="regular"&&!(si&&!si.baixado&&!si.esp))return false}
   else if(nv){var tc=temCnpj(p);if(nv==="sem"?tc&&!CNPJ_SESSAO[p.ck]:!tc)return false}
   var kv=$("fcap").value;if(kv){if(p.tipo!=="consumidor")return false;var kn=capNum(p.ck);if(kv==="__sem"?kn!=null:kn==null||(kv==="acima"?kn<CORTE_CAPITAL:kn>=CORTE_CAPITAL))return false}
   var wf=$("wa").value;if(wf){var ts=fonesEfetivos(p),st=ts.map(waGet);
@@ -676,7 +701,7 @@ function filtrar(){
    cj.addEventListener("input",function(){CNPJ_SESSAO[p.ck]=1;txtSet(CNPJINF,"postos_cnpj",p.ck,dig(cj.value));cjPinta()});
    cj.addEventListener("change",function(){cj.value=cnpjDe(p);cjPinta()});
    rl=linkReceita(p,"");var gl=document.createElement("a");gl.className="receita-link google";gl.href=buscaGoogle(p);gl.target="busca";gl.rel="noopener";gl.textContent="Procurar CNPJ no Google";gl.title="Pesquisa o CNPJ pelo nome da empresa e cidade";s.appendChild(cj);s.appendChild(gl);s.appendChild(dtSpan(p.ck,"cnpj"));s.appendChild(cjm);s.appendChild(rl);cjPinta()}a.appendChild(s);if(RWS[p.ck])a.appendChild(painelReceita(p));
-  var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent=CELULAR?"📤 Compartilhar no WhatsApp":"Google Contatos";gb1.title=CELULAR?"Abre o WhatsApp para enviar os dados deste contato":"Baixa o contato no padrão do Google Contatos (prefixo = contato, nome = razão social, empresa = CNPJ, cargo = código Iris)";gb1.addEventListener("click",function(){if(CELULAR)compartilhaWA(p);else exportaUm(p)});a.appendChild(gb1);if(INAT[ck])tr.classList.add("inativo");
+  var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent=CELULAR?"📤 Compartilhar no WhatsApp":"Google Contatos";gb1.title=CELULAR?"Abre o WhatsApp para enviar os dados deste contato":"Baixa o contato no padrão do Google Contatos (prefixo = contato, nome = razão social, empresa = CNPJ, cargo = código Iris)";gb1.addEventListener("click",function(){if(CELULAR)compartilhaWA(p);else exportaUm(p)});a.appendChild(gb1);a.appendChild(botaoPasta(p));if(INAT[ck])tr.classList.add("inativo");
   a.appendChild(caixa("Inativo",INAT,"postos_inativo",ck,function(v){tr.classList.toggle("inativo",v);tr2.classList.toggle("inativo",v)}));
   if(p.unidos){var un=document.createElement("div");un.className="unidos";un.textContent="Unificado: "+[p.nomeAgenda||""].concat(p.unidos.map(function(u){return u.nome})).filter(Boolean).join(" + ");
    var sp=document.createElement("button");sp.type="button";sp.className="lnk";sp.textContent="Separar";sp.title="Desfaz a unificação e volta a mostrar os registros separados";
@@ -1100,15 +1125,55 @@ function fotoPasta(){return acharPasta().then(function(pai){
    return buscar("name='"+esc(FOTO_PASTA)+"' and '"+pai+"' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false","id").then(function(f){if(f[0])return f[0].id;
     return api(DR+"?fields=id",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:FOTO_PASTA,mimeType:"application/vnd.google-apps.folder",parents:[pai]})}).then(json).then(function(j){return j.id})})})})
  .then(function(id){fotoPastaId=id;lsSet("drive_pasta_fotos",id);return id})}
+/* Pasta de cada cliente: BIOAR › App Consulta de Postos › Clientes › <razão social> (ou <nome da rede> para postos de rede).
+   A pasta leva a marca appProperties.gestor = chave, para ser achada de novo mesmo se for renomeada. */
+var CLI_PASTA="Clientes",cliPastaId=lsGet("drive_pasta_clientes")||"";
+function novaPasta(nome,pai,props){var m={name:nome,mimeType:"application/vnd.google-apps.folder",parents:[pai]};if(props)m.appProperties=props;
+ return api(DR+"?fields=id",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(m)}).then(json).then(function(j){return j.id})}
+function pastaViva(id,pai){if(!id)return Promise.resolve("");return api(DR+"/"+id+"?fields=id,trashed,parents").then(json).then(function(j){return !j.trashed&&(j.parents||[]).indexOf(pai)>=0?j.id:""},function(e){if(e&&e.code==="auth")throw e;return ""})}
+function pastaClientes(){return acharPasta().then(function(pai){return pastaViva(cliPastaId,pai).then(function(id){if(id)return id;
+  return buscar("name='"+CLI_PASTA+"' and '"+pai+"' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false","id").then(function(f){return f[0]?f[0].id:novaPasta(CLI_PASTA,pai)})})})
+ .then(function(id){cliPastaId=id;lsSet("drive_pasta_clientes",id);return id})}
+function pastaCliente(p){var a=pastaAlvo(p);
+ return pastaClientes().then(function(cp){return pastaViva(PASTAS[a.chave],cp).then(function(id){if(id)return id;
+  return buscar("appProperties has { key='gestor' and value='"+esc(a.chave)+"' } and '"+cp+"' in parents and trashed=false","id").then(function(f){if(f[0])return f[0].id;
+   return buscar("name='"+esc(a.nome)+"' and '"+cp+"' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false","id,appProperties").then(function(f2){
+    var livre=f2.filter(function(x){return !(x.appProperties&&x.appProperties.gestor)})[0];
+    if(livre)return api(DR+"/"+livre.id+"?fields=id",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({appProperties:{gestor:a.chave}})}).then(json).then(function(j){return j.id});
+    return novaPasta(f2.length&&!a.rede&&p.cidade?a.nome+" - "+p.cidade:a.nome,cp,{gestor:a.chave})})})})})
+ .then(function(id){PASTAS[a.chave]=id;lsSet("drive_pastas_cli",JSON.stringify(PASTAS));return {id:id,nome:a.nome,rede:a.rede}})}
+var LOTEP=null;
+$("lotepasta").addEventListener("click",function(){var b=$("lotepasta");if(LOTEP){LOTEP.parar=true;b.textContent="Parando…";return}
+ var vistos={},fila=atual.filter(function(p){var c=pastaAlvo(p).chave;if(vistos[c])return false;vistos[c]=1;return true});
+ if(!fila.length){arqMsg("Filtre uma lista primeiro: as pastas são criadas para os clientes que aparecem nela.");return}
+ LOTEP={parar:false};b.textContent="Parar criação de pastas";var n=0,erro=null;
+ garantirDrive().then(function(){return fila.reduce(function(pr,p,i){return pr.then(function(){if(LOTEP.parar)return;arqMsg("Criando pastas no Drive: "+(i+1)+" de "+fila.length+"…");return pastaCliente(p).then(function(){n++})})},Promise.resolve())})
+ .catch(function(e){erro=e}).then(function(){var parou=LOTEP.parar;LOTEP=null;b.textContent="Criar pastas no Drive (lista)";
+  arqMsg(erro?msgPasta(erro)+" Pastas prontas: "+n+".":(parou?"Interrompido. ":"")+n+(n===1?" pasta pronta":" pastas prontas")+" em BIOAR › "+PASTA_APP+" › "+CLI_PASTA+" (postos de rede ficam na pasta da rede).");filtrar()})});
+/* Situação na Receita de toda a lista filtrada, respeitando o limite de 3 consultas por minuto da ReceitaWS */
+var LOTES=null;
+$("lotesit").addEventListener("click",function(){var b=$("lotesit");
+ if(LOTES){clearTimeout(LOTES.t);arqMsg("Consulta da situação interrompida: "+LOTES.ok+" atualizados.");LOTES=null;b.textContent="Situação na Receita (lista)";filtrar();return}
+ var fila=atual.filter(function(p){return temCnpj(p)});if(!fila.length){arqMsg("Filtre uma lista com clientes que tenham CNPJ.");return}
+ LOTES={fila:fila,i:0,ok:0,t:null};b.textContent="Parar consulta da situação";
+ function passo(){if(!LOTES)return;
+  if(LOTES.i>=LOTES.fila.length){arqMsg("Situação na Receita atualizada: "+LOTES.ok+" de "+LOTES.fila.length+" clientes.");LOTES=null;b.textContent="Situação na Receita (lista)";filtrar();return}
+  var agora=Date.now();RWS_T=RWS_T.filter(function(t){return agora-t<60000});
+  if(RWS_T.length>=3){LOTES.t=setTimeout(passo,60000-(agora-RWS_T[0])+500);return}
+  var p=LOTES.fila[LOTES.i++];RWS_T.push(agora);
+  arqMsg("Consultando a Receita: "+LOTES.i+" de "+LOTES.fila.length+" ("+titulo(p.nome)+"). São 3 por minuto; faltam cerca de "+Math.ceil((LOTES.fila.length-LOTES.i)/3)+" min. Pode continuar usando o app.");
+  rwsConsulta(dig(cnpjDe(p))).then(function(x){if(LOTES&&String(x&&x.status).toUpperCase()!=="ERROR"){sitGrava(p,sitVal(x));LOTES.ok++}},function(){})
+   .then(function(){if(LOTES)LOTES.t=setTimeout(passo,20500)})}
+ passo()});
 function fotoEnviar(){if(!FOTO.blob||FOTO.enviada||FOTO.enviando)return;
  if(navigator.onLine===false){fotoMsg("Sem internet agora. Salve a foto no aparelho; o envio ao Drive precisa de sinal (depois você pode subir a foto salva pelo app do Google Drive).","erro");return}
- var blob=FOTO.blob,nome=FOTO.nome,desc=FOTO.desc;
+ var blob=FOTO.blob,nome=FOTO.nome,desc=FOTO.desc,alvo=FOTO.alvo,pnome="";
  var ini=conectado()?Promise.resolve():(clientId()?pedirToken():Promise.reject({code:"semid"}));
  FOTO.enviando=true;fotoBotoes();fotoMsg("Enviando ao Drive…","");
- ini.then(fotoPasta).then(function(pid){var bd="lim"+Math.random().toString(36).slice(2),meta={name:nome,parents:[pid],mimeType:"image/jpeg",description:desc};
+ ini.then(function(){return alvo&&alvo.p?pastaCliente(alvo.p).then(function(r){pnome=r.nome;return r.id}):fotoPasta()}).then(function(pid){var bd="lim"+Math.random().toString(36).slice(2),meta={name:nome,parents:[pid],mimeType:"image/jpeg",description:desc};
    var corpo=new Blob(["--"+bd+"\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n"+JSON.stringify(meta)+"\r\n--"+bd+"\r\nContent-Type: image/jpeg\r\n\r\n",blob,"\r\n--"+bd+"--"]);
    return api(UP+"?uploadType=multipart&fields=id",{method:"POST",headers:{"Content-Type":"multipart/related; boundary="+bd},body:corpo}).then(json)})
- .then(function(){if(FOTO.blob!==blob)return;FOTO.enviada=true;fotoMsg("Foto salva no Drive, na pasta BIOAR › "+PASTA_APP+" › "+FOTO_PASTA+".","ok")},
+ .then(function(){if(FOTO.blob!==blob)return;FOTO.enviada=true;fotoMsg("Foto salva no Drive, na pasta BIOAR › "+PASTA_APP+" › "+(pnome?CLI_PASTA+" › "+pnome:FOTO_PASTA)+".","ok")},
   function(e){if(FOTO.blob!==blob)return;var c=(e&&e.code)||"";
    fotoMsg(c==="semid"?"O Drive ainda não está configurado neste aparelho. Toque em “Conectar ao Drive” na barra de baixo e depois envie a foto.":c==="auth"?"A conexão com o Drive expirou. Toque em “Reconectar e enviar ao Drive”.":/popup|negado|access_denied/.test(c)?"O login do Google não foi concluído. Toque no botão de novo.":"Não consegui enviar ao Drive ("+(c||"sem conexão")+"). Salve no aparelho e tente de novo com sinal.","erro")})
  .then(function(){if(FOTO.blob!==blob)return;FOTO.enviando=false;fotoBotoes();botao()})}
