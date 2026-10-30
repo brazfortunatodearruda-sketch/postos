@@ -165,6 +165,14 @@ input.dvis{font:.8rem var(--fonte);padding:2px 4px;border:1px solid var(--linha)
 input.dvis.inf{border-color:var(--acento);font-weight:600}
 button.hoje{font-size:.72rem;padding:2px 6px}
 button.foto{white-space:nowrap}
+dialog#dlgret{width:min(520px,calc(100vw - 16px));max-width:none;padding:0;border:1px solid var(--linha);border-radius:10px;background:var(--papel);color:var(--texto)}
+dialog#dlgret::backdrop{background:rgba(10,20,16,.55)}
+.retcorpo{padding:12px 16px 18px;display:grid;gap:12px}.retcorpo p{margin:0}
+.retcampos{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.retcampos label,.retobs{display:grid;gap:3px;font-size:.85rem;color:var(--suave)}
+.retcampos input,.retcampos select,#retobs{font:1rem var(--fonte);padding:7px 8px;border:1px solid var(--linha);border-radius:6px;background:var(--fundo);color:var(--texto);width:100%;box-sizing:border-box}
+.retatalhos{display:flex;flex-wrap:wrap;gap:6px}.retatalhos button{font-size:.8rem;padding:3px 10px}
+button.retbt{display:block;font-size:.76rem;padding:2px 8px;margin-top:6px}button.retbt.atr{border-color:var(--erro);color:var(--erro);font-weight:700}button.retbt.tem{font-weight:700}
 dialog#dlgpront{width:min(720px,calc(100vw - 16px));max-width:none;max-height:calc(100vh - 24px);padding:0;border:1px solid var(--linha);border-radius:10px;background:var(--papel);color:var(--texto)}
 dialog#dlgpront::backdrop{background:rgba(10,20,16,.55)}
 .prontcorpo{padding:12px 16px 20px;display:grid;gap:14px}
@@ -244,7 +252,7 @@ button.mais{display:block;margin:0 auto}
   <label class="campo">CNPJ
    <select id="fcnpj"><option value="">Todos</option><option value="sem">Sem CNPJ (para pesquisar)</option><option value="com">Com CNPJ</option><option value="regular">Ativos na Receita (sem restrição)</option><option value="baixado">Inativos na Receita (baixados, inaptos, suspensos)</option><option value="rj">Em recuperação judicial</option><option value="naoconsult">Situação na Receita não consultada</option></select></label>
   <label class="campo">Visita
-   <select id="fvis"><option value="">Todos</option><option value="sim">Já visitados</option><option value="nao">Ainda não visitados</option></select></label>
+   <select id="fvis"><option value="">Todos</option><option value="sim">Já visitados</option><option value="nao">Ainda não visitados</option><option value="ret">Com retorno agendado</option><option value="retatr">Retorno atrasado</option><option value="retsem">Hoje e próximos 7 dias</option></select></label>
   <label class="campo">Consumo de Arla
    <select id="fcons"><option value="">Todos</option><option value="granel">A granel (inclui ambos)</option><option value="embalado">Embalado (inclui ambos)</option><option value="nao">Não vende Arla</option><option value="__sem">Não informado</option></select></label>
   <label class="campo">Perfil do Posto
@@ -309,6 +317,8 @@ button.mais{display:block;margin:0 auto}
 <p>A lista só aparece depois que você escolhe um município, digita uma busca ou usa um filtro, e mostra 60 registros por vez (botão "Mostrar mais" no fim). O filtro "Tipo de Cliente" separa revendedores (postos) de consumidores (transportadoras, ônibus e frotas). Nos consumidores, informe na coluna Vol S10 o diesel da frota em m³ por mês para calcular o potencial de Arla. Município, busca livre, WhatsApp, visita, consumo de Arla, perfil do posto, bandeira, fornecedor atual, equipamento e rede de postos podem ser combinados. O filtro "Rede de postos" mostra só os postos de rede, só os independentes, ou os postos de uma rede específica; a lista de redes se monta com os nomes digitados no campo "Posto de Rede" de cada posto, com a quantidade entre parênteses. "Limpar filtros" volta à lista completa. A lista de fornecedores se monta com os nomes que você digitar nos postos.</p>
 <h3>Prontuário de atendimento</h3>
 <p>O botão "📋 Prontuário", abaixo do nome do cliente, abre o resumo da situação: pontos de atenção (risco de churn, títulos vencidos, situação na Receita, visita antiga, rota a confirmar), dados do cliente, carteira Bioar (compras, volumes, preço, títulos), dados comerciais, rota com os dias de entrega, contato e o histórico de atendimentos. No celular, toque em "🎤 Gravar atendimento" e fale; toque de novo para parar. O texto aparece no campo e pode ser corrigido antes de "Salvar atendimento". No computador, é só digitar. Cada atendimento fica com data e hora e vai para o Drive junto com as marcações. "Compartilhar resumo" abre o WhatsApp no celular (no computador, copia o texto) e "PDF" gera o prontuário para salvar ou imprimir. O número entre parênteses no botão é a quantidade de atendimentos registrados.</p>
+<h3>Retorno ao cliente</h3>
+<p>"📅 Agendar retorno" (abaixo do nome e dentro do Prontuário) abre uma janela para escolher data, hora, duração, tipo (visita, ligação ou WhatsApp) e o assunto. Há atalhos para amanhã, 1 semana, 15 e 30 dias e para a próxima saída da rota do cliente. "Abrir no Google Agenda" abre o evento já preenchido com cliente, CNPJ, telefones, endereço, rota, último atendimento e um link que abre a ficha no app; confira e toque em Salvar. A data fica gravada no app: o botão passa a mostrar o retorno (em vermelho quando atrasado), o Prontuário avisa retornos de hoje e atrasados, e o filtro Visita mostra quem tem retorno agendado, atrasado ou nos próximos 7 dias.</p>
 <h3>Rotas de entrega</h3>
 <p>O campo Rota mostra a rota de entrega do cliente e, logo abaixo, os dias da tabela de rotas da Bioar: saída, chegada e o limite para fazer o pedido. Vale nesta ordem: a rota que você escolher no app; a rota escrita na agenda ("ROTA SETE LAGOAS"); e, sem nenhuma das duas, a rota do município — a mais usada pelos clientes daquele município ("rota dos clientes do município"), ou a do município vizinho mais próximo que tenha rota, até 35 km ("sugerida: vizinho"), ou o polo de rota em MG mais perto ("sugerida: polo mais perto"). As sugeridas aparecem em itálico; ao confirmar com o cliente, escolha a rota no campo e ela passa a valer. O filtro Rota e a planilha usam a rota que vale.</p>
 <h3>Situação na Receita</h3>
@@ -337,12 +347,21 @@ button.mais{display:block;margin:0 auto}
 <p>Postos revendedores autorizados pela ANP nos 107 municípios da sua lista de contatos (dados de <span class="d-anp"></span>). Códigos de cliente conforme a Carteira de Clientes de <span class="d-cart"></span>. Agenda exportada em <span class="d-ag"></span>.</p><p id="origem-bases" class="fraco"></p>
 </div></dialog>
 <input type="file" id="fotoin" accept="image/*" capture="environment" hidden>
+<dialog id="dlgret" aria-labelledby="rett"><div class="dlgcab"><h2 id="rett">Agendar retorno</h2><button type="button" id="retx" aria-label="Fechar">Fechar</button></div>
+<div class="retcorpo"><p id="retcli" class="fraco"></p>
+<div class="retcampos"><label>Data<input type="date" id="retdata"></label><label>Hora<input type="time" id="rethora" value="09:00" step="900"></label>
+<label>Duração<select id="retdur"><option value="15">15 min</option><option value="30" selected>30 min</option><option value="60">1 hora</option><option value="120">2 horas</option></select></label>
+<label>Tipo<select id="rettipo"><option value="visita">Visita</option><option value="ligacao">Ligação</option><option value="whatsapp">WhatsApp</option></select></label></div>
+<div class="retatalhos"><button type="button" data-d="1">Amanhã</button><button type="button" data-d="7">1 semana</button><button type="button" data-d="15">15 dias</button><button type="button" data-d="30">30 dias</button><button type="button" id="retrota" hidden>Próxima saída da rota</button></div>
+<label class="retobs">Assunto do retorno<textarea id="retobs" rows="3" placeholder="ex.: levar proposta de 2.000 L; confirmar equipamento"></textarea></label>
+<div class="prontacoes"><button type="button" id="retok" class="cheio">Abrir no Google Agenda</button><button type="button" id="retapaga" class="lnk perigo" hidden>Cancelar retorno agendado</button></div>
+<p id="retmsg" class="fraco">Abre o Google Agenda com o evento preenchido (cliente, telefones, endereço, rota, último atendimento e link para a ficha no app). Confira e toque em Salvar.</p></div></dialog>
 <dialog id="dlgpront" aria-labelledby="prontt"><div class="dlgcab"><h2 id="prontt">Prontuário de atendimento</h2><button type="button" id="prontx" aria-label="Fechar">Fechar</button></div>
 <div class="prontcorpo"><div id="prontres"></div>
 <section class="prontnovo"><h3>Registrar atendimento</h3>
 <div id="prontmicbox"><button type="button" id="prontgrava" class="cheio">🎤 Gravar atendimento</button><span id="prontmicmsg" role="status" aria-live="polite"></span></div>
 <textarea id="prontin" rows="4" placeholder="O que foi tratado, combinado e o próximo passo"></textarea>
-<div class="prontacoes"><button type="button" id="prontsalva" class="cheio">Salvar atendimento</button><button type="button" id="prontshare">Compartilhar resumo</button><button type="button" id="prontpdf">PDF</button></div>
+<div class="prontacoes"><button type="button" id="prontsalva" class="cheio">Salvar atendimento</button><button type="button" id="prontshare">Compartilhar resumo</button><button type="button" id="prontpdf">PDF</button><button type="button" id="prontret">📅 Agendar retorno</button></div>
 <p id="prontmsg" role="status" aria-live="polite"></p></section>
 <section><h3>Histórico de atendimentos</h3><div id="pronthist"></div></section></div></dialog>
 <dialog id="dlgfoto" aria-labelledby="fotot"><div class="dlgcab"><h2 id="fotot">Foto da visita</h2><button type="button" id="fotox" aria-label="Fechar">Fechar</button></div>
@@ -353,7 +372,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=35;
+var VERSAO_APP=36;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -439,9 +458,10 @@ function painelReceita(p){var ck=p.ck,r=RWS[ck],box=document.createElement("div"
  if(x.municipio&&sem(x.municipio)!==p.mun)box.appendChild(el("p","rwserro","Atenção: na Receita o município é "+x.municipio+", diferente do cadastro ("+(p.cidade||"?")+"). O município do app não muda."));
  var acoes=el("div","rwsacoes"),feito=el("p","eddica","");
  function bt(txt,fn,cheio){var b=el("button","edok"+(cheio?" cheio":""),txt);b.type="button";b.addEventListener("click",function(){fn();feito.textContent="Aplicado. Veja os campos do cliente.";setTimeout(function(){delete RWS[ck];filtrar()},900)});acoes.appendChild(b)}
- var podeCap=p.tipo==="consumidor"&&cap,podeEnd=!!(e.endereco||e.bairro||e.cep);
+ var podeCap=p.tipo==="consumidor"&&cap,podeEnd=!!(e.endereco||e.bairro||e.cep),rz=String(x.nome||"").replace(/\s+/g," ").trim(),podeNome=!!rz&&sem(rz)!==sem(p.nome);
  var podeTel=rwsNovos(p,x).novos.length>0||!!(eml&&!p.email);
- if([podeCap,podeEnd,podeTel].filter(Boolean).length>1)bt("Usar tudo",function(){if(podeCap)usaCap(p,cap);if(podeEnd)usaEnd(p,e);if(podeTel)usaContato(p,x)},true);
+ if([podeNome,podeCap,podeEnd,podeTel].filter(Boolean).length>1)bt("Usar tudo",function(){if(podeNome)usaRazao(p,rz);if(podeCap)usaCap(p,cap);if(podeEnd)usaEnd(p,e);if(podeTel)usaContato(p,x)},true);
+ if(podeNome)bt("Usar razão social",function(){usaRazao(p,rz)});
  if(podeCap)bt("Usar capital social",function(){usaCap(p,cap)});
  if(podeEnd)bt("Usar endereço",function(){usaEnd(p,e)});
  if(podeTel)bt(rwsNovos(p,x).novos.length?"Usar telefone"+(eml&&!p.email?" e e-mail":""):"Usar e-mail",function(){usaContato(p,x)});
@@ -460,7 +480,7 @@ function cnpjDe(p){if(p.cnpj)return p.cnpj;var d=dig(CNPJINF[p.ck]);return d.len
 var CONS_TXT={granel:"A granel",embalado:"Embalado",ambos:"Granel e embalado",nao:"Não vende Arla"};
 function perfilDe(p){return PERFIL[p.ck]||p.perfilAuto}
 var CAMPO={"postos_capital":"capital","postos_cnpj":"cnpj","postos_consumo_mes":"consumoMes","postos_visita":"visita","postos_consumo":"consumo","postos_tanque_arla":"tanque","postos_fornecedor":"fornecedor","postos_preco":"preco","postos_volume":"volume","postos_inativo":"inativo","postos_rede":"rede","postos_automacao":"automacao","postos_rota":"rota","postos_prog_auto":"progAuto","postos_prazo_pag":"prazoPag","postos_periodicidade":"periodicidade"};
-var ROT={prontuario:"Atendimento registrado",cadastro:"Cadastro pela Consulta de CNPJs",excluido:"Registro apagado",endereco:"Endereço",capital:"Capital social",cnpj:"CNPJ",visita:"Data da visita",consumo:"Consumo de Arla",consumoMes:"Consumo mensal de Arla",perfil:"Perfil",tanque:"Tanque de Arla",volume:"Volume S10",fornecedor:"Fornecedor",preco:"Preço",equipamento:"Equipamento",automacao:"Automação",rota:"Rota",progAuto:"Programação automática",prazoPag:"Prazo de pagamento",periodicidade:"Periodicidade de entrega",rede:"Posto de rede",redeNome:"Nome da rede",inativo:"Inativo",telefones:"Telefones",whatsapp:"Teste de WhatsApp"};
+var ROT={razao:"Razão social",retorno:"Retorno agendado",prontuario:"Atendimento registrado",cadastro:"Cadastro pela Consulta de CNPJs",excluido:"Registro apagado",endereco:"Endereço",capital:"Capital social",cnpj:"CNPJ",visita:"Data da visita",consumo:"Consumo de Arla",consumoMes:"Consumo mensal de Arla",perfil:"Perfil",tanque:"Tanque de Arla",volume:"Volume S10",fornecedor:"Fornecedor",preco:"Preço",equipamento:"Equipamento",automacao:"Automação",rota:"Rota",progAuto:"Programação automática",prazoPag:"Prazo de pagamento",periodicidade:"Periodicidade de entrega",rede:"Posto de rede",redeNome:"Nome da rede",inativo:"Inativo",telefones:"Telefones",whatsapp:"Teste de WhatsApp"};
 function hojeISO(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function dtCurta(iso){return iso?iso.slice(8,10)+"/"+iso.slice(5,7)+"/"+iso.slice(2,4):""}
 function dtLonga(iso){return iso?iso.slice(8,10)+"/"+iso.slice(5,7)+"/"+iso.slice(0,4):""}
@@ -556,7 +576,9 @@ var postos=DADOS.map(function(r){
 /* ---------- Clientes cadastrados pela Consulta de CNPJs: ficam nas marcações (postos-marcacoes.json) e vão para o Drive ---------- */
 var CAD=marcas("postos_cadastro");
 var PASTAS=marcas("drive_pastas_cli");
-var PRONT=marcas("postos_prontuario");   /* atendimentos: ck:<carimbo ms> -> texto (até 400 caracteres por parte) */   /* chave do cliente/rede -> id da pasta no Drive (cache deste aparelho) */
+var PRONT=marcas("postos_prontuario");
+var RAZAO=marcas("postos_razao");      /* razão social trazida da Receita (substitui o nome do cadastro) */
+var RETORNO=marcas("postos_retorno");  /* retorno agendado: "AAAA-MM-DDTHH:MM|tipo" */   /* atendimentos: ck:<carimbo ms> -> texto (até 400 caracteres por parte) */   /* chave do cliente/rede -> id da pasta no Drive (cache deste aparelho) */
 function pastaAlvo(p){var rn=REDE[p.ck]?String(REDENOME[p.ck]||"").replace(/\s+/g," ").trim():"";
  if(rn)return {rede:true,chave:("rede:"+sem(rn)).slice(0,100),nome:rn};
  return {rede:false,chave:"cli:"+p.ck,nome:String(p.nome||"Cliente").replace(/\s+/g," ").trim()}}
@@ -651,6 +673,9 @@ var IRIS_LIG={cod:0,nome:0,criados:0};
   p.busca=sem([p.ck,"COD "+cod,cod,c.n,p.cidade,mun,"IRIS"].concat(c.l.map(function(x){return x[1]})).join(" "));
   postos.push(p);IRIS_LIG.criados++})})();
 function irisMes(p){var ic=irisCli(p);if(!ic)return null;var mi=IRIS.resumo.mes;function soma(i){return ic.l.reduce(function(a,x){return a+(x[6][i]||0)},0)}return {at:soma(mi),an:soma(mi-1),ac:ic.l.reduce(function(a,x){return a+x[7]},0)}}
+postos.forEach(function(p){var r=String(RAZAO[p.ck]||"").trim();if(r&&r!==p.nome){p.nomeOrig=p.nome;p.nome=r;p.busca+=" "+sem(r)}});
+function usaRazao(p,nome){nome=String(nome||"").replace(/\s+/g," ").trim();if(!nome||nome===p.nome)return;if(!p.nomeOrig)p.nomeOrig=p.nome;
+ carimbo(p.ck,"razao",nome,RAZAO[p.ck]||"");if(nome===p.nomeOrig){delete RAZAO[p.ck];delete p.nomeOrig}else RAZAO[p.ck]=nome;p.nome=nome;p.busca+=" "+sem(nome);setLS("postos_razao",RAZAO)}
 postos.forEach(aplicaEnd);
 var PERF_TXT={rodoviario:"Rodoviário",misto:"Misto",urbano:"Urbano"};
 postos.forEach(function(p){if(p.tipo==="consumidor")return;var tot=p.produtos.reduce(function(a,x){return a+x.tanc},0),sh=tot?p.tancDiesel/tot:0;
@@ -744,7 +769,7 @@ function filtrar(){
    if(wf==="sim"&&st.indexOf("sim")<0)return false;
    if(wf==="nao"&&!(ts.length&&st.every(function(x){return x==="nao"})))return false;
    if(wf==="pend"&&!(st.indexOf("sim")<0&&st.indexOf("")>=0))return false}
-  var vv=$("fvis").value;if(vv==="sim"&&!VISITA[ckOf(p)])return false;if(vv==="nao"&&VISITA[ckOf(p)])return false;
+  var vv=$("fvis").value;if(vv==="sim"&&!VISITA[ckOf(p)])return false;if(vv==="nao"&&VISITA[ckOf(p)])return false;if(vv==="ret"||vv==="retatr"||vv==="retsem"){var rr=retInfo(p);if(!rr)return false;if(vv==="retatr"&&!rr.atrasado)return false;if(vv==="retsem"&&(rr.atrasado||rr.dias>7))return false}
   var cv=$("fcons").value,cx=CONSUMO[ckOf(p)]||"";if(cv){if(cv==="__sem"){if(cx)return false}else if(cv==="nao"){if(cx!=="nao")return false}else if(cx!==cv&&cx!=="ambos")return false}
   var pv=$("fperf").value;if(pv&&perfilDe(p)!==pv)return false;
   var bv=$("fband").value;if(bv&&p.bandeira!==bv)return false;
@@ -761,14 +786,14 @@ function filtrar(){
  $("tb").textContent="";
  atual.slice(0,limite).forEach(function(p){
   var tr=document.createElement("tr");if(p.diesel)tr.className="diesel";if(p.tipo==="consumidor")tr.className="consumidor";
-  var a=td(p.nome);a.appendChild(sitSelos(p));if(p.cad){var cb=document.createElement("div");cb.className="fraco";cb.textContent=[p.fantasia?"Fantasia: "+p.fantasia:"","Cadastrado pela Consulta de CNPJs"+(p.cad.length===10?" em "+dtLonga(p.cad):"")].filter(Boolean).join(" · ");a.appendChild(cb)}var s,rl;if(p.cnpj){s=document.createElement("div");s.className="fraco";s.textContent=p.cnpj;rl=linkReceita(p,dig(p.cnpj));s.appendChild(document.createElement("br"));s.appendChild(rl)}else{s=document.createElement("label");s.className="cnpjbox";
+  var a=td(p.nome);if(p.nomeOrig){var no=document.createElement("div");no.className="fraco";no.textContent="Antes: "+p.nomeOrig+" · ";var vb=document.createElement("button");vb.type="button";vb.className="lnk";vb.textContent="voltar";vb.addEventListener("click",function(){usaRazao(p,p.nomeOrig);filtrar()});no.appendChild(vb);a.appendChild(no)}a.appendChild(sitSelos(p));if(p.cad){var cb=document.createElement("div");cb.className="fraco";cb.textContent=[p.fantasia?"Fantasia: "+p.fantasia:"","Cadastrado pela Consulta de CNPJs"+(p.cad.length===10?" em "+dtLonga(p.cad):"")].filter(Boolean).join(" · ");a.appendChild(cb)}var s,rl;if(p.cnpj){s=document.createElement("div");s.className="fraco";s.textContent=p.cnpj;rl=linkReceita(p,dig(p.cnpj));s.appendChild(document.createElement("br"));s.appendChild(rl)}else{s=document.createElement("label");s.className="cnpjbox";
    var cj=document.createElement("input");cj.type="text";cj.className="cnpjin";cj.inputMode="numeric";cj.autocomplete="off";cj.placeholder="CNPJ (digite)";cj.setAttribute("aria-label","CNPJ de "+p.nome);cj.value=cnpjDe(p);
    var cjm=document.createElement("span");cjm.className="cnpjmsg";
    function cjPinta(){var d=dig(CNPJINF[p.ck]);cj.classList.toggle("inf",d.length===14&&cnpjOk(d));cj.classList.toggle("erro",!!d&&!(d.length===14&&cnpjOk(d)));cjm.textContent=!d?"":d.length!==14?"CNPJ incompleto ("+d.length+" de 14 dígitos)":cnpjOk(d)?"":"CNPJ inválido, confira os números";var okd=d.length===14&&cnpjOk(d);if(rl){rl.hidden=!okd}var g2=s.querySelector("a.google");if(g2)g2.hidden=okd}
    cj.addEventListener("input",function(){CNPJ_SESSAO[p.ck]=1;txtSet(CNPJINF,"postos_cnpj",p.ck,dig(cj.value));cjPinta()});
    cj.addEventListener("change",function(){cj.value=cnpjDe(p);cjPinta()});
    rl=linkReceita(p,"");var gl=document.createElement("a");gl.className="receita-link google";gl.href=buscaGoogle(p);gl.target="busca";gl.rel="noopener";gl.textContent="Procurar CNPJ no Google";gl.title="Pesquisa o CNPJ pelo nome da empresa e cidade";s.appendChild(cj);s.appendChild(gl);s.appendChild(dtSpan(p.ck,"cnpj"));s.appendChild(cjm);s.appendChild(rl);cjPinta()}a.appendChild(s);if(RWS[p.ck])a.appendChild(painelReceita(p));
-  var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent=CELULAR?"📤 Compartilhar no WhatsApp":"Google Contatos";gb1.title=CELULAR?"Abre o WhatsApp para enviar os dados deste contato":"Baixa o contato no padrão do Google Contatos (prefixo = contato, nome = razão social, empresa = CNPJ, cargo = código Iris)";gb1.addEventListener("click",function(){if(CELULAR)compartilhaWA(p);else exportaUm(p)});a.appendChild(gb1);var pb=document.createElement("button");pb.type="button";pb.className="gc1 prontbt";var na=prontLista(ck).length;pb.textContent="📋 Prontuário"+(na?" ("+na+")":"");pb.title="Resumo da situação do cliente e registro de atendimentos"+(CELULAR?" por voz":"");pb.addEventListener("click",function(){prontAbrir(p)});a.appendChild(pb);a.appendChild(botaoPasta(p));if(INAT[ck])tr.classList.add("inativo");
+  var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent=CELULAR?"📤 Compartilhar no WhatsApp":"Google Contatos";gb1.title=CELULAR?"Abre o WhatsApp para enviar os dados deste contato":"Baixa o contato no padrão do Google Contatos (prefixo = contato, nome = razão social, empresa = CNPJ, cargo = código Iris)";gb1.addEventListener("click",function(){if(CELULAR)compartilhaWA(p);else exportaUm(p)});a.appendChild(gb1);var pb=document.createElement("button");pb.type="button";pb.className="gc1 prontbt";var na=prontLista(ck).length;pb.textContent="📋 Prontuário"+(na?" ("+na+")":"");pb.title="Resumo da situação do cliente e registro de atendimentos"+(CELULAR?" por voz":"");pb.addEventListener("click",function(){prontAbrir(p)});a.appendChild(pb);a.appendChild(botaoRetorno(p));a.appendChild(botaoPasta(p));if(INAT[ck])tr.classList.add("inativo");
   a.appendChild(caixa("Inativo",INAT,"postos_inativo",ck,function(v){tr.classList.toggle("inativo",v);tr2.classList.toggle("inativo",v)}));
   if(p.unidos){var un=document.createElement("div");un.className="unidos";un.textContent="Unificado: "+[p.nomeAgenda||""].concat(p.unidos.map(function(u){return u.nome})).filter(Boolean).join(" + ");
    var sp=document.createElement("button");sp.type="button";sp.className="lnk";sp.textContent="Separar";sp.title="Desfaz a unificação e volta a mostrar os registros separados";
@@ -998,8 +1023,8 @@ function relatorio(){
  setTimeout(function(){window.print();arqMsg("Relatório com "+lista.length+(lista.length>1?" clientes":" cliente")+". Na janela de impressão, escolha \"Salvar como PDF\".")},50)}
 $("relpdf").addEventListener("click",relatorio);
 /* ---------- Salvamento: Google Drive (pasta BIOAR) + arquivo de backup ---------- */
-var LS={visita:"postos_visita",consumo:"postos_consumo",tanque:"postos_tanque_arla",perfil:"postos_perfil",datas:"postos_datas",volume:"postos_volume",foneEditado:"postos_fone_editado",foneNovo:"postos_fone_novo",contatoNome:"postos_contato_nome",whatsapp:"postos_whatsapp",rede:"postos_rede",inativo:"postos_inativo",automacao:"postos_automacao",equipamento:"postos_equipamento",redeNome:"postos_rede_nome",fornecedor:"postos_fornecedor",preco:"postos_preco",rota:"postos_rota",progAuto:"postos_prog_auto",prazoPag:"postos_prazo_pag",periodicidade:"postos_periodicidade",cnpj:"postos_cnpj",consumoMes:"postos_consumo_mes",capital:"postos_capital",endereco:"postos_endereco",receitaContato:"postos_receita_contato",excluido:"postos_excluido",separado:"postos_separado",cadastro:"postos_cadastro",prontuario:"postos_prontuario"};
-function mapas(){return {visita:VISITA,consumo:CONSUMO,tanque:TANQ,perfil:PERFIL,datas:DATAS,volume:VOL,foneEditado:FED,foneNovo:FADD,contatoNome:FNOME,whatsapp:WA,rede:REDE,inativo:INAT,automacao:AUTO,equipamento:EQUIP,redeNome:REDENOME,fornecedor:FORN,preco:PRECO,rota:ROTA,progAuto:PROG,prazoPag:PRAZO,periodicidade:PERIOD,cnpj:CNPJINF,consumoMes:CMES,capital:CAPITAL,endereco:ENDER,receitaContato:RCONT,excluido:EXCL,separado:SEPAR,cadastro:CAD,prontuario:PRONT}}
+var LS={visita:"postos_visita",consumo:"postos_consumo",tanque:"postos_tanque_arla",perfil:"postos_perfil",datas:"postos_datas",volume:"postos_volume",foneEditado:"postos_fone_editado",foneNovo:"postos_fone_novo",contatoNome:"postos_contato_nome",whatsapp:"postos_whatsapp",rede:"postos_rede",inativo:"postos_inativo",automacao:"postos_automacao",equipamento:"postos_equipamento",redeNome:"postos_rede_nome",fornecedor:"postos_fornecedor",preco:"postos_preco",rota:"postos_rota",progAuto:"postos_prog_auto",prazoPag:"postos_prazo_pag",periodicidade:"postos_periodicidade",cnpj:"postos_cnpj",consumoMes:"postos_consumo_mes",capital:"postos_capital",endereco:"postos_endereco",receitaContato:"postos_receita_contato",excluido:"postos_excluido",separado:"postos_separado",cadastro:"postos_cadastro",prontuario:"postos_prontuario",razao:"postos_razao",retorno:"postos_retorno"};
+function mapas(){return {visita:VISITA,consumo:CONSUMO,tanque:TANQ,perfil:PERFIL,datas:DATAS,volume:VOL,foneEditado:FED,foneNovo:FADD,contatoNome:FNOME,whatsapp:WA,rede:REDE,inativo:INAT,automacao:AUTO,equipamento:EQUIP,redeNome:REDENOME,fornecedor:FORN,preco:PRECO,rota:ROTA,progAuto:PROG,prazoPag:PRAZO,periodicidade:PERIOD,cnpj:CNPJINF,consumoMes:CMES,capital:CAPITAL,endereco:ENDER,receitaContato:RCONT,excluido:EXCL,separado:SEPAR,cadastro:CAD,prontuario:PRONT,razao:RAZAO,retorno:RETORNO}}
 function estadoAtual(){var m=mapas(),o={};Object.keys(m).forEach(function(k){o[k]=Object.assign({},m[k])});return o}
 function contar(s){var n=0;Object.keys(LS).forEach(function(k){if(s&&s[k])n+=Object.keys(s[k]).length});return n}
 function aplicaEstado(s,mesclar){var m=mapas(),n=0;
@@ -1424,6 +1449,40 @@ function vendasBox(p){var ic=irisCli(p);if(!ic)return null;var c=ic.c,l=ic.l,R=I
  var g=document.createElement("div");g.className="meses";for(var i=0;i<=mi;i++){var v=soma(i),s=document.createElement("span");s.textContent=MESES[i]+": "+(v?Math.round(v).toLocaleString("pt-BR"):"–");g.appendChild(s)}det.appendChild(g);
  if(l.length>1)l.forEach(function(x){var d=document.createElement("div");d.className="fraco";d.textContent="Loja "+x[0]+" · "+titulo(x[1])+": "+MESES[mi]+" "+litros(x[6][mi])+" · ano "+litros(x[7]);det.appendChild(d)});
  box.appendChild(det);return box}
+/* ---------- Retorno agendado: grava no app e abre o Google Agenda com o evento preenchido ---------- */
+var RET_TXT={visita:"Visita",ligacao:"Ligação",whatsapp:"WhatsApp"};
+function retInfo(p){var v=String(RETORNO[p.ck]||"");if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(v))return null;var q=v.split("|"),d=new Date(q[0]+":00");if(isNaN(d))return null;
+ var hoje=new Date();hoje.setHours(0,0,0,0);var dia=new Date(d);dia.setHours(0,0,0,0);
+ return {iso:q[0],d:d,tipo:q[1]||"visita",dias:Math.round((dia-hoje)/864e5),atrasado:dia<hoje,txt:d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})+" "+q[0].slice(11,16)}}
+function botaoRetorno(p){var b=document.createElement("button");b.type="button";var r=retInfo(p);
+ b.className="gc1 retbt"+(r?(r.atrasado?" atr":" tem"):"");b.textContent=r?"📅 "+(RET_TXT[r.tipo]||"Retorno")+" "+r.txt+(r.atrasado?" (atrasado)":""):"📅 Agendar retorno";
+ b.title=r?"Retorno agendado. Toque para mudar ou agendar de novo no Google Agenda":"Escolha a data de retorno e crie o evento no Google Agenda";b.addEventListener("click",function(){retAbrir(p)});return b}
+var RT={p:null};
+function isoDia(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function proxSaida(p){var ri=rotaInfo(rotaEf(p));if(!ri)return null;var M={"DOM":0,"SEG":1,"TER":2,"QUA":3,"QUI":4,"SEX":5,"SAB":6};
+ var ds=String(ri.ini||"").split(/[;,]/).map(function(x){return M[sem(x).trim().slice(0,3)]}).filter(function(x){return x!=null});if(!ds.length)return null;
+ for(var i=1;i<=7;i++){var d=new Date();d.setDate(d.getDate()+i);if(ds.indexOf(d.getDay())>=0)return d}return null}
+function retAbrir(p){RT.p=p;var r=retInfo(p),d=new Date();d.setDate(d.getDate()+7);
+ $("retcli").textContent=titulo(p.nome)+(p.cidade?" · "+p.cidade:"")+(r?" · agendado: "+(RET_TXT[r.tipo]||"")+" "+r.d.toLocaleDateString("pt-BR")+" "+r.iso.slice(11,16):"");
+ $("retdata").value=r?r.iso.slice(0,10):isoDia(d);$("rethora").value=r?r.iso.slice(11,16):"09:00";$("rettipo").value=r?r.tipo:"visita";$("retobs").value="";$("retapaga").hidden=!r;
+ var ps=proxSaida(p);$("retrota").hidden=!ps;if(ps){$("retrota").textContent="Próxima saída da rota ("+ps.toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"2-digit"})+")";$("retrota").dataset.dia=isoDia(ps)}
+ var dl=$("dlgret");if(dl.showModal)dl.showModal();else dl.setAttribute("open","")}
+function retFechar(){var dl=$("dlgret");if(dl.close)dl.close();else dl.removeAttribute("open")}
+$("retx").addEventListener("click",retFechar);
+document.querySelectorAll(".retatalhos button[data-d]").forEach(function(b){b.addEventListener("click",function(){var d=new Date();d.setDate(d.getDate()+(+b.dataset.d));$("retdata").value=isoDia(d)})});
+$("retrota").addEventListener("click",function(){$("retdata").value=this.dataset.dia||""});
+function gcalData(iso,min){var d=new Date(iso+":00");d.setMinutes(d.getMinutes()+(min||0));function z(n){return String(n).padStart(2,"0")}return d.getFullYear()+z(d.getMonth()+1)+z(d.getDate())+"T"+z(d.getHours())+z(d.getMinutes())+"00"}
+$("retok").addEventListener("click",function(){var p=RT.p;if(!p)return;var dt=$("retdata").value,hr=$("rethora").value||"09:00",tp=$("rettipo").value,obs=$("retobs").value.trim();
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(dt)){$("retmsg").textContent="Escolha a data do retorno.";return}
+ var iso=dt+"T"+hr.slice(0,5),dur=+$("retdur").value||30,cj=dig(cnpjDe(p)),fs=fonesEfetivos(p),rt=rotaEf(p),ri=rotaInfo(rt),h=prontLista(p.ck),ic=irisCli(p);
+ var det=[(RET_TXT[tp]||"Retorno")+" de retorno · Arla 32 Bioar",obs?"Assunto: "+obs:"","",p.nome,cj?"CNPJ: "+cnpjDe(p):"",p.cart&&p.cart.ok&&p.cart.cod?"Código Iris: "+p.cart.cod:"",
+  FNOME[p.ck]?"Contato: "+FNOME[p.ck]:"",fs.length?"Telefones: "+fs.join(" · "):"",endTxt(p)?"Endereço: "+endTxt(p):"",rt?"Rota: "+rt+(ri?" ("+agendaRota(ri)+")":""):"",
+  h[0]?"\nÚltimo atendimento ("+dataHora(h[0].t)+"): "+h[0].x.slice(0,400):"",cj?"\nFicha no app: "+location.origin+location.pathname+"#c"+cj:""].filter(function(x,i){return x!==""||i===2}).join("\n");
+ var titu=(tp==="ligacao"?"Ligar: ":tp==="whatsapp"?"WhatsApp: ":"Visita: ")+titulo(p.nome)+(p.cidade?" ("+p.cidade+")":"");
+ var url="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(titu)+"&dates="+gcalData(iso)+"/"+gcalData(iso,dur)+"&ctz=America/Sao_Paulo&details="+encodeURIComponent(det)+(tp==="visita"&&endTxt(p)?"&location="+encodeURIComponent(endTxt(p).replace(/ · /g,", ")):"");
+ carimbo(p.ck,"retorno",iso,RETORNO[p.ck]||"");RETORNO[p.ck]=iso+"|"+tp;setLS("postos_retorno",RETORNO);
+ window.open(url,"_blank","noopener");retFechar();filtrar();if($("dlgpront").open)prontPinta()});
+$("retapaga").addEventListener("click",function(){var p=RT.p;if(!p)return;carimbo(p.ck,"retorno","",RETORNO[p.ck]||"");delete RETORNO[p.ck];setLS("postos_retorno",RETORNO);retFechar();filtrar();if($("dlgpront").open)prontPinta();arqMsg("Retorno removido do app. Se o evento já estava no Google Agenda, apague-o lá também.")});
 /* ---------- Prontuário de atendimento: resumo da situação + histórico (voz no celular, digitado no computador) ---------- */
 function prontLista(ck){var pre=ck+":",o=[];Object.keys(PRONT).forEach(function(k){if(k.indexOf(pre)===0&&/^\d{13}$/.test(k.slice(pre.length)))o.push({k:k,t:+k.slice(pre.length),x:String(PRONT[k])})});
  o.sort(function(a,b){return a.t-b.t});var g=[];o.forEach(function(e){var u=g[g.length-1];if(u&&e.x.charAt(0)==="…"&&e.t-u.t2<50){u.x+=" "+e.x.slice(1);u.ks.push(e.k);u.t2=e.t}else g.push({t:e.t,t2:e.t,x:e.x,ks:[e.k]})});return g.reverse()}
@@ -1449,7 +1508,8 @@ function prontResumo(p){var ck=p.ck,S=[],al=[];
   ["Fornecedor atual",FORN[ck]||""],["Preço do fornecedor",PRECO[ck]?"R$ "+precoFmt(PRECO[ck]):""],["Prazo de pagamento",prazoEf(p)],["Periodicidade",PERIOD[ck]||""],["Programação automática",PROG[ck]?"sim":""],
   ["Rota",rt?rt+(rotaOrigem(p)?" ("+rotaOrigem(p)+")":"")+(ri?" · "+agendaRota(ri):""):""],["Capital social",p.tipo==="consumidor"&&CAPITAL[ck]?"R$ "+capFmt(CAPITAL[ck]):""]]);
  var fs=fonesEfetivos(p);
- sec("Contato",[["Contato",FNOME[ck]||(p.agenda[0]&&p.agenda[0].nome)||""],["Telefones",fs.map(function(t){return t+(waGet(t)==="sim"?" (WhatsApp)":"")}).join(" · ")],["E-mail",p.email||(p.agenda[0]&&p.agenda[0].email)||""],["Data da visita",VISITA[ck]?dtLonga(VISITA[ck]):""]]);
+ sec("Contato",[["Contato",FNOME[ck]||(p.agenda[0]&&p.agenda[0].nome)||""],["Telefones",fs.map(function(t){return t+(waGet(t)==="sim"?" (WhatsApp)":"")}).join(" · ")],["E-mail",p.email||(p.agenda[0]&&p.agenda[0].email)||""],["Data da visita",VISITA[ck]?dtLonga(VISITA[ck]):""],["Próximo retorno",(function(){var r=retInfo(p);return r?(RET_TXT[r.tipo]||"Retorno")+" em "+r.d.toLocaleDateString("pt-BR")+" às "+r.iso.slice(11,16)+(r.atrasado?" (atrasado)":""):""})()]]);
+ var rr=retInfo(p);if(rr&&rr.atrasado)al.unshift("Retorno de "+rr.d.toLocaleDateString("pt-BR")+" atrasado.");else if(rr&&rr.dias===0)al.unshift("Retorno agendado para hoje às "+rr.iso.slice(11,16)+".");
  if(!fs.length)al.push("Sem telefone cadastrado.");
  if(!VISITA[ck])al.push("Nenhuma visita registrada.");else{var dd=Math.round((Date.now()-new Date(VISITA[ck]+"T12:00:00"))/864e5);if(dd>60)al.push("Última visita há "+dd+" dias.")}
  if(!rt)al.push("Sem rota definida.");else if(/sugerida/.test(rotaOrigem(p)))al.push("Rota sugerida ("+rt+"): confirme com o cliente.");
@@ -1480,7 +1540,7 @@ function prontAbrir(p){PR.p=p;micParar();$("prontin").value=lsGet("pront_rasc_"+
  $("prontin").placeholder=CELULAR?"O texto ditado aparece aqui":"Digite o que foi tratado, combinado e o próximo passo";
  prontPinta();var d=$("dlgpront");if(d.showModal)d.showModal();else d.setAttribute("open","")}
 function prontFechar(){micParar();var d=$("dlgpront");if(d.close)d.close();else d.removeAttribute("open");filtrar()}
-$("prontx").addEventListener("click",prontFechar);$("dlgpront").addEventListener("cancel",function(){micParar()});
+$("prontx").addEventListener("click",prontFechar);$("prontret").addEventListener("click",function(){if(PR.p)retAbrir(PR.p)});$("dlgpront").addEventListener("cancel",function(){micParar()});
 $("prontin").addEventListener("input",function(){if(PR.p)lsSet("pront_rasc_"+PR.p.ck,$("prontin").value||null)});
 $("prontsalva").addEventListener("click",function(){var p=PR.p;if(!p)return;micParar();var t=$("prontin").value.replace(/[ \t]+/g," ").trim(),m=$("prontmsg");
  if(!t){m.className="erro";m.textContent=CELULAR?"Grave ou escreva o atendimento antes de salvar.":"Escreva o atendimento antes de salvar.";return}
