@@ -55,6 +55,16 @@
   dt { color: var(--suave); font-size: .88rem; }
   dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
   .msg-erro { color: var(--erro); margin: 0; }
+  .cad { border-top: 1px solid var(--linha); padding-top: 14px; display: grid; gap: 10px; }
+  .cad p { margin: 0; }
+  .cad .titulo { font-weight: 600; }
+  .cad .ok { color: var(--ok); font-weight: 600; }
+  .cad .alerta { color: var(--alerta); }
+  .cad .linha { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; }
+  .cad select { font: 1rem var(--fonte); padding: 9px 10px; border: 1px solid var(--linha);
+                border-radius: 6px; background: var(--fundo); color: var(--texto); }
+  a.botao { justify-self: start; display: inline-block; font: 600 1rem var(--fonte); padding: 10px 20px; border-radius: 6px;
+            background: var(--acento); color: var(--acento-texto); text-decoration: none; }
   @media (max-width: 480px) { dl { grid-template-columns: 1fr; gap: 0; } dd { margin-bottom: 8px; } }
 </style>
 </head>
@@ -169,6 +179,100 @@
     } catch (e) {}
   }
 
+  // ---------- Cadastro no Gestor de Carteira ----------
+  // O Gestor grava em "postos_indice_cnpj" os CNPJs que já tem (apagados vêm como cnpj*código).
+  // Aqui o cadastro entra numa fila; o Gestor lê a fila ao abrir e salva o cliente no Drive.
+  var FILA = "postos_cadastro_fila";
+  function indice() {
+    var m = {};
+    try {
+      String(localStorage.getItem("postos_indice_cnpj") || "").split(",").forEach(function (x) {
+        if (!x) return; var i = x.indexOf("*");
+        if (i < 0) m[x] = {}; else m[x.slice(0, i)] = { ck: x.slice(i + 1) };
+      });
+    } catch (e) {}
+    return m;
+  }
+  function lerFila() { try { var f = JSON.parse(localStorage.getItem(FILA) || "[]"); return Array.isArray(f) ? f : []; } catch (e) { return []; } }
+  function naFila(dg) { return lerFila().some(function (x) { return x && x.cnpj === dg; }); }
+  function poeNaFila(item) {
+    var f = lerFila().filter(function (x) { return x && x.cnpj !== item.cnpj; });
+    f.push(item);
+    try { localStorage.setItem(FILA, JSON.stringify(f)); return true; } catch (e) { return false; }
+  }
+  // Celular com 10 dígitos (DDD + 8) ganha o 9 na frente
+  function telefones(t) {
+    return String(t || "").split(/[\/,;]/).map(function (x) { return x.replace(/\D/g, ""); })
+      .filter(function (x) { return x.length === 10 || x.length === 11; })
+      .map(function (x) { return x.length === 10 && /[6-9]/.test(x[2]) ? x.slice(0, 2) + "9" + x.slice(2) : x; });
+  }
+  function linkFicha(dg, txt) { var a = el("a", "botao", txt || "Abrir a ficha no Gestor"); a.href = "./#c" + dg; return a; }
+  function pronto(box, dg, msg) {
+    box.textContent = "";
+    box.appendChild(el("p", "ok", msg));
+    box.appendChild(el("p", null, "Ao abrir o Gestor, o cliente entra na base e vai para o Drive. Cadastrou mais de um? Use o filtro Tipo de Cliente › Cadastrados pela Consulta de CNPJs."));
+    box.appendChild(linkFicha(dg));
+  }
+
+  function blocoCadastro(cnpj, d, esp) {
+    var box = el("div", "cad");
+    var dg = String(d.cnpj || cnpj).replace(/[^0-9A-Za-z]/g, "").toUpperCase();
+    if (!/^\d{14}$/.test(dg)) {
+      box.appendChild(el("p", "alerta", "CNPJ alfanumérico: o Gestor ainda não aceita cadastro automático deste formato."));
+      return box;
+    }
+    var idx = indice()[dg];
+    if (idx && !idx.ck) {
+      box.appendChild(el("p", "ok", "✓ Este CNPJ já está no Gestor de Carteira."));
+      box.appendChild(linkFicha(dg));
+      return box;
+    }
+    if (naFila(dg)) { pronto(box, dg, "✓ Cadastro já preparado. Falta abrir o Gestor."); return box; }
+    if (idx && idx.ck) {
+      box.appendChild(el("p", "alerta", "Este CNPJ está na lixeira do Gestor (registro apagado)."));
+      var r = el("button", null, "Restaurar e abrir no Gestor"); r.type = "button";
+      r.addEventListener("click", function () {
+        if (!poeNaFila({ cnpj: dg, restaurar: idx.ck })) { box.appendChild(el("p", "msg-erro", "Sem espaço no navegador para guardar o pedido.")); return; }
+        location.href = "./#c" + dg;
+      });
+      box.appendChild(r);
+      return box;
+    }
+
+    var ativ = (d.atividade_principal || [])[0] || {};
+    var cod = String(ativ.code || "").replace(/\D/g, "");
+    var revenda = /^(4731|4732|4681)/.test(cod);   // varejo de combustíveis/lubrificantes ou atacado de combustíveis
+    box.appendChild(el("p", "titulo", "Este CNPJ não está no Gestor de Carteira."));
+    if (String(d.situacao || "").toUpperCase() !== "ATIVA" || esp)
+      box.appendChild(el("p", "alerta", "Atenção: a situação na Receita não é regular" + (esp ? " (" + esp + ")" : "") + ". Dá para cadastrar mesmo assim."));
+    var linha = el("div", "linha");
+    var lb = el("label", null, "Tipo de cliente");
+    var sel = el("select");
+    [["revendedor", "Revendedor (posto)"], ["consumidor", "Consumidor (frota)"]].forEach(function (o) {
+      var op = el("option", null, o[1]); op.value = o[0]; sel.appendChild(op);
+    });
+    sel.value = revenda ? "revendedor" : "consumidor";
+    lb.appendChild(sel);
+    var b = el("button", null, "Cadastrar no Gestor de Carteira"); b.type = "button";
+    linha.appendChild(lb); linha.appendChild(b);
+    box.appendChild(linha);
+    box.appendChild(el("p", "sub", "Tipo sugerido pela atividade principal" + (ativ.code ? " (" + ativ.code + ")" : "") + ". Confira antes de cadastrar."));
+
+    b.addEventListener("click", function () {
+      var cap = parseFloat(d.capital_social);
+      var item = {
+        cnpj: dg, tipo: sel.value, nome: d.nome || "", fantasia: d.fantasia || "",
+        municipio: d.municipio || "", uf: d.uf || "", segmento: ativ.text || "",
+        end: { endereco: [d.logradouro, d.numero].filter(Boolean).join(", "), compl: d.complemento || "", bairro: d.bairro || "", cep: d.cep || "" },
+        tels: telefones(d.telefone), email: d.email || "",
+        capital: isFinite(cap) && cap > 0 ? cap.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ""
+      };
+      if (!poeNaFila(item)) { box.appendChild(el("p", "msg-erro", "Sem espaço no navegador para guardar o cadastro.")); return; }
+      pronto(box, dg, "✓ " + (d.nome || "Cliente") + " pronto para entrar no Gestor como " + (sel.value === "revendedor" ? "revendedor (posto)." : "consumidor (frota)."));
+    });
+    return box;
+  }
+
   function fichaOk(cnpj, d) {
     var f = el("article", "ficha");
     var t = el("div", "topo");
@@ -206,6 +310,7 @@
       copia.push(l[0] + ": " + l[1]);
     });
     f.appendChild(dl);
+    f.appendChild(blocoCadastro(cnpj, d, esp));
     textoCopia.push(copia.join("\n"));
     return f;
   }
