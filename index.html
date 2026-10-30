@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b6b4f"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><title>Gestor de Carteira Arla 32</title><script src="config.js"></script><script src="dados.js?v=2"></script><script src="bases.js"></script><script src="municipios.js"></script><script src="https://accounts.google.com/gsi/client" async defer></script><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b6b4f"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><title>Gestor de Carteira Arla 32</title><script src="config.js"></script><script src="dados.js?v=2"></script><script src="bases.js"></script><script src="municipios.js"></script><script src="rotas.js"></script><script src="https://accounts.google.com/gsi/client" async defer></script><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <style>
 :root{--fundo:#f3f5f4;--papel:#fff;--texto:#17211d;--suave:#5b6963;--linha:#d5dcd8;
 --acento:#0b6b4f;--acento-texto:#fff;--erro:#a32222;
@@ -69,7 +69,7 @@ tr.linha2 td{padding-top:0}
 .comerc{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .comerc label{display:grid;gap:2px;font-size:.74rem;color:var(--suave)}
 .comerc input[type=text]{font:.85rem var(--fonte);padding:4px 6px;border-radius:4px}
-.comerc input.forn{width:170px;max-width:100%}.comerc input.preco{width:110px;text-align:right}.comerc input.prazo{width:110px}.comerc input.rota{width:170px;max-width:100%}.comerc input.rota.auto,.comerc input.prazo.auto{color:var(--suave);font-style:italic}.comerc .prazoiris{text-align:right}.comerc input.period{width:170px;max-width:100%}.comerc label.chk.prog{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--texto)}
+.comerc input.forn{width:170px;max-width:100%}.comerc input.preco{width:110px;text-align:right}.comerc input.prazo{width:110px}.comerc input.rota{width:170px;max-width:100%}.comerc input.rota.auto,.comerc input.prazo.auto{color:var(--suave);font-style:italic}.comerc .prazoiris{text-align:right}.rotadias{text-align:right;color:var(--acento);font-weight:600}.comerc input.period{width:170px;max-width:100%}.comerc label.chk.prog{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--texto)}
 tr.inativo td{opacity:.5}tr.inativo td:first-child{opacity:1}tr.inativo td:first-child>:not(.chk){opacity:.5}
 .barra{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--papel);border-top:1px solid var(--linha);
 padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));box-shadow:0 -4px 14px rgba(0,0,0,.06)}
@@ -278,6 +278,8 @@ button.mais{display:block;margin:0 auto}
 <p>Inativo, Posto de Rede (abre um campo para o nome da rede), Equipamento, capacidade do tanque de Arla em litros, Automação, fornecedor atual, preço, prazo de pagamento (quando você não preenche, vem o prazo do relatório Iris, em itálico, com o aviso "do relatório Iris"; o que você digitar passa a valer), periodicidade de entrega, programação automática, rota (escolha uma rota já usada na lista ou digite uma nova; sem rota escolhida, vale a rota escrita nas observações da agenda, como "ROTA BELO HORIZONTE", com o aviso "da agenda") — esses quatro também têm filtro, volume de S10 e telefones. Cada campo preenchido mostra a data em que foi feito, e o nome do posto mostra a última atualização; passe o mouse sobre ela para ver a data de cada campo.</p>
 <h3>Filtros</h3>
 <p>A lista só aparece depois que você escolhe um município, digita uma busca ou usa um filtro, e mostra 60 registros por vez (botão "Mostrar mais" no fim). O filtro "Tipo de Cliente" separa revendedores (postos) de consumidores (transportadoras, ônibus e frotas). Nos consumidores, informe na coluna Vol S10 o diesel da frota em m³ por mês para calcular o potencial de Arla. Município, busca livre, WhatsApp, visita, consumo de Arla, perfil do posto, bandeira, fornecedor atual, equipamento e rede de postos podem ser combinados. O filtro "Rede de postos" mostra só os postos de rede, só os independentes, ou os postos de uma rede específica; a lista de redes se monta com os nomes digitados no campo "Posto de Rede" de cada posto, com a quantidade entre parênteses. "Limpar filtros" volta à lista completa. A lista de fornecedores se monta com os nomes que você digitar nos postos.</p>
+<h3>Rotas de entrega</h3>
+<p>O campo Rota mostra a rota de entrega do cliente e, logo abaixo, os dias da tabela de rotas da Bioar: saída, chegada e o limite para fazer o pedido. Vale nesta ordem: a rota que você escolher no app; a rota escrita na agenda ("ROTA SETE LAGOAS"); e, sem nenhuma das duas, a rota do município — a mais usada pelos clientes daquele município ("rota dos clientes do município"), ou a do município vizinho mais próximo que tenha rota, até 35 km ("sugerida: vizinho"), ou o polo de rota em MG mais perto ("sugerida: polo mais perto"). As sugeridas aparecem em itálico; ao confirmar com o cliente, escolha a rota no campo e ela passa a valer. O filtro Rota e a planilha usam a rota que vale.</p>
 <h3>Situação na Receita</h3>
 <p>Abaixo da razão social aparece a situação do CNPJ na Receita Federal, com a data da consulta: "Ativa na Receita" (verde), "Inativa na Receita" com o motivo (baixada, inapta, suspensa) em vermelho, e "Em recuperação judicial" em laranja. Ela é atualizada quando você toca em "Buscar na Receita" no cliente, quando consulta o CNPJ na página Consulta de CNPJs, ou pelo botão "Situação na Receita (lista)", que consulta todos os clientes da lista filtrada, 3 por minuto (limite da ReceitaWS); toque de novo para parar. O filtro CNPJ separa ativos, inativos, em recuperação judicial e os que ainda não foram consultados. É a situação cadastral do CNPJ, não uma certidão de débitos.</p>
 <h3>Pastas dos clientes no Drive</h3>
@@ -312,7 +314,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=33;
+var VERSAO_APP=34;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -652,8 +654,33 @@ function rotaAgenda(p){for(var i=0;i<(p.agenda||[]).length;i++){var re=/\bROTA\s
    for(var n=w.length;n>0;n--){var t=w.slice(0,n).join(" ");if(window.MUN_MG&&MUN_MG[sem(t).replace(/[^A-Z]/g,"")]){r=t;break}}
    if(!r){var up=[];for(var j=0;j<w.length&&j<3&&w[j]===w[j].toUpperCase()&&/[A-ZÀ-Ú]/.test(w[j]);j++)up.push(w[j]);r=up.join(" ")}
    if(r)return titulo(r)}}return ""}
-function rotaEf(p){return ROTA[ckOf(p)]||rotaAgenda(p)}
-function listaRotas(){var dl=$("rotas");if(!dl)return;var u={};postos.forEach(function(p){var r=rotaEf(p);if(r)u[chavePP(r)]=u[chavePP(r)]||r});dl.textContent="";Object.keys(u).sort().forEach(function(k){var o=document.createElement("option");o.value=u[k];dl.appendChild(o)})}
+/* Rotas da Bioar (rotas.js): dias de saída, chegada e limite de pedido.
+   Sem rota informada no app nem na agenda, a rota vem do município: a mais usada pelos clientes do município;
+   se ninguém do município tem rota, a do município vizinho mais próximo com rota (até 35 km); senão, o polo de rota em MG mais perto. */
+var ROTA_NOME={"DIVINOPOLIS":"Divinópolis","TRES CORACOES":"Três Corações","UBERLANDIA":"Uberlândia","SP CAPITAL":"SP Capital"},ROTA_INFO={};((window.ROTAS_BIOAR&&ROTAS_BIOAR.rotas)||[]).forEach(function(r){var k=chavePP(r[0]);ROTA_INFO[k]={k:k,nome:ROTA_NOME[k]||NOMES[k]||titulo(r[0]),ini:r[1],fim:r[2],lim:r[3],mg:r[4]===1}});
+function rotaInfo(nome){return nome?ROTA_INFO[chavePP(nome)]||null:null}
+var DIA_C={"SEGUNDA":"seg","TERCA":"ter","QUARTA":"qua","QUINTA":"qui","SEXTA":"sex","SABADO":"sáb","DOMINGO":"dom"};
+function diasTxt(t){var d=String(t||"").split(/[;,]/).map(function(x){return DIA_C[sem(x).replace(/-?FEIRA/,"").trim()]||""}).filter(Boolean);return d.length>1?d.slice(0,-1).join(", ")+" e "+d[d.length-1]:d[0]||""}
+function agendaRota(ri){if(!ri)return "";var a=[],x;if((x=diasTxt(ri.ini)))a.push("Saída: "+x);if((x=diasTxt(ri.fim)))a.push("chegada: "+x);if((x=diasTxt(ri.lim)))a.push("pedido até: "+x);return a.join(" · ")}
+var MUNROTA=null;
+function coMun(m){return window.MUN_MG?MUN_MG[String(m||"").replace(/[^A-Z]/g,"")]:null}
+function munRotas(){if(MUNROTA)return MUNROTA;MUNROTA={};
+ var votos={};postos.forEach(function(p){if(!p.mun||EXCL[p.ck])return;var ri=rotaInfo(ROTA[p.ck]||rotaAgenda(p));if(!ri)return;var v=votos[p.mun]=votos[p.mun]||{};v[ri.k]=(v[ri.k]||0)+1});
+ var base=Object.keys(votos).map(function(m){var v=votos[m],k=Object.keys(v).sort(function(a,b){return v[b]-v[a]||a.localeCompare(b)})[0];MUNROTA[m]={k:k,via:"mun",n:v[k]};return {m:m,k:k,c:coMun(m)}}).filter(function(x){return x.c});
+ var polos=Object.keys(ROTA_INFO).filter(function(k){return ROTA_INFO[k].mg}).map(function(k){return {k:k,c:coMun(k)}}).filter(function(x){return x.c});
+ var todos={};postos.forEach(function(p){if(p.mun)todos[p.mun]=1});
+ Object.keys(todos).forEach(function(m){if(MUNROTA[m])return;var c=coMun(m);if(!c)return;
+  var viz=null,dv=1e9;base.forEach(function(x){var d=km(c[0],c[1],x.c[0],x.c[1]);if(d<dv){dv=d;viz=x}});
+  if(viz&&dv<=35){MUNROTA[m]={k:viz.k,via:"viz",de:NOMES[viz.m]||titulo(viz.m),km:Math.round(dv)};return}
+  var po=null,dp=1e9;polos.forEach(function(x){var d=km(c[0],c[1],x.c[0],x.c[1]);if(d<dp){dp=d;po=x}});
+  if(po&&dp<=250)MUNROTA[m]={k:po.k,via:"dist",km:Math.round(dp)}});
+ return MUNROTA}
+function rotaMunInfo(p){var r=p.mun?munRotas()[p.mun]:null;return r&&ROTA_INFO[r.k]?r:null}
+function rotaMun(p){var r=rotaMunInfo(p);return r?ROTA_INFO[r.k].nome:""}
+function rotaOrigem(p){if(ROTA[ckOf(p)])return "";if(rotaAgenda(p))return "da agenda";var r=rotaMunInfo(p);if(!r)return "";
+ return r.via==="mun"?"rota dos clientes do município":r.via==="viz"?"sugerida: vizinho "+r.de+" ("+r.km+" km)":"sugerida: polo mais perto ("+r.km+" km)"}
+function rotaEf(p){return ROTA[ckOf(p)]||rotaAgenda(p)||rotaMun(p)}
+function listaRotas(){var dl=$("rotas");if(!dl)return;var u={};Object.keys(ROTA_INFO).forEach(function(k){if(ROTA_INFO[k].mg)u[k]=ROTA_INFO[k].nome});postos.forEach(function(p){var r=rotaEf(p);if(r)u[chavePP(r)]=u[chavePP(r)]||r});dl.textContent="";Object.keys(u).sort().forEach(function(k){var o=document.createElement("option");o.value=u[k];dl.appendChild(o)})}
 function opPrazoPer(){opPP("fprazo",prazoEf);opPP("fper",function(p){return PERIOD[ckOf(p)]});opPP("frota",rotaEf);listaRotas()}
 function filtrar(){
  postos.forEach(aplicaEnd);calcular();opPrazoPer();
@@ -834,9 +861,11 @@ function filtrar(){
   var l5=caixa("Programação automática",PROG,"postos_prog_auto",ck);l5.classList.add("prog");
   var l6=campoTxt("Rota",ROTA,"postos_rota","rota","escolha ou digite");var ri=l6.querySelector("input");ri.setAttribute("list","rotas");
   ri.addEventListener("change",function(){listaRotas();opPrazoPer()});
-  (function(){var ra=rotaAgenda(p);if(!ra)return;var nt=document.createElement("span");nt.className="dt bloco prazoiris";l6.appendChild(nt);
-   function pinta(){var auto=!ROTA[ck];if(auto&&document.activeElement!==ri)ri.value=ra;ri.classList.toggle("auto",auto);nt.textContent=auto?"da agenda":"Agenda: "+ra}
-   ri.addEventListener("blur",pinta);ri.addEventListener("focus",function(){if(!ROTA[ck])ri.value=""});pinta()})();
+  (function(){var ra=rotaAgenda(p)||rotaMun(p),org=rotaOrigem(p)||"da agenda",nt=document.createElement("span"),ag=document.createElement("span");nt.className="dt bloco prazoiris";ag.className="dt bloco rotadias";
+   if(ra)l6.appendChild(nt);l6.appendChild(ag);
+   function pinta(){var auto=!ROTA[ck];if(ra){if(auto&&document.activeElement!==ri)ri.value=ra;ri.classList.toggle("auto",auto);nt.textContent=auto?org:"Antes: "+ra}
+    var info=rotaInfo(rotaEf(p));ag.textContent=info?agendaRota(info):(rotaEf(p)?"rota fora da tabela Bioar":"");ag.title=info?"Tabela de rotas Bioar de "+((window.ROTAS_BIOAR&&ROTAS_BIOAR.data)||""):""}
+   ri.addEventListener("blur",pinta);ri.addEventListener("change",pinta);ri.addEventListener("focus",function(){if(!ROTA[ck])ri.value=""});pinta()})();
   bx.appendChild(l6);bx.appendChild(l1);bx.appendChild(l2);bx.appendChild(l3);bx.appendChild(l4);bx.appendChild(l5);cc.appendChild(bx);tr2.appendChild(cc);
   $("tb").appendChild(tr);$("tb").appendChild(tr2)});
  $("vazio").hidden=atual.length>0;
