@@ -238,7 +238,7 @@ button.mais{display:block;margin:0 auto}
 .irisg{border-collapse:collapse;width:auto;font-size:.9rem;background:var(--papel);font-variant-numeric:tabular-nums}
 .irisg th,.irisg td{border:1px solid var(--texto)!important;padding:4px 12px;text-align:right;white-space:nowrap;min-width:7.5em;vertical-align:middle;font-size:.9rem;text-transform:none;letter-spacing:0;color:var(--texto)}
 .irisg thead th{text-align:left;font-weight:600}.irisg tbody th{text-align:left;font-weight:600;min-width:3.5em}.irisg #ir-data{font-weight:700}
-.irisg td.ok{color:var(--acento);font-weight:700}.irisg td.baixo{color:#b45a00;font-weight:700}
+.irisg td.ok{color:var(--acento);font-weight:700}.irisg td.neg{color:var(--erro);font-weight:700}.irisg td.iaed{padding:2px 6px}.irisg td.iaed input{width:6em;text-align:right;font:inherit;padding:2px 4px;border:1px solid var(--linha);border-radius:4px;background:var(--fundo);color:var(--texto)}.irisg td small{display:block;font-size:.75rem;font-weight:400}.irisg td.baixo{color:#b45a00;font-weight:700}
 .iris-lado{display:grid;gap:6px;max-width:340px}.iris-lado .fraco{font-size:.8rem}
 .vendas{margin-top:6px;padding:5px 8px;border-left:3px solid var(--acento);background:var(--fundo);border-radius:0 4px 4px 0;font-size:.8rem;line-height:1.4}
 .vendas b{font-weight:700}.vendas .vtit{font-weight:700;color:var(--acento)}
@@ -253,6 +253,10 @@ button.mais{display:block;margin:0 auto}
  <tbody><tr><th>Real</th><td id="ir-vr">—</td><td id="ir-mr">—</td><td id="ir-cr">—</td></tr>
  <tr><th>Meta</th><td id="ir-vm">—</td><td id="ir-mm">—</td><td id="ir-cm">—</td></tr>
  <tr><th>%</th><td id="ir-vp">—</td><td id="ir-mp">—</td><td id="ir-cp">—</td></tr></tbody></table>
+ <table class="irisg irisano" aria-label="Comparativo com o mesmo mês do ano anterior"><thead><tr><th>Comparativo</th><th id="ia-at">Mês atual</th><th id="ia-an">Ano anterior</th><th>Diferença</th></tr></thead>
+ <tbody><tr><th>Clientes</th><td id="ia-ca">—</td><td class="iaed"><input type="text" id="ia-cn" inputmode="numeric" placeholder="digite" aria-label="Clientes compradores no mesmo mês do ano anterior"></td><td id="ia-cd">—</td></tr>
+ <tr><th>Volume</th><td id="ia-va">—</td><td id="ia-vn">—</td><td id="ia-vd">—</td></tr>
+ <tr><th>Margem</th><td id="ia-ma">—</td><td id="ia-mn">—</td><td id="ia-md">—</td></tr></tbody></table>
  <div class="iris-lado"><button type="button" id="iris">Carga Iris</button><input type="file" id="irisin" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
  <div id="irisinfo" class="fraco">Toque em Carga Iris e escolha o Relatório Vendedor Externo (Excel).</div><div id="irismsg" class="fraco" role="status"></div></div>
 </div></div></header>
@@ -417,7 +421,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=44;
+var VERSAO_APP=45;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -624,6 +628,7 @@ var postos=DADOS.map(function(r){
 var CAD=marcas("postos_cadastro");
 var PASTAS=marcas("drive_pastas_cli");
 var PRONT=marcas("postos_prontuario");
+var ANOANT=marcas("postos_ano_anterior");   /* clientes compradores no mesmo mês do ano anterior (digitado): "AAAA-MM" -> número */
 var TIPOCLI=marcas("postos_tipo_cli");   /* tipo de cliente corrigido à mão: "revendedor" ou "consumidor|segmento" */
 var RAZAO=marcas("postos_razao");      /* razão social trazida da Receita (substitui o nome do cadastro) */
 var RETORNO=marcas("postos_retorno");  /* retorno agendado: "AAAA-MM-DDTHH:MM|tipo" */   /* atendimentos: ck:<carimbo ms> -> texto (até 400 caracteres por parte) */   /* chave do cliente/rede -> id da pasta no Drive (cache deste aparelho) */
@@ -1081,8 +1086,8 @@ function relatorio(){
  setTimeout(function(){window.print();arqMsg("Relatório com "+lista.length+(lista.length>1?" clientes":" cliente")+". Na janela de impressão, escolha \"Salvar como PDF\".")},50)}
 $("relpdf").addEventListener("click",relatorio);
 /* ---------- Salvamento: Google Drive (pasta BIOAR) + arquivo de backup ---------- */
-var LS={emailVisita:"postos_email_visita",tipoCli:"postos_tipo_cli",visita:"postos_visita",consumo:"postos_consumo",tanque:"postos_tanque_arla",perfil:"postos_perfil",datas:"postos_datas",volume:"postos_volume",foneEditado:"postos_fone_editado",foneNovo:"postos_fone_novo",contatoNome:"postos_contato_nome",whatsapp:"postos_whatsapp",rede:"postos_rede",inativo:"postos_inativo",automacao:"postos_automacao",equipamento:"postos_equipamento",redeNome:"postos_rede_nome",fornecedor:"postos_fornecedor",preco:"postos_preco",rota:"postos_rota",progAuto:"postos_prog_auto",prazoPag:"postos_prazo_pag",periodicidade:"postos_periodicidade",cnpj:"postos_cnpj",consumoMes:"postos_consumo_mes",capital:"postos_capital",endereco:"postos_endereco",receitaContato:"postos_receita_contato",excluido:"postos_excluido",separado:"postos_separado",cadastro:"postos_cadastro",prontuario:"postos_prontuario",razao:"postos_razao",retorno:"postos_retorno"};
-function mapas(){return {emailVisita:MAILV,tipoCli:TIPOCLI,visita:VISITA,consumo:CONSUMO,tanque:TANQ,perfil:PERFIL,datas:DATAS,volume:VOL,foneEditado:FED,foneNovo:FADD,contatoNome:FNOME,whatsapp:WA,rede:REDE,inativo:INAT,automacao:AUTO,equipamento:EQUIP,redeNome:REDENOME,fornecedor:FORN,preco:PRECO,rota:ROTA,progAuto:PROG,prazoPag:PRAZO,periodicidade:PERIOD,cnpj:CNPJINF,consumoMes:CMES,capital:CAPITAL,endereco:ENDER,receitaContato:RCONT,excluido:EXCL,separado:SEPAR,cadastro:CAD,prontuario:PRONT,razao:RAZAO,retorno:RETORNO}}
+var LS={anoAnterior:"postos_ano_anterior",emailVisita:"postos_email_visita",tipoCli:"postos_tipo_cli",visita:"postos_visita",consumo:"postos_consumo",tanque:"postos_tanque_arla",perfil:"postos_perfil",datas:"postos_datas",volume:"postos_volume",foneEditado:"postos_fone_editado",foneNovo:"postos_fone_novo",contatoNome:"postos_contato_nome",whatsapp:"postos_whatsapp",rede:"postos_rede",inativo:"postos_inativo",automacao:"postos_automacao",equipamento:"postos_equipamento",redeNome:"postos_rede_nome",fornecedor:"postos_fornecedor",preco:"postos_preco",rota:"postos_rota",progAuto:"postos_prog_auto",prazoPag:"postos_prazo_pag",periodicidade:"postos_periodicidade",cnpj:"postos_cnpj",consumoMes:"postos_consumo_mes",capital:"postos_capital",endereco:"postos_endereco",receitaContato:"postos_receita_contato",excluido:"postos_excluido",separado:"postos_separado",cadastro:"postos_cadastro",prontuario:"postos_prontuario",razao:"postos_razao",retorno:"postos_retorno"};
+function mapas(){return {anoAnterior:ANOANT,emailVisita:MAILV,tipoCli:TIPOCLI,visita:VISITA,consumo:CONSUMO,tanque:TANQ,perfil:PERFIL,datas:DATAS,volume:VOL,foneEditado:FED,foneNovo:FADD,contatoNome:FNOME,whatsapp:WA,rede:REDE,inativo:INAT,automacao:AUTO,equipamento:EQUIP,redeNome:REDENOME,fornecedor:FORN,preco:PRECO,rota:ROTA,progAuto:PROG,prazoPag:PRAZO,periodicidade:PERIOD,cnpj:CNPJINF,consumoMes:CMES,capital:CAPITAL,endereco:ENDER,receitaContato:RCONT,excluido:EXCL,separado:SEPAR,cadastro:CAD,prontuario:PRONT,razao:RAZAO,retorno:RETORNO}}
 function estadoAtual(){var m=mapas(),o={};Object.keys(m).forEach(function(k){o[k]=Object.assign({},m[k])});return o}
 function contar(s){var n=0;Object.keys(LS).forEach(function(k){if(s&&s[k])n+=Object.keys(s[k]).length});return n}
 function aplicaEstado(s,mesclar){var m=mapas(),n=0;
@@ -1461,7 +1466,7 @@ function irisLer(wb){
  var t=irisTabela(con,["Volume Orçado","Meta Churn"]);if(!t)return null;var r=con[t.i+1]||[];
  var R={volMeta:nIr(col(t,r,"Volume Orçado")),volReal:nIr(col(t,r,"Volume Realizado")),volProj:nIr(col(t,r,"Volume Projetado")),volPct:nIr(col(t,r,"% Volume Realizado")),volProjPct:nIr(col(t,r,"% Volume Projetado")),
   margMeta:nIr(col(t,r,"Meta Margem Unitária")),margReal:nIr(col(t,r,"Margem Unitária Realizada")),churnMeta:nIr(col(t,r,"Meta Churn")),churnReal:nIr(col(t,r,"Churn")),churnAt:nIr(col(t,r,"Atingimento")),
-  vendedor:String(col(t,r,"Nome")||"")};
+  vendedor:String(col(t,r,"Nome")||""),volAnt:nIr(col(t,r,"Volume Realizado Ano Anterior")),margAnt:nIr(col(t,r,"Margem Unitária Ano Anterior")),lbAnt:nIr(col(t,r,"Lucro Bruto Ano Anterior")),lbReal:nIr(col(t,r,"Lucro Bruto Realizado")),temAnt:col(t,r,"Volume Realizado Ano Anterior")!=null};
  var cc=folha("Carteira de Clientes"),U={};
  if(cc){var tr=irisTabela(cc,["Clientes Perdidos","Churn De Clientes"]);if(tr){var q=cc[tr.i+1]||[];R.compAnt=nIr(col(tr,q,"Clientes Compradores Mês Anterior"));R.compAtual=nIr(col(tr,q,"Clientes Compradores No Mês Atual"));R.perdidos=nIr(col(tr,q,"Clientes Perdidos"))}
   var ts=irisTabela(cc,["Código Cliente","Data Última Compra"]);if(ts){for(var i=ts.i+1;i<cc.length;i++){var x=cc[i],k=codN(col(ts,x,"Código Cliente")),d=String(col(ts,x,"Data Última Compra")||"").trim();if(!k||!d)continue;
@@ -1819,6 +1824,18 @@ function irisPinta(){if(!IRIS){return}var R=IRIS.resumo;
  function put(id,t,cl){var e=$(id);e.textContent=t;e.className=cl||""}
  function nivel(v){return v>=1?"ok":"baixo"}
  put("ir-data",IRIS.data.slice(0,10));
+ (function(){var MN=["","Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],dd=IRIS.data.slice(0,10).split("/"),ano=+dd[2],mesD=+dd[1];if(R.mes===12&&mesD===1)ano--;
+  var chave=(ano-1)+"-"+String(R.mes).padStart(2,"0");$("ia-at").textContent=MN[R.mes]+"/"+ano;$("ia-an").textContent=MN[R.mes]+"/"+(ano-1);
+  function dif(id,a,b,tipo){var e=$(id);if(a==null||b==null||(!b&&tipo!=="n")){e.textContent="—";e.className="";return}var d=a-b,s=d>0?"+":d<0?"−":"";
+   var t=tipo==="L"?s+Math.round(Math.abs(d)).toLocaleString("pt-BR")+" L":tipo==="R"?s+"R$ "+Math.abs(d).toLocaleString("pt-BR",{minimumFractionDigits:3,maximumFractionDigits:3}):s+Math.abs(d);
+   e.textContent=t;if(b){var sm=document.createElement("small");sm.textContent=(d>=0?"+":"−")+Math.abs(d/b*100).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";e.appendChild(sm)}e.className=d>0?"ok":d<0?"neg":""}
+  var ca=R.compAtual!=null?R.compAtual:null;put("ia-ca",ca==null?"—":String(ca));
+  var inp=$("ia-cn"),cn=ANOANT[chave];if(document.activeElement!==inp)inp.value=cn!=null?cn:"";
+  dif("ia-cd",ca,cn!=null&&cn!==""?+cn:null,"n");
+  var tem=R.temAnt||R.volAnt>0;put("ia-va",litros(R.volReal));put("ia-vn",tem?litros(R.volAnt):"—");dif("ia-vd",R.volReal,tem?R.volAnt:null,"L");
+  put("ia-ma",reais(R.margReal,3)+"/L");put("ia-mn",tem?reais(R.margAnt,3)+"/L":"—");dif("ia-md",R.margReal,tem?R.margAnt:null,"R");
+  if(!tem){$("ia-vn").title=$("ia-mn").title="Carregue de novo o relatório Iris (Carga Iris) para trazer o ano anterior."}
+  inp.onchange=function(){var v=String(inp.value).replace(/\D/g,"");if(v)ANOANT[chave]=v;else delete ANOANT[chave];setLS("postos_ano_anterior",ANOANT);irisPinta()}})();
  put("ir-vr",litros(R.volReal));put("ir-vm",litros(R.volMeta));put("ir-vp",pctTxt(R.volPct||(R.volMeta?R.volReal/R.volMeta:0)),nivel(R.volPct));
  var mp=R.margMeta?R.margReal/R.margMeta:0;put("ir-mr",reais(R.margReal,3));put("ir-mm",reais(R.margMeta,3));put("ir-mp",pctTxt(mp),nivel(mp));
  put("ir-cr",pctTxt(R.churnReal));put("ir-cm",pctTxt(R.churnMeta));put("ir-cp",pctTxt(R.churnAt),nivel(R.churnAt));
