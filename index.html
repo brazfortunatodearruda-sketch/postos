@@ -194,6 +194,14 @@ dialog#dlgpront::backdrop{background:rgba(10,20,16,.55)}
 .atend .quando{display:block;font-size:.78rem;color:var(--suave);white-space:normal}
 .atend button{font-size:.75rem;padding:0 6px;margin-left:6px}
 @media (max-width:520px){.prontsec dl{grid-template-columns:1fr;gap:0}.prontsec dd{margin-bottom:5px}}
+dialog#dlgprop{width:min(560px,calc(100vw - 16px));max-width:none;max-height:calc(100vh - 24px);padding:0;border:1px solid var(--linha);border-radius:10px;background:var(--papel);color:var(--texto)}
+dialog#dlgprop::backdrop{background:rgba(10,20,16,.55)}
+#propmicbox{display:flex;gap:10px;align-items:center;flex-wrap:wrap}#propmicbox[hidden]{display:none!important}
+#propgrava{font-size:1.05rem;padding:12px 18px}#propgrava.gravando{background:var(--erro);border-color:var(--erro);animation:pulsa 1.2s infinite}
+#propmicmsg,#propmsg{font-size:.88rem;color:var(--suave);margin:0}#propmsg.ok{color:var(--acento);font-weight:600}#propmsg.erro,#propmicmsg.erro{color:var(--erro)}
+#propfala{width:100%;box-sizing:border-box;font:.95rem/1.4 var(--fonte);padding:6px 8px;border:1px solid var(--linha);border-radius:6px;background:var(--fundo);color:var(--texto);resize:vertical}
+.propchk{align-self:end}.propchk span{display:flex;gap:6px;align-items:center;color:var(--texto);font-size:.95rem}.propchk input{width:auto}
+#propeqbox[hidden]{display:none}.propdados summary{cursor:pointer;font-size:.88rem;color:var(--suave);margin-bottom:8px}
 dialog#dlgfoto{max-width:min(560px,calc(100vw - 24px));max-height:calc(100vh - 32px);padding:0;border:1px solid var(--linha);border-radius:10px;background:var(--papel);color:var(--texto)}
 dialog#dlgfoto::backdrop{background:rgba(10,20,16,.55)}
 .fotocorpo{padding:12px 16px 16px;display:grid;gap:10px}
@@ -317,6 +325,8 @@ button.mais{display:block;margin:0 auto}
 <p>A lista só aparece depois que você escolhe um município, digita uma busca ou usa um filtro, e mostra 60 registros por vez (botão "Mostrar mais" no fim). O filtro "Tipo de Cliente" separa revendedores (postos) de consumidores (transportadoras, ônibus e frotas). Nos consumidores, informe na coluna Vol S10 o diesel da frota em m³ por mês para calcular o potencial de Arla. Município, busca livre, WhatsApp, visita, consumo de Arla, perfil do posto, bandeira, fornecedor atual, equipamento e rede de postos podem ser combinados. O filtro "Rede de postos" mostra só os postos de rede, só os independentes, ou os postos de uma rede específica; a lista de redes se monta com os nomes digitados no campo "Posto de Rede" de cada posto, com a quantidade entre parênteses. "Limpar filtros" volta à lista completa. A lista de fornecedores se monta com os nomes que você digitar nos postos.</p>
 <h3>Prontuário de atendimento</h3>
 <p>O botão "📋 Prontuário", abaixo do nome do cliente, abre o resumo da situação: pontos de atenção (risco de churn, títulos vencidos, situação na Receita, visita antiga, rota a confirmar), dados do cliente, carteira Bioar (compras, volumes, preço, títulos), dados comerciais, rota com os dias de entrega, contato e o histórico de atendimentos. No celular, toque em "🎤 Gravar atendimento" e fale; toque de novo para parar. O texto aparece no campo e pode ser corrigido antes de "Salvar atendimento". No computador, é só digitar. Cada atendimento fica com data e hora e vai para o Drive junto com as marcações. "Compartilhar resumo" abre o WhatsApp no celular (no computador, copia o texto) e "PDF" gera o prontuário para salvar ou imprimir. O número entre parênteses no botão é a quantidade de atendimentos registrados.</p>
+<h3>Proposta de preço</h3>
+<p>"📄 Proposta", abaixo do nome do cliente, abre a janela da proposta. Informe o preço por litro, o prazo, a validade, o frete (FOB ou CIF e a cidade) e marque "Incluir equipamento" só quando houver tanque em comodato (aí entra a página de tanques do modelo, sem a parte de automação). Nome, contato, telefone e e-mail vêm do cadastro e podem ser corrigidos em "Dados do cliente na proposta". No celular, toque em "🎤 Ditar proposta" e fale tudo de uma vez, por exemplo: "preço 1,72, prazo 14 dias, validade 15 de novembro, FOB Vespasiano, com tanque de 5 mil litros"; os campos se preenchem sozinhos. "Gerar proposta e salvar na pasta" monta o PDF no modelo da Bioar, salva em Documentos › Clientes › (cliente) e registra a proposta no prontuário. Depois, "Compartilhar" manda o PDF pelo WhatsApp. O app lembra os últimos valores de cada cliente.</p>
 <h3>Retorno ao cliente</h3>
 <p>"📅 Agendar retorno" (abaixo do nome e dentro do Prontuário) abre uma janela para escolher data, hora, duração, tipo (visita, ligação ou WhatsApp) e o assunto. Há atalhos para amanhã, 1 semana, 15 e 30 dias e para a próxima saída da rota do cliente. "Abrir no Google Agenda" abre o evento já preenchido com cliente, CNPJ, telefones, endereço, rota, último atendimento e um link que abre a ficha no app; confira e toque em Salvar. A data fica gravada no app: o botão passa a mostrar o retorno (em vermelho quando atrasado), o Prontuário avisa retornos de hoje e atrasados, e o filtro Visita mostra quem tem retorno agendado, atrasado ou nos próximos 7 dias.</p>
 <h3>Rotas de entrega</h3>
@@ -368,11 +378,23 @@ button.mais{display:block;margin:0 auto}
 <div class="fotocorpo"><img id="fotoimg" alt="Foto da visita com a legenda">
 <p id="fotomsg" role="status" aria-live="polite"></p>
 <div class="fotoacoes"><button type="button" id="fotoshare" class="cheio">Compartilhar</button><button type="button" id="fotosalva">Salvar no aparelho</button><button type="button" id="fotodrive">Enviar ao Drive</button><button type="button" id="fotonova">Tirar outra</button></div></div></dialog>
+<dialog id="dlgprop" aria-labelledby="propt"><div class="dlgcab"><h2 id="propt">Proposta de preço</h2><button type="button" id="propx" aria-label="Fechar">Fechar</button></div>
+<div class="retcorpo"><p id="propcli" class="fraco"></p>
+<div id="propmicbox"><button type="button" id="propgrava" class="cheio">🎤 Ditar proposta</button><span id="propmicmsg" role="status" aria-live="polite">Fale, por exemplo: “preço 1,72, prazo 14 dias, validade 15 de novembro, FOB Vespasiano, com tanque de 5 mil litros”.</span></div>
+<textarea id="propfala" rows="2" placeholder="O que foi ditado aparece aqui (os campos abaixo são preenchidos sozinhos)" hidden></textarea>
+<div class="retcampos"><label>Preço (R$/litro)<input type="text" id="proppreco" inputmode="decimal" placeholder="1,7490"></label><label>Prazo<input type="text" id="propprazo" placeholder="5 dd"></label><label>Validade<input type="date" id="propval"></label>
+<label>Frete<select id="propinco"><option value="FOB">FOB</option><option value="CIF">CIF</option></select></label><label>Local do frete<input type="text" id="propinlocal" placeholder="Vespasiano"></label></div>
+<div class="retcampos"><label class="propchk"><span><input type="checkbox" id="propequip"> Incluir equipamento (tanque em comodato)</span></label><label id="propeqbox" hidden>Equipamento<input type="text" id="propeqdesc" list="propeqlista" placeholder="Tanque 5.000 litros"></label></div>
+<datalist id="propeqlista"><option value="Tanque rotomoldado 3.000 litros"><option value="Tanque cilíndrico 5.000 litros"><option value="Tanque cilíndrico 8.000 litros"><option value="Tanque cilíndrico 15.000 litros"></datalist>
+<details class="propdados"><summary>Dados do cliente na proposta</summary><div class="retcampos"><label>Nome na proposta<input type="text" id="propnome"></label><label>A/C (contato)<input type="text" id="propcontato" list="propcontlista"></label><label>Telefone<input type="text" id="proptel" list="proptellista"></label><label>E-mail<input type="email" id="propmail"></label></div>
+<datalist id="propcontlista"></datalist><datalist id="proptellista"></datalist></details>
+<div class="prontacoes"><button type="button" id="propgera" class="cheio">Gerar proposta e salvar na pasta</button><button type="button" id="propshare" hidden>📤 Compartilhar</button><button type="button" id="propbaixa" hidden>Baixar</button><a id="proppasta" class="lnk" target="_blank" rel="noopener" hidden>📁 Abrir pasta</a></div>
+<p id="propmsg" role="status" aria-live="polite" class="fraco">Usa o modelo da Bioar: troca os dados da página da proposta e só inclui a página de tanques quando houver equipamento.</p></div></dialog>
 <div id="rel" hidden></div>
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=36;
+var VERSAO_APP=38;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -793,7 +815,7 @@ function filtrar(){
    cj.addEventListener("input",function(){CNPJ_SESSAO[p.ck]=1;txtSet(CNPJINF,"postos_cnpj",p.ck,dig(cj.value));cjPinta()});
    cj.addEventListener("change",function(){cj.value=cnpjDe(p);cjPinta()});
    rl=linkReceita(p,"");var gl=document.createElement("a");gl.className="receita-link google";gl.href=buscaGoogle(p);gl.target="busca";gl.rel="noopener";gl.textContent="Procurar CNPJ no Google";gl.title="Pesquisa o CNPJ pelo nome da empresa e cidade";s.appendChild(cj);s.appendChild(gl);s.appendChild(dtSpan(p.ck,"cnpj"));s.appendChild(cjm);s.appendChild(rl);cjPinta()}a.appendChild(s);if(RWS[p.ck])a.appendChild(painelReceita(p));
-  var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent=CELULAR?"📤 Compartilhar no WhatsApp":"Google Contatos";gb1.title=CELULAR?"Abre o WhatsApp para enviar os dados deste contato":"Baixa o contato no padrão do Google Contatos (prefixo = contato, nome = razão social, empresa = CNPJ, cargo = código Iris)";gb1.addEventListener("click",function(){if(CELULAR)compartilhaWA(p);else exportaUm(p)});a.appendChild(gb1);var pb=document.createElement("button");pb.type="button";pb.className="gc1 prontbt";var na=prontLista(ck).length;pb.textContent="📋 Prontuário"+(na?" ("+na+")":"");pb.title="Resumo da situação do cliente e registro de atendimentos"+(CELULAR?" por voz":"");pb.addEventListener("click",function(){prontAbrir(p)});a.appendChild(pb);a.appendChild(botaoRetorno(p));a.appendChild(botaoPasta(p));if(INAT[ck])tr.classList.add("inativo");
+  var ck=p.ck;var at=document.createElement("div");at.className="atu";at.setAttribute("data-atu",ck);pintaAtu(at);a.appendChild(at);var gb1=document.createElement("button");gb1.type="button";gb1.className="gc1";gb1.textContent=CELULAR?"📤 Compartilhar no WhatsApp":"Google Contatos";gb1.title=CELULAR?"Abre o WhatsApp para enviar os dados deste contato":"Baixa o contato no padrão do Google Contatos (prefixo = contato, nome = razão social, empresa = CNPJ, cargo = código Iris)";gb1.addEventListener("click",function(){if(CELULAR)compartilhaWA(p);else exportaUm(p)});a.appendChild(gb1);var pb=document.createElement("button");pb.type="button";pb.className="gc1 prontbt";var na=prontLista(ck).length;pb.textContent="📋 Prontuário"+(na?" ("+na+")":"");pb.title="Resumo da situação do cliente e registro de atendimentos"+(CELULAR?" por voz":"");pb.addEventListener("click",function(){prontAbrir(p)});a.appendChild(pb);a.appendChild(botaoProposta(p));a.appendChild(botaoRetorno(p));a.appendChild(botaoPasta(p));if(INAT[ck])tr.classList.add("inativo");
   a.appendChild(caixa("Inativo",INAT,"postos_inativo",ck,function(v){tr.classList.toggle("inativo",v);tr2.classList.toggle("inativo",v)}));
   if(p.unidos){var un=document.createElement("div");un.className="unidos";un.textContent="Unificado: "+[p.nomeAgenda||""].concat(p.unidos.map(function(u){return u.nome})).filter(Boolean).join(" + ");
    var sp=document.createElement("button");sp.type="button";sp.className="lnk";sp.textContent="Separar";sp.title="Desfaz a unificação e volta a mostrar os registros separados";
@@ -1572,6 +1594,106 @@ function micRodar(){var r=new SRec();r.lang="pt-BR";r.continuous=false;r.interim
  MIC.rec=r;try{r.start()}catch(e){MIC.on=false;micUi()}}
 function micParar(){if(!MIC.on&&!MIC.rec)return;MIC.on=false;if(MIC.rec){try{MIC.rec.stop()}catch(e){}MIC.rec=null}micUi()}
 $("prontgrava").addEventListener("click",function(){if(!SRec)return;if(MIC.on){micParar();return}MIC.on=true;MIC.base=$("prontin").value.trim();micUi();micRodar()});
+/* ---------- Proposta de preço: preenche o modelo da Bioar (proposta-modelo.pdf) e salva na pasta do cliente ---------- */
+var PROP={p:null,bytes:null,nome:"",pasta:"",mic:false,rec:null,base:"",sess:""},PDFLIB_P=null;
+function carregaPdfLib(){if(window.PDFLib)return Promise.resolve();if(PDFLIB_P)return PDFLIB_P;
+ PDFLIB_P=new Promise(function(ok,no){var sc=document.createElement("script");sc.src="pdf-lib.min.js";sc.onload=function(){ok()};sc.onerror=function(){PDFLIB_P=null;no(new Error("lib"))};document.head.appendChild(sc)});return PDFLIB_P}
+function botaoProposta(p){var b=document.createElement("button");b.type="button";b.className="gc1 propbt";b.textContent="📄 Proposta";b.title="Gera a proposta de preço no modelo da Bioar e salva na pasta do cliente";b.addEventListener("click",function(){propAbrir(p)});return b}
+function propNum(v){var s=String(v||"").replace(/[^\d,.]/g,"");if(!s)return NaN;if(s.indexOf(",")>=0)s=s.replace(/\./g,"").replace(",",".");return parseFloat(s)}
+function propPrecoTxt(v){var n=propNum(v);return isFinite(n)&&n>0?n.toLocaleString("pt-BR",{minimumFractionDigits:4,maximumFractionDigits:4}):""}
+function propDataBR(iso){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||"");return m?m[3]+"/"+m[2]+"/"+m[1]:""}
+function propISO(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function propContatos(p){var nomes=[],tels=[],mail=p.email||"";(p.agenda||[]).forEach(function(g){var n=String(g.nome||"").trim();if(n&&nomes.indexOf(n)<0)nomes.push(n);if(!mail&&g.email)mail=g.email});
+ (typeof fonesEfetivos==="function"?fonesEfetivos(p):[p.tel1,p.tel2]).forEach(function(t){if(t&&tels.indexOf(t)<0)tels.push(t)});return {nomes:nomes,tels:tels,mail:mail}}
+function propLista(id,arr){var d=$(id);d.textContent="";arr.forEach(function(v){var o=document.createElement("option");o.value=v;d.appendChild(o)})}
+function propEqUi(){$("propeqbox").hidden=!$("propequip").checked}
+function propAbrir(p){PROP.p=p;PROP.bytes=null;propMicParar();var u={};try{u=JSON.parse(lsGet("prop_"+p.ck)||"{}")||{}}catch(e){u={}}
+ var g={};try{g=JSON.parse(lsGet("prop_ultima")||"{}")||{}}catch(e){g={}}
+ var c=propContatos(p),d=new Date();d.setDate(d.getDate()+7);
+ $("propcli").textContent=p.nome+(cnpjDe(p)?" · CNPJ "+cnpjDe(p):"")+(p.cidade?" · "+p.cidade+"/MG":"");
+ $("proppreco").value=u.preco||"";$("propprazo").value=u.prazo||g.prazo||"5 dd";$("propval").value=propISO(d);
+ $("propinco").value=u.inco||g.inco||"FOB";$("propinlocal").value=u.local||g.local||"Vespasiano";
+ $("propequip").checked=!!u.equip;$("propeqdesc").value=u.eqdesc||"";propEqUi();
+ $("propnome").value=String(p.nome||"").toUpperCase();$("propcontato").value=u.contato||c.nomes[0]||"";$("proptel").value=u.tel||c.tels[0]||"";$("propmail").value=u.mail||c.mail||"";
+ propLista("propcontlista",c.nomes);propLista("proptellista",c.tels);
+ $("propfala").value="";$("propfala").hidden=true;$("propshare").hidden=true;$("propbaixa").hidden=true;$("proppasta").hidden=true;
+ $("propmsg").className="fraco";$("propmsg").textContent="Usa o modelo da Bioar: troca os dados da página da proposta e só inclui a página de tanques quando houver equipamento.";
+ $("propmicbox").hidden=!SRec;var dl=$("dlgprop");if(dl.showModal)dl.showModal();else dl.setAttribute("open","")}
+function propFechar(){propMicParar();var d=$("dlgprop");if(d.close)d.close();else d.removeAttribute("open")}
+$("propx").addEventListener("click",propFechar);$("dlgprop").addEventListener("cancel",function(){propMicParar()});
+$("propequip").addEventListener("change",propEqUi);
+/* Ditado: entende preço, prazo, validade, FOB/CIF e local, com ou sem equipamento (e o tamanho do tanque) */
+var PROP_MES={janeiro:1,fevereiro:2,"março":3,marco:3,abril:4,maio:5,junho:6,julho:7,agosto:8,setembro:9,outubro:10,novembro:11,dezembro:12};
+var PROP_NUM={um:1,uma:1,dois:2,duas:2,"três":3,tres:3,quatro:4,cinco:5,seis:6,sete:7,oito:8,nove:9,dez:10,onze:11,doze:12,treze:13,catorze:14,quatorze:14,quinze:15,dezesseis:16,dezessete:17,dezoito:18,dezenove:19,vinte:20,trinta:30,quarenta:40,cinquenta:50,sessenta:60,setenta:70,oitenta:80,noventa:90};
+function propPalNum(t){return t.replace(/\b(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)\s+e\s+(um|uma|dois|duas|três|tres|quatro|cinco|seis|sete|oito|nove)\b/g,function(m,a,b){return String(PROP_NUM[a]+PROP_NUM[b])})
+ .replace(/\b(um|uma|dois|duas|três|tres|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|catorze|quatorze|quinze|dezesseis|dezessete|dezoito|dezenove|vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)\b/g,function(m){return String(PROP_NUM[m])})}
+function propEntende(fala){var t0=" "+String(fala||"").toLowerCase().replace(/r\$\s*/g,"")+" ",t=propPalNum(t0),o={},m;
+ m=/(?:pre[çc]o|valor)\D{0,20}?(\d+)\s*[,.]\s*(\d{1,4})/.exec(t)||/(?:pre[çc]o|valor)\D{0,20}?(\d+)\s*(?:reais?|real)?\s*e\s*(\d{1,4})\b/.exec(t);
+ if(m){var dec=m[2].length===1?m[2]+"0":m[2];o.preco=propPrecoTxt(m[1]+","+dec)}
+ if(/prazo\D{0,15}(?:[àa] vista|antecipado)/.test(t))o.prazo="à vista";else if((m=/prazo\D{0,15}?(\d{1,3})\s*(?:dias|dia|dd|d)\b/.exec(t)))o.prazo=m[1]+" dd";
+ if((m=/validade\D{0,25}?(\d{1,2})\s*(?:de\s+)?(janeiro|fevereiro|mar[çc]o|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)/.exec(t))){var hoje=new Date(),mes=PROP_MES[m[2]],dt=new Date(hoje.getFullYear(),mes-1,+m[1]);if(dt<hoje)dt.setFullYear(dt.getFullYear()+1);o.val=propISO(dt)}
+ else if((m=/validade\D{0,25}?(\d{1,2})\s*\/\s*(\d{1,2})/.exec(t))){var h2=new Date(),d2=new Date(h2.getFullYear(),+m[2]-1,+m[1]);if(d2<h2)d2.setFullYear(d2.getFullYear()+1);o.val=propISO(d2)}
+ else if((m=/validade\D{0,25}?(\d{1,3})\s*dias/.exec(t))){var d3=new Date();d3.setDate(d3.getDate()+ +m[1]);o.val=propISO(d3)}
+ if((m=/\b(fob|cif)\b\s*(?:em\s+|de\s+|para\s+)?([a-zà-ú][a-zà-ú ]{1,30}?)(?=\s+(?:pre[çc]o|valor|prazo|validade|com|sem|tanque|equipamento)\b|[.,;]|\s*$)/.exec(t0))){o.inco=m[1].toUpperCase();o.local=titulo(m[2].trim())}
+ else if((m=/\b(fob|cif)\b/.exec(t)))o.inco=m[1].toUpperCase();
+ if(/sem\s+(?:equipamento|tanque|comodato)/.test(t))o.equip=false;else if(/(?:com|incluir|inclui)\s+(?:o\s+|um\s+)?(?:equipamento|tanque|comodato)|\btanque\b/.test(t))o.equip=true;
+ if((m=/(\d{1,2})\s*(?:mil|\.?000)\s*litros/.exec(t))){var v=+m[1];o.equip=true;o.eqdesc=v===3?"Tanque rotomoldado 3.000 litros":"Tanque cilíndrico "+v+".000 litros"}
+ return o}
+function propAplica(o){if(o.preco)$("proppreco").value=o.preco;if(o.prazo)$("propprazo").value=o.prazo;if(o.val)$("propval").value=o.val;if(o.inco)$("propinco").value=o.inco;if(o.local)$("propinlocal").value=o.local;
+ if(o.equip!=null)$("propequip").checked=o.equip;if(o.eqdesc)$("propeqdesc").value=o.eqdesc;propEqUi()}
+function propMicUi(){var b=$("propgrava");b.classList.toggle("gravando",PROP.mic);b.textContent=PROP.mic?"⏹ Parar ditado":"🎤 Ditar proposta";if(PROP.mic){$("propmicmsg").className="";$("propmicmsg").textContent="Ouvindo… diga preço, prazo, validade, frete e se tem equipamento."}}
+function propMicRodar(){var r=new SRec();r.lang="pt-BR";r.continuous=false;r.interimResults=true;r.maxAlternatives=1;PROP.sess="";
+ r.onresult=function(e){var f="",i2="";for(var i=0;i<e.results.length;i++){var x=e.results[i][0].transcript;if(e.results[i].isFinal)f+=x;else i2+=x}PROP.sess=f;var tudo=(PROP.base+" "+f+" "+i2).trim();$("propfala").value=tudo;propAplica(propEntende(tudo))};
+ r.onerror=function(e){var c=e&&e.error,m=$("propmicmsg");if(c==="not-allowed"||c==="service-not-allowed"){PROP.mic=false;m.className="erro";m.textContent="O microfone foi bloqueado. Libere o microfone para este site nas configurações do navegador."}
+  else if(c==="network"){PROP.mic=false;m.className="erro";m.textContent="O ditado precisa de internet. Preencha os campos à mão."}else if(c==="audio-capture"){PROP.mic=false;m.className="erro";m.textContent="Não encontrei o microfone do aparelho."}};
+ r.onend=function(){PROP.base=(PROP.base+" "+PROP.sess).trim();PROP.sess="";if(PROP.mic)setTimeout(function(){if(PROP.mic)propMicRodar()},120);else{propMicUi();var m=$("propmicmsg");if(!m.className){m.textContent="Ditado parado. Confira os campos e toque em Gerar proposta."}}};
+ PROP.rec=r;try{r.start()}catch(e){PROP.mic=false;propMicUi()}}
+function propMicParar(){if(!PROP.mic&&!PROP.rec)return;PROP.mic=false;if(PROP.rec){try{PROP.rec.stop()}catch(e){}PROP.rec=null}propMicUi()}
+$("propgrava").addEventListener("click",function(){if(!SRec)return;if(PROP.mic){propMicParar();return}PROP.mic=true;PROP.base=$("propfala").value.trim();$("propfala").hidden=false;propMicUi();propMicRodar()});
+/* Texto só com caracteres que a fonte padrão do PDF conhece */
+function propLimpa(s){return String(s||"").replace(/[‘’´`]/g,"'").replace(/[“”]/g,'"').replace(/[–—]/g,"-").replace(/[^\x20-\x7E\xA0-\xFF]/g,"").replace(/\s+/g," ").trim()}
+function propCabe(txt,fonte,tam,larg,min){while(tam>min&&fonte.widthOfTextAtSize(txt,tam)>larg)tam-=0.5;while(txt.length>3&&fonte.widthOfTextAtSize(txt,tam)>larg)txt=txt.slice(0,-1).trim();return {t:txt,s:tam}}
+function propMonta(D){return Promise.all([carregaPdfLib(),fetch("proposta-modelo.pdf").then(function(r){if(!r.ok)throw new Error("modelo");return r.arrayBuffer()})]).then(function(x){var L=window.PDFLib;
+ return L.PDFDocument.load(x[1]).then(function(doc){return Promise.all([doc.embedFont(L.StandardFonts.Helvetica),doc.embedFont(L.StandardFonts.HelveticaBold)]).then(function(f){
+  var reg=f[0],neg=f[1],pg=doc.getPage(12);if(!D.equip)doc.removePage(9);   /* pega a página da proposta antes de tirar a de tanques */
+  var H=pg.getHeight(),X=60,LARG=330,azul=L.rgb(0.04,0.12,0.25),cinza=L.rgb(0.35,0.35,0.35),preto=L.rgb(0,0,0),y=158;
+  function esc(t,x,yy,fo,tam,cor){pg.drawText(t,{x:x,y:H-yy,size:tam,font:fo,color:cor||preto})}
+  var nm=propLimpa(D.nome),n=propCabe(nm,neg,20,LARG,15);
+  if(n.t===nm){esc(n.t,X,y,neg,n.s,azul);y+=24}
+  else{var ws=nm.split(" "),l1="";while(ws.length&&neg.widthOfTextAtSize((l1+" "+ws[0]).trim(),15)<=LARG)l1=(l1+" "+ws.shift()).trim();
+   esc(l1,X,y-4,neg,15,azul);var l2=propCabe(ws.join(" "),neg,15,LARG,11);esc(l2.t,X,y+13,neg,l2.s,azul);y+=36}
+  esc("Proposta de valor",X,y,reg,18);y+=22;
+  [[D.cnpj?"CNPJ "+D.cnpj:"",D.cidade?D.cidade+"/MG":""],[D.contato?"A/C "+D.contato:"",D.tel],[D.mail]].forEach(function(l){var t=propLimpa(l.filter(Boolean).join("  |  "));if(!t)return;var c=propCabe(t,reg,9.5,LARG,7);esc(c.t,X+2,y,reg,c.s,cinza);y+=13});
+  y+=12;
+  function linha(rot,val){var r=propLimpa(rot),v=" - "+propLimpa(val),w=neg.widthOfTextAtSize(r,13),c=propCabe(v,reg,13,LARG-w,9);esc(r,X+2,y,neg,13);esc(c.t,X+2+w,y,reg,c.s);y+=19}
+  linha("Preço final","R$ "+D.preco+"/litro");linha("INCOTERMS",D.inco+(D.local?" "+D.local:""));linha("Prazo",D.prazo);
+  if(D.equip)linha("Equipamento",(D.eqdesc||"Tanque")+" em comodato");
+  y+=12;linha("Validade da proposta","até "+propDataBR(D.val));
+  doc.setTitle("Proposta Arla 32 - "+propLimpa(D.nome));doc.setAuthor("Arruda Representações");doc.setModificationDate(new Date());
+  return doc.save()})})})}
+function propDados(){var p=PROP.p;return {nome:$("propnome").value.trim()||String(p.nome||"").toUpperCase(),cnpj:cnpjDe(p),cidade:p.cidade||"",contato:$("propcontato").value.trim(),tel:$("proptel").value.trim(),mail:$("propmail").value.trim(),
+ preco:propPrecoTxt($("proppreco").value),prazo:$("propprazo").value.trim(),val:$("propval").value,inco:$("propinco").value,local:titulo($("propinlocal").value.trim()),equip:$("propequip").checked,eqdesc:$("propeqdesc").value.trim()}}
+function propBlob(){return new Blob([PROP.bytes],{type:"application/pdf"})}
+$("propgera").addEventListener("click",function(){var p=PROP.p;if(!p)return;propMicParar();var D=propDados(),m=$("propmsg"),b=$("propgera");
+ var falta=!D.preco?"o preço":!D.prazo?"o prazo":!D.val?"a validade":"";if(falta){m.className="erro";m.textContent="Falta "+falta+".";return}
+ if(D.equip&&!D.eqdesc){m.className="erro";m.textContent="Diga qual equipamento (ex.: Tanque cilíndrico 5.000 litros).";return}
+ lsSet("prop_"+p.ck,JSON.stringify({preco:D.preco,prazo:D.prazo,inco:D.inco,local:D.local,equip:D.equip,eqdesc:D.eqdesc,contato:D.contato,tel:D.tel,mail:D.mail}));lsSet("prop_ultima",JSON.stringify({prazo:D.prazo,inco:D.inco,local:D.local}));
+ b.disabled=true;m.className="";m.textContent="Montando a proposta…";$("propshare").hidden=true;$("propbaixa").hidden=true;$("proppasta").hidden=true;
+ propMonta(D).then(function(bytes){PROP.bytes=bytes;PROP.nome="Proposta Arla 32 - "+propLimpa(titulo(D.nome)).replace(/[\\\/:*?"<>|]/g,"")+" - "+hojeISO()+".pdf";
+  $("propshare").hidden=!(navigator.canShare&&navigator.canShare({files:[new File([propBlob()],PROP.nome,{type:"application/pdf"})]}));$("propbaixa").hidden=false;
+  var resumo="Proposta gerada: R$ "+D.preco+"/litro, "+D.inco+(D.local?" "+D.local:"")+", prazo "+D.prazo+", validade até "+propDataBR(D.val)+(D.equip?", com "+D.eqdesc+" em comodato":", sem equipamento")+".";
+  PRONT[p.ck+":"+Date.now()]=resumo;carimbo(p.ck,"prontuario","1","");setLS("postos_prontuario",PRONT);
+  if(navigator.onLine===false){m.className="erro";m.textContent="Proposta pronta, mas sem internet para salvar no Drive. Use Compartilhar ou Baixar.";return}
+  m.textContent="Proposta pronta. Salvando na pasta do cliente…";
+  return garantirDrive().then(function(){return pastaCliente(p)}).then(function(r){var bd="lim"+Math.random().toString(36).slice(2),meta={name:PROP.nome,parents:[r.id],mimeType:"application/pdf",description:resumo};
+   var corpo=new Blob(["--"+bd+"\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n"+JSON.stringify(meta)+"\r\n--"+bd+"\r\nContent-Type: application/pdf\r\n\r\n",propBlob(),"\r\n--"+bd+"--"]);
+   return api(UP+"?uploadType=multipart&fields=id",{method:"POST",headers:{"Content-Type":"multipart/related; boundary="+bd},body:corpo}).then(json).then(function(){
+    var a=$("proppasta");a.href="https://drive.google.com/drive/folders/"+r.id;a.hidden=false;m.className="ok";m.textContent="Proposta salva em Documentos › "+CLI_PASTA+" › "+r.nome+" e registrada no prontuário."})})
+  .catch(function(e){m.className="erro";m.textContent="Proposta pronta, mas não salvou no Drive: "+msgPasta(e)+" Use Compartilhar ou Baixar, ou toque em Gerar de novo."})},
+ function(e){m.className="erro";m.textContent=e&&e.message==="modelo"?"Não achei o modelo da proposta. Abra o app com internet uma vez para ele ficar guardado no aparelho.":"Não consegui montar o PDF ("+((e&&e.message)||"erro")+")."})
+ .then(function(){b.disabled=false;filtrar()})});
+$("propbaixa").addEventListener("click",function(){if(!PROP.bytes)return;var u=URL.createObjectURL(propBlob()),a=document.createElement("a");a.href=u;a.download=PROP.nome;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000)});
+$("propshare").addEventListener("click",function(){if(!PROP.bytes)return;var f=new File([propBlob()],PROP.nome,{type:"application/pdf"});navigator.share({files:[f],title:PROP.nome}).catch(function(){})});
 function irisPinta(){if(!IRIS){return}var R=IRIS.resumo;
  function put(id,t,cl){var e=$(id);e.textContent=t;e.className=cl||""}
  function nivel(v){return v>=1?"ok":"baixo"}
