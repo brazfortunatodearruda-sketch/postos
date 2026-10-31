@@ -205,6 +205,31 @@ dialog#dlgprop::backdrop{background:rgba(10,20,16,.55)}
 #propeqbox[hidden]{display:none}.propdados summary{cursor:pointer;font-size:.88rem;color:var(--suave);margin-bottom:8px}
 dialog#dlgger{width:min(1100px,calc(100vw - 16px));max-width:none;max-height:calc(100vh - 24px);padding:0;border:1px solid var(--linha);border-radius:10px;background:var(--papel);color:var(--texto)}
 dialog#dlgger::backdrop{background:rgba(10,20,16,.55)}
+dialog#dlgchurn{width:min(1000px,calc(100vw - 16px));max-width:none;max-height:calc(100vh - 24px);padding:0;border:1px solid var(--linha);border-radius:10px;background:var(--papel);color:var(--texto)}
+dialog#dlgchurn::backdrop{background:rgba(10,20,16,.55)}
+#lkchurn{color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.chc{--vm:#c62828;--am:#e0a800;--vd:#2e8b57;padding:14px 20px 22px}
+.chres{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px}
+.chcard{border:2px solid var(--linha);border-radius:10px;padding:10px 12px;background:var(--papel);color:var(--texto);text-align:left;cursor:pointer;font:inherit}
+.chcard b{display:block;font-size:1.7rem;line-height:1.1}.chcard small{display:block;color:var(--suave);margin-top:2px}
+.chcard.vm{border-color:var(--vm)}.chcard.vm b{color:var(--vm)}.chcard.am{border-color:var(--am)}.chcard.am b{color:#a37a00}.chcard.vd{border-color:var(--vd)}.chcard.vd b{color:var(--vd)}
+.chcard[aria-pressed=true]{box-shadow:0 0 0 3px var(--texto) inset}
+.chbarra{display:flex;height:16px;border-radius:8px;overflow:hidden;margin:4px 0 14px;background:var(--linha)}
+.chbarra span{display:block;height:100%}.chbarra .vm{background:var(--vm)}.chbarra .am{background:var(--am)}.chbarra .vd{background:var(--vd)}
+.chgrupo h3{margin:16px 0 6px;font-size:1rem;display:flex;align-items:center;gap:8px}
+.chgrupo h3 i{width:14px;height:14px;border-radius:50%;display:inline-block}
+.chcli{display:grid;grid-template-columns:8px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--linha);border-radius:8px;padding:8px 10px 8px 0;margin:6px 0;background:var(--papel)}
+.chcli>.tarja{align-self:stretch;border-radius:8px 0 0 8px}.chcli.vm>.tarja{background:var(--vm)}.chcli.am>.tarja{background:var(--am)}.chcli.vd>.tarja{background:var(--vd)}
+.chnome{font-weight:600}.chinfo{font-size:.82rem;color:var(--suave)}
+.chmeses{display:flex;gap:6px;margin-top:5px;align-items:flex-end}
+.chmes{text-align:center;font-size:.72rem;color:var(--suave);min-width:58px}
+.chmes .bx{height:30px;display:flex;align-items:flex-end;justify-content:center}
+.chmes .bx span{display:block;width:30px;border-radius:3px 3px 0 0;background:var(--acento)}
+.chmes.zero .bx span{height:3px!important;background:var(--vm)}
+.chacoes{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:300px}
+.chacoes a,.chacoes button{font-size:.8rem}
+@media (max-width:640px){.chcli{grid-template-columns:8px minmax(0,1fr)}.chacoes{grid-column:2;justify-content:flex-start;max-width:none}}
+
 .gerfil{display:flex;flex-wrap:wrap;gap:12px;padding:12px 16px 0;align-items:end}#gerpdfmsg{font-size:.85rem;align-self:center}.gerfil label{display:grid;gap:3px;font-size:.85rem;color:var(--suave)}.gerfil select{font:1rem var(--fonte);padding:6px 8px;border:1px solid var(--linha);border-radius:6px;background:var(--fundo);color:var(--texto);min-width:180px}
 #gercorpo{padding:12px 16px 20px;display:grid;gap:16px}
 .gkpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.gkpis>div{border:1px solid var(--linha);border-radius:8px;padding:10px 12px;display:grid;gap:2px;align-content:start}
@@ -250,7 +275,7 @@ button.mais{display:block;margin:0 auto}
 </style><main>
 <header><div class="topo"><h1>Gestor de Carteira Arla 32 <span class="versao">versão <span id="vapp"></span></span></h1><span class="topo-acoes"><a id="lkreceita" href="consulta-cnpj.html" target="receitaws" rel="noopener">Consulta de CNPJs</a><a id="lkportal" href="https://agricopel.portaldocliente.online/?redirect_url=%2Fdashboard" target="portalcliente" rel="noopener">Portal do cliente</a><button type="button" id="painelger" class="cheio">📊 Painel gerencial</button><button type="button" id="ajuda">Como funciona</button></span></div>
 <div id="destaque" class="destaque"><div class="iris">
- <table class="irisg" aria-label="Resultado do mês no relatório Iris"><thead><tr><th id="ir-data">DATA</th><th>Volume</th><th>Margem</th><th>Churn</th></tr></thead>
+ <table class="irisg" aria-label="Resultado do mês no relatório Iris"><thead><tr><th id="ir-data">DATA</th><th>Volume</th><th>Margem</th><th><a href="#churn" id="lkchurn" title="Ver os clientes que compraram nos últimos 90 dias e quem você está perdendo">Churn ↗</a></th></tr></thead>
  <tbody><tr><th>Real</th><td id="ir-vr">—</td><td id="ir-mr">—</td><td id="ir-cr">—</td></tr>
  <tr><th>Meta</th><td id="ir-vm">—</td><td id="ir-mm">—</td><td id="ir-cm">—</td></tr>
  <tr><th>%</th><td id="ir-vp">—</td><td id="ir-mp">—</td><td id="ir-cp">—</td></tr></tbody></table>
@@ -369,7 +394,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Bases no Drive</h3>
 <p>Na mesma pasta podem ficar <b>postos-carteira.json</b>, <b>postos-agenda.json</b> e <b>postos-anp.json</b>. Quando um deles é trocado, o app baixa a versão nova ao conectar e mostra o botão “Recarregar com as bases novas”. Sem esses arquivos, valem as bases que vêm dentro do app.</p>
 <h3>Carga Iris (vendas)</h3>
-<p>No alto da tela, o quadro mostra o resultado do mês no relatório Iris: Volume (realizado × orçado, em litros), Margem (margem unitária realizada × meta, em R$ por litro) e Churn (churn de clientes × meta, com o atingimento calculado pelo próprio Iris). A data é a da atualização do relatório. Toque em <b>Carga Iris</b> e escolha o arquivo Relatorio_Vendedor_Externo (Excel) baixado do Iris. O app liga cada cliente do relatório ao cadastro pelo código de cliente e mostra, abaixo do nome, o volume do mês, do mês anterior e do ano, o preço médio, a margem, o prazo, a última compra, o faturamento do dia anterior e os títulos vencidos; "mês a mês" abre o volume de cada mês e, quando há várias lojas, o volume de cada uma. O selo laranja "Sem compra em …" indica quem comprou no mês anterior e ainda não comprou no mês (risco de churn). Com o Drive conectado, o relatório é gravado na pasta do app (postos-iris.json) e chega ao outro aparelho ao conectar. Cada nova carga substitui a anterior.</p>
+<p>No alto da tela, o quadro mostra o resultado do mês no relatório Iris: Volume (realizado × orçado, em litros), Margem (margem unitária realizada × meta, em R$ por litro) e Churn (churn de clientes × meta, com o atingimento calculado pelo próprio Iris). Toque na palavra <b>Churn</b> para abrir o semáforo dos clientes que compraram nos últimos 3 meses: vermelho = sem compra desde o primeiro dos 3 meses, amarelo = comprou só até o mês anterior, verde = comprou no mês atual. Cada cliente mostra as barras de volume dos 3 meses, a última compra, a média em risco e os botões WhatsApp, Prontuário e Agendar retorno. A data é a da atualização do relatório. Toque em <b>Carga Iris</b> e escolha o arquivo Relatorio_Vendedor_Externo (Excel) baixado do Iris. O app liga cada cliente do relatório ao cadastro pelo código de cliente e mostra, abaixo do nome, o volume do mês, do mês anterior e do ano, o preço médio, a margem, o prazo, a última compra, o faturamento do dia anterior e os títulos vencidos; "mês a mês" abre o volume de cada mês e, quando há várias lojas, o volume de cada uma. O selo laranja "Sem compra em …" indica quem comprou no mês anterior e ainda não comprou no mês (risco de churn). Com o Drive conectado, o relatório é gravado na pasta do app (postos-iris.json) e chega ao outro aparelho ao conectar. Cada nova carga substitui a anterior.</p>
 <h3>Mescla do Iris com o cadastro</h3>
 <p>A cada carga, o app liga os clientes do relatório Iris aos cadastros: primeiro pelo código de cliente; depois, para quem está sem código, pela razão social e pelo município (nos postos, cada loja do Iris vai para o posto da ANP da mesma cidade). Os ligados pelo nome mostram o aviso "Ligado ao Iris pelo nome": confira e grave o código no campo Cargo do Google Contatos. Clientes do Iris que não existem no app são criados com o código, a razão social e o município (tipo Revendedor quando o nome indica posto ou distribuidora; Consumidor nos demais); complete CNPJ, telefones e endereço. No filtro Tipo de Cliente: "Clientes da carteira (Iris)", "Sem compra no mês (comprou no anterior)", "Sem compra no mês" e "Criados pelo Iris". A exportação para o Google Contatos leva o código de cliente no campo Cargo. Postos clientes aparecem mesmo com potencial estimado abaixo de 3.000 L.</p>
 <h3>Atualizar agenda</h3>
@@ -418,11 +443,14 @@ button.mais{display:block;margin:0 auto}
 <dialog id="dlgger" aria-labelledby="gert"><div class="dlgcab"><h2 id="gert">📊 Painel gerencial</h2><button type="button" id="gerx" aria-label="Fechar">Fechar</button></div>
 <div class="gerfil"><label>Segmento<select id="gerseg"><option value="">Todos</option><option value="revendedor">Revendedor</option><option value="consumidor">Consumidor</option></select></label><label>Município<select id="gercid"></select></label><button type="button" id="gerpdf" class="cheio">📤 Relatório PDF</button><span id="gerpdfmsg" class="fraco" role="status"></span></div>
 <div id="gercorpo"></div></dialog>
+<dialog id="dlgchurn" aria-labelledby="cht"><div class="dlgcab"><h2 id="cht">🚦 Churn: clientes dos últimos 90 dias</h2><button type="button" id="chx" aria-label="Fechar">Fechar</button></div>
+<div class="gerfil"><label>Segmento<select id="chseg"><option value="">Todos</option><option value="revendedor">Revendedor</option><option value="consumidor">Consumidor</option></select></label><label>Município<select id="chcid"></select></label></div>
+<div id="chcorpo" class="chc"></div></dialog>
 <div id="rel" hidden></div>
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=50;
+var VERSAO_APP=51;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -1952,6 +1980,57 @@ function gerAbrir(){GER.todos=false;$("gerseg").value=GER.seg;gerPinta();var d=$
 function gerFechar(){var d=$("dlgger");if(d.close)d.close();else d.removeAttribute("open")}
 $("painelger").addEventListener("click",gerAbrir);$("gerpdf").addEventListener("click",gerPdfAcao);$("gerx").addEventListener("click",gerFechar);
 $("gerseg").addEventListener("change",function(){GER.seg=this.value;gerPinta()});$("gercid").addEventListener("change",function(){GER.cid=this.value;gerPinta()});
+/* ---------- Churn: semáforo dos clientes que compraram nos últimos 3 meses ---------- */
+var CH={cor:"",seg:"",cid:""};
+function chDados(){if(!IRIS||!IRIS.dados)return null;var mi=IRIS.resumo.mes,ms=[mi-2,mi-1,mi].filter(function(m){return m>=0}),vist={},L=[];
+ postos.forEach(function(p){if(vist[p.ck]||EXCL[p.ck])return;var ic=irisCli(p);if(!ic||!ic.l.length)return;vist[p.ck]=1;
+  var v=ms.map(function(m){return ic.l.reduce(function(a,x){return a+(x[6][m]||0)},0)});if(!v.some(function(x){return x>0}))return;
+  var ult=v.length-1;while(ult>=0&&!(v[ult]>0))ult--;var cor=ult===v.length-1?"vd":ult===v.length-2?"am":"vm";
+  var comp=v.filter(function(x){return x>0}),med=comp.reduce(function(a,x){return a+x},0)/comp.length;
+  L.push({p:p,c:ic.c,v:v,cor:cor,med:med})});
+ var ord={vm:0,am:1,vd:2};L.sort(function(a,b){return ord[a.cor]-ord[b.cor]||b.med-a.med});return {ms:ms,L:L}}
+function chDias(u){var d=String(u||"").split("/");if(d.length!==3)return null;var t=new Date(+d[2],+d[1]-1,+d[0]);if(isNaN(t))return null;return Math.max(0,Math.round((Date.now()-t)/864e5))}
+function chPinta(){var D=chDados(),box=$("chcorpo");box.textContent="";
+ function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+ if(!D){box.appendChild(el("p","fraco","Toque em Carga Iris e carregue o Relatório Vendedor Externo para ver o semáforo de churn."));return}
+ var cs=$("chcid"),cid=CH.cid,cids={};D.L.forEach(function(r){if(r.p.cidade)cids[r.p.cidade]=1});
+ cs.textContent="";cs.appendChild(new Option("Todos",""));Object.keys(cids).sort(function(a,b){return a.localeCompare(b,"pt-BR")}).forEach(function(c){cs.appendChild(new Option(c,c))});cs.value=cids[cid]?cid:"";CH.cid=cs.value;
+ var L=D.L.filter(function(r){return (!CH.seg||r.p.tipo===CH.seg)&&(!CH.cid||r.p.cidade===CH.cid)});
+ var N={vm:[],am:[],vd:[]};L.forEach(function(r){N[r.cor].push(r)});
+ var nm=D.ms.map(function(m){return MESES[m]}),k=nm.length;
+ var T={vm:{t:"Vermelho",s:"última compra em "+(nm[0]||"").toLowerCase()},am:{t:"Amarelo",s:"última compra em "+(nm[k-2]||"").toLowerCase()},vd:{t:"Verde",s:"comprou em "+(nm[k-1]||"").toLowerCase()}};
+ function risco(a){return Math.round(a.reduce(function(s,r){return s+r.med},0))}
+ var res=el("div","chres");
+ ["vm","am","vd"].forEach(function(c){var b=el("button","chcard "+c);b.type="button";b.setAttribute("aria-pressed",CH.cor===c?"true":"false");
+  b.appendChild(el("b",null,String(N[c].length)));b.appendChild(el("span",null,T[c].t+": "+T[c].s));
+  b.appendChild(el("small",null,c==="vd"?"clientes ativos no mês":"≈ "+risco(N[c]).toLocaleString("pt-BR")+" L/mês em risco"));
+  b.addEventListener("click",function(){CH.cor=CH.cor===c?"":c;chPinta()});res.appendChild(b)});
+ box.appendChild(res);
+ var tot=L.length||1,br=el("div","chbarra");br.title="Proporção de clientes por cor";
+ ["vm","am","vd"].forEach(function(c){var s=el("span",c);s.style.width=(N[c].length/tot*100)+"%";br.appendChild(s)});box.appendChild(br);
+ box.appendChild(el("p","fraco",L.length+" clientes compraram em "+nm.join(", ").toLowerCase()+" (relatório Iris de "+IRIS.data.slice(0,10)+"). Toque nos quadros para filtrar. Vermelhos e amarelos primeiro, dos maiores volumes para os menores."));
+ ["vm","am","vd"].forEach(function(c){if(CH.cor&&CH.cor!==c)return;if(!N[c].length)return;
+  var g=el("div","chgrupo"),h=el("h3");var bol=el("i");bol.style.background="var(--"+c+")";h.appendChild(bol);h.appendChild(document.createTextNode(T[c].t+" · "+N[c].length+" "+(N[c].length>1?"clientes":"cliente")+" · "+T[c].s));g.appendChild(h);
+  N[c].forEach(function(r){var p=r.p,li=el("div","chcli "+c);li.appendChild(el("div","tarja"));
+   var mid=el("div");mid.appendChild(el("div","chnome",titulo(p.nome)));
+   var dd=chDias(r.c.u),inf=[p.cidade,p.tipo==="consumidor"?"Consumidor":"Revendedor",r.c.u?"última compra "+r.c.u+(dd!=null?" ("+dd+" dias)":""):"",c!=="vd"?"média "+Math.round(r.med).toLocaleString("pt-BR")+" L/mês":""].filter(Boolean).join(" · ");
+   mid.appendChild(el("div","chinfo",inf));
+   var mx=Math.max.apply(null,r.v.concat([1])),ml=el("div","chmeses");
+   r.v.forEach(function(v,i){var m=el("div","chmes"+(v>0?"":" zero")),bx=el("div","bx"),sp=el("span");sp.style.height=Math.max(3,Math.round(v/mx*30))+"px";bx.appendChild(sp);m.appendChild(bx);
+    m.appendChild(el("div",null,nm[i]+": "+(v>0?Math.round(v).toLocaleString("pt-BR")+" L":"–")));ml.appendChild(m)});
+   mid.appendChild(ml);var rt=retInfo(p);if(rt)mid.appendChild(el("div","chinfo","📅 Retorno "+(RET_TXT[rt.tipo]||"")+" "+rt.txt+(rt.atrasado?" (atrasado)":"")));li.appendChild(mid);
+   var ac=el("div","chacoes"),fs=fonesEfetivos(p),wa=fs.filter(function(t){return waGet(t)==="sim"})[0]||fs[0];
+   if(wa){var dg=dig(wa).replace(/^55(?=\d{10,11}$)/,""),a=el("a",null,"💬 WhatsApp");a.href=CELULAR?"https://wa.me/55"+dg:"https://web.whatsapp.com/send?phone=55"+dg;a.target=CELULAR?"_blank":"whatsweb";a.rel="noopener";ac.appendChild(a)}
+   var bp=el("button",null,"📋 Prontuário");bp.type="button";bp.addEventListener("click",function(){prontAbrir(p)});ac.appendChild(bp);
+   ac.appendChild(botaoRetorno(p));li.appendChild(ac);g.appendChild(li)});
+  box.appendChild(g)});
+ if(!L.length)box.appendChild(el("p","fraco","Nenhum cliente com compra nos últimos 3 meses para este filtro."))}
+function chAbrir(e){if(e)e.preventDefault();$("chseg").value=CH.seg;chPinta();var d=$("dlgchurn");if(d.showModal)d.showModal();else d.setAttribute("open","")}
+$("lkchurn").addEventListener("click",chAbrir);
+$("chx").addEventListener("click",function(){var d=$("dlgchurn");if(d.close)d.close();else d.removeAttribute("open")});
+$("chseg").addEventListener("change",function(){CH.seg=this.value;chPinta()});$("chcid").addEventListener("change",function(){CH.cid=this.value;chPinta()});
+["dlgret","dlgpront"].forEach(function(id){$(id).addEventListener("close",function(){if($("dlgchurn").open)chPinta()})});
+
 function irisPinta(){if(!IRIS){return}var R=IRIS.resumo;
  function put(id,t,cl){var e=$(id);e.textContent=t;e.className=cl||""}
  function nivel(v){return v>=1?"ok":"baixo"}
