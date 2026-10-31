@@ -314,7 +314,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Distância</h3>
 <p>Em linha reta, a partir do centro de Vespasiano. Pela estrada costuma ser de 20% a 40% maior; o link "rota" abre o trajeto no Google Maps.</p>
 <h3>Telefones e WhatsApp</h3>
-<p>Os telefones da sua agenda aparecem primeiro (passe o mouse sobre o nome do contato para ver a observação). O telefone da Receita Federal aparece embaixo, em cinza, e pode ser o do escritório de contabilidade. Em "Editar telefones" você corrige ou remove números e acrescenta os contatos da visita, que aparecem no bloco Visita.</p>
+<p>Os telefones da sua agenda aparecem primeiro (passe o mouse sobre o nome do contato para ver a observação). O telefone da Receita Federal aparece embaixo, em cinza, e pode ser o do escritório de contabilidade. Em "Editar contatos" você informa o contato da visita, o telefone e o e-mail, corrige ou remove números e acrescenta os contatos da visita, que aparecem no bloco Visita.</p>
 <p>Para testar o WhatsApp, clique em "WhatsApp" ao lado do número: se abrir a conversa, o número tem conta; se aparecer "número inválido", não tem. Depois marque o resultado na caixinha. No celular, tocar no número abre direto a conversa no WhatsApp; para fazer uma ligação comum, use "📞 Ligar" ao lado. Números marcados como "não tem" WhatsApp voltam a ligar ao toque. Também no celular, o primeiro botão da coluna Bandeira / Segmento vira "📤 Compartilhar no WhatsApp": ele abre o WhatsApp com razão social, contato, CNPJ, código de cliente, telefones, e-mail, endereço e link do mapa já escritos; é só escolher a conversa e enviar. No computador o botão continua sendo "Google Contatos".</p>
 <h3>Perfil do posto</h3>
 <p>Rodoviário, misto ou urbano. Começa estimado pela página: rodoviário quando o endereço é de rodovia (BR, km, anel rodoviário, zona rural) e o diesel ocupa pelo menos metade da tancagem; urbano quando o endereço é na cidade e o diesel fica abaixo de 35% da tancagem, ou quando a observação da agenda diz "urbano"; misto nos demais casos. Passe o mouse sobre o campo para ver o motivo. Na visita, escolha o perfil real no campo Perfil, logo abaixo da razão social: ele passa a valer no filtro "Perfil do Posto" e na planilha.</p>
@@ -398,7 +398,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=41;
+var VERSAO_APP=42;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -420,8 +420,9 @@ var ROTA=marcas("postos_rota"),PROG=marcas("postos_prog_auto"),PRAZO=marcas("pos
 var DATAS=marcas("postos_datas"),PERFIL=marcas("postos_perfil"),TANQ=marcas("postos_tanque_arla"),VISITA=marcas("postos_visita"),CONSUMO=marcas("postos_consumo");
 var CNPJINF=marcas("postos_cnpj"),CMES=marcas("postos_consumo_mes"),CAPITAL=marcas("postos_capital"),ENDER=marcas("postos_endereco"),EDEND={},RCONT=marcas("postos_receita_contato");
 var END_CAMPOS=[["endereco","Endereço (rua e número)"],["compl","Complemento"],["bairro","Bairro"],["cep","CEP"]];
+var MAILV=marcas("postos_email_visita");   /* e-mail informado em "Editar contatos" (vale antes do da ANP/Receita) */
 function aplicaEnd(p){if(!p.o)p.o={endereco:p.endereco,compl:p.compl,bairro:p.bairro,cep:p.cep,tel1:p.tel1,tel2:p.tel2,email:p.email};END_CAMPOS.forEach(function(c){var v=ENDER[p.ck+":"+c[0]];p[c[0]]=v?v:p.o[c[0]]});
- var rt=String(RCONT[p.ck+":tel"]||"").split(",").filter(Boolean).map(fone);p.tel1=p.o.tel1||rt.shift()||"";p.tel2=p.o.tel2||rt.shift()||"";p.email=p.o.email||String(RCONT[p.ck+":email"]||"")}
+ var rt=String(RCONT[p.ck+":tel"]||"").split(",").filter(Boolean).map(fone);p.tel1=p.o.tel1||rt.shift()||"";p.tel2=p.o.tel2||rt.shift()||"";p.email=String(MAILV[p.ck]||"")||p.o.email||String(RCONT[p.ck+":email"]||"")}
 function endEditado(p){return END_CAMPOS.some(function(c){return !!ENDER[p.ck+":"+c[0]]})}
 function endTxt(p){return [[p.endereco,p.compl&&p.compl.length>1?p.compl:""].filter(Boolean).join(" · "),p.bairro,(p.cidade?p.cidade+"/MG":""),p.cep?"CEP "+p.cep:""].filter(function(x){return x&&String(x).trim()}).join(" · ")}
 function endOrigTxt(p){var o=p.o||p;return [[o.endereco,o.compl&&o.compl.length>1?o.compl:""].filter(Boolean).join(" · "),o.bairro,o.cep?"CEP "+o.cep:""].filter(function(x){return x&&String(x).trim()}).join(" · ")}
@@ -547,13 +548,14 @@ function editorEnd(p,ck){var box=document.createElement("div");box.className="ed
  br.appendChild(ok);br.appendChild(rs);box.appendChild(br);
  return box}
 function editorFones(p,ck){var box=document.createElement("div");box.className="edbox";
- var ti=document.createElement("div");ti.className="edtit";ti.textContent="Editar telefones";box.appendChild(ti);
+ var ti=document.createElement("div");ti.className="edtit";ti.textContent="Editar contatos";box.appendChild(ti);
  function linha(rot,val,onIn,dica,tipo){var l=document.createElement("label");l.className="edl";var r=document.createElement("span");r.textContent=rot;l.appendChild(r);
   var i=document.createElement("input");i.type=tipo||"tel";if(!tipo)i.inputMode="tel";i.autocomplete="off";i.value=val;i.addEventListener("input",function(){onIn(i.value)});l.appendChild(i);
   if(dica){var d=document.createElement("span");d.className="eddica";d.textContent=dica;l.appendChild(d)}box.appendChild(l);return i}
  linha("Contato da visita",FNOME[ck]||"",function(v){v=v.trim();if(v)FNOME[ck]=v;else delete FNOME[ck];carimbo(ck,"telefones",1,0);setLS("postos_contato_nome",FNOME)},"","text").placeholder="Nome e função";
  var nIns=[];function salvaNovos(){var v=[];nIns.forEach(function(i){var d=dig(i.value);if(d&&v.indexOf(d)<0)v.push(d)});if(v.length)FADD[ck]=v.join(",");else delete FADD[ck];carimbo(ck,"telefones",1,0);setLS("postos_fone_novo",FADD)}
- novos(ck).concat(["",""]).forEach(function(v){var i=linha(v?"Telefone da visita":"Novo telefone",v,salvaNovos);i.placeholder="(31) 99999-9999";nIns.push(i)});
+ novos(ck).concat([""]).forEach(function(v){var i=linha(v?"Telefone da visita":"Novo telefone",v,salvaNovos);i.placeholder="(31) 99999-9999";nIns.push(i)});
+ var em=linha("E-mail",MAILV[ck]||p.email||"",function(v){v=v.trim().toLowerCase();if(v&&v!==(p.o&&p.o.email||""))MAILV[ck]=v;else delete MAILV[ck];if(!p.o)aplicaEnd(p);p.email=v||(p.o&&p.o.email)||String(RCONT[ck+":email"]||"");carimbo(ck,"telefones",1,0);setLS("postos_email_visita",MAILV)},"","email");em.placeholder="nome@empresa.com.br";em.autocomplete="off";
  origens(p).forEach(function(o){var t=o[0],k=ck+":"+dig(t),e=FED[k];
   linha(o[1],e==="-"?"":e?fone(e):t,function(v){var d=dig(v);if(d===dig(t))delete FED[k];else FED[k]=d||"-";carimbo(ck,"telefones",1,0);setLS("postos_fone_editado",FED)},e?"original: "+t:"")});
  var aj=document.createElement("p");aj.className="eddica";aj.textContent="Escreva com DDD. Apague um número para tirá-lo da lista; escreva o original de novo para restaurar.";box.appendChild(aj);
@@ -914,7 +916,7 @@ function filtrar(){
    sl.setAttribute("data-t",dg);bx.appendChild(sl);alvo.appendChild(bx)}}
   if(EDITANDO[ck]){tc.appendChild(editorFones(p,ck))}else{
   var nv=novos(ck);
-  if(nv.length||FNOME[ck]){var nb=document.createElement("div");nb.className="agenda visita";var nn=document.createElement("div");nn.className="agnome";nn.textContent="Visita"+(FNOME[ck]?": "+FNOME[ck]:"");nn.appendChild(dtSpan(ck,"telefones"));nb.appendChild(nn);nv.forEach(function(t){addF(t,nb)});tc.appendChild(nb)}
+  if(nv.length||FNOME[ck]||MAILV[ck]){var nb=document.createElement("div");nb.className="agenda visita";var nn=document.createElement("div");nn.className="agnome";nn.textContent="Visita"+(FNOME[ck]?": "+FNOME[ck]:"");nn.appendChild(dtSpan(ck,"telefones"));nb.appendChild(nn);nv.forEach(function(t){addF(t,nb)});if(MAILV[ck]){var vm=document.createElement("a");vm.className="agmail";vm.style.display="block";vm.href="mailto:"+MAILV[ck];vm.textContent=MAILV[ck];nb.appendChild(vm)}tc.appendChild(nb)}
   p.agenda.forEach(function(g){var gb=document.createElement("div");gb.className="agenda";var nm=document.createElement("div");nm.className="agnome";
    nm.textContent="Agenda"+(g.nome?": "+g.nome:"");if(g.obs)nm.title=g.obs;gb.appendChild(nm);var n0=vistos.length;g.fones.forEach(function(t){addF(foneEf(ck,t),gb,t)});
    if(vistos.length===n0){var sf=document.createElement("div");sf.className="rotrec";sf.textContent="sem telefone na agenda";gb.appendChild(sf)}
@@ -925,8 +927,8 @@ function filtrar(){
   var rem=origens(p).filter(function(o){return FED[ck+":"+dig(o[0])]==="-"}).length;
   if(rem){var rm=document.createElement("div");rm.className="rotrec";rm.textContent=rem+(rem>1?" números removidos":" número removido");tc.appendChild(rm)}
   if(!tc.firstChild)tc.appendChild(document.createTextNode("sem telefone"));
-  var ed=document.createElement("button");ed.type="button";ed.className="edfones";ed.textContent="Editar telefones";
-  ed.addEventListener("click",function(){EDITANDO[ck]=1;filtrar();var f=document.querySelector("td.tel .edbox input");if(f)f.focus()});tc.appendChild(ed);tc.appendChild(dtSpan(ck,"telefones","telefones editados em"));tc.appendChild(dtSpan(ck,"whatsapp","WhatsApp testado em"))}
+  var ed=document.createElement("button");ed.type="button";ed.className="edfones";ed.textContent="Editar contatos";
+  ed.addEventListener("click",function(){EDITANDO[ck]=1;filtrar();var f=document.querySelector("td.tel .edbox input");if(f)f.focus()});tc.appendChild(ed);tc.appendChild(dtSpan(ck,"telefones","contatos editados em"));tc.appendChild(dtSpan(ck,"whatsapp","WhatsApp testado em"))}
   if(!tc.firstChild)tc.appendChild(document.createTextNode("sem telefone"));
   var rn=document.createElement("input");rn.type="text";rn.className="rede-nome";rn.placeholder="Qual rede?";rn.setAttribute("list","redes");rn.autocomplete="off";rn.setAttribute("aria-label","Nome da rede do posto "+p.nome);rn.value=REDENOME[ck]||"";rn.hidden=!REDE[ck];rn.addEventListener("change",function(){redeNomeSet(ck,rn.value)});rn.addEventListener("blur",function(){redeNomeSet(ck,rn.value)});rn.addEventListener("input",function(){var v=rn.value.trim();carimbo(ck,"redeNome",v,REDENOME[ck]);if(v)REDENOME[ck]=v;else delete REDENOME[ck];try{localStorage.setItem("postos_rede_nome",JSON.stringify(REDENOME))}catch(e){}mudou()});var rw=document.createElement("div");rw.className="redebox";rw.appendChild(caixa(p.tipo==="consumidor"?"Faz parte de grupo":"Posto de Rede",REDE,"postos_rede",ck,function(v){rn.hidden=!v;if(v)rn.focus()}));rw.appendChild(rn);fx.appendChild(rw);tc.appendChild(cs);tc.appendChild(cm);
   tr.appendChild(tc);
@@ -1060,8 +1062,8 @@ function relatorio(){
  setTimeout(function(){window.print();arqMsg("Relatório com "+lista.length+(lista.length>1?" clientes":" cliente")+". Na janela de impressão, escolha \"Salvar como PDF\".")},50)}
 $("relpdf").addEventListener("click",relatorio);
 /* ---------- Salvamento: Google Drive (pasta BIOAR) + arquivo de backup ---------- */
-var LS={tipoCli:"postos_tipo_cli",visita:"postos_visita",consumo:"postos_consumo",tanque:"postos_tanque_arla",perfil:"postos_perfil",datas:"postos_datas",volume:"postos_volume",foneEditado:"postos_fone_editado",foneNovo:"postos_fone_novo",contatoNome:"postos_contato_nome",whatsapp:"postos_whatsapp",rede:"postos_rede",inativo:"postos_inativo",automacao:"postos_automacao",equipamento:"postos_equipamento",redeNome:"postos_rede_nome",fornecedor:"postos_fornecedor",preco:"postos_preco",rota:"postos_rota",progAuto:"postos_prog_auto",prazoPag:"postos_prazo_pag",periodicidade:"postos_periodicidade",cnpj:"postos_cnpj",consumoMes:"postos_consumo_mes",capital:"postos_capital",endereco:"postos_endereco",receitaContato:"postos_receita_contato",excluido:"postos_excluido",separado:"postos_separado",cadastro:"postos_cadastro",prontuario:"postos_prontuario",razao:"postos_razao",retorno:"postos_retorno"};
-function mapas(){return {tipoCli:TIPOCLI,visita:VISITA,consumo:CONSUMO,tanque:TANQ,perfil:PERFIL,datas:DATAS,volume:VOL,foneEditado:FED,foneNovo:FADD,contatoNome:FNOME,whatsapp:WA,rede:REDE,inativo:INAT,automacao:AUTO,equipamento:EQUIP,redeNome:REDENOME,fornecedor:FORN,preco:PRECO,rota:ROTA,progAuto:PROG,prazoPag:PRAZO,periodicidade:PERIOD,cnpj:CNPJINF,consumoMes:CMES,capital:CAPITAL,endereco:ENDER,receitaContato:RCONT,excluido:EXCL,separado:SEPAR,cadastro:CAD,prontuario:PRONT,razao:RAZAO,retorno:RETORNO}}
+var LS={emailVisita:"postos_email_visita",tipoCli:"postos_tipo_cli",visita:"postos_visita",consumo:"postos_consumo",tanque:"postos_tanque_arla",perfil:"postos_perfil",datas:"postos_datas",volume:"postos_volume",foneEditado:"postos_fone_editado",foneNovo:"postos_fone_novo",contatoNome:"postos_contato_nome",whatsapp:"postos_whatsapp",rede:"postos_rede",inativo:"postos_inativo",automacao:"postos_automacao",equipamento:"postos_equipamento",redeNome:"postos_rede_nome",fornecedor:"postos_fornecedor",preco:"postos_preco",rota:"postos_rota",progAuto:"postos_prog_auto",prazoPag:"postos_prazo_pag",periodicidade:"postos_periodicidade",cnpj:"postos_cnpj",consumoMes:"postos_consumo_mes",capital:"postos_capital",endereco:"postos_endereco",receitaContato:"postos_receita_contato",excluido:"postos_excluido",separado:"postos_separado",cadastro:"postos_cadastro",prontuario:"postos_prontuario",razao:"postos_razao",retorno:"postos_retorno"};
+function mapas(){return {emailVisita:MAILV,tipoCli:TIPOCLI,visita:VISITA,consumo:CONSUMO,tanque:TANQ,perfil:PERFIL,datas:DATAS,volume:VOL,foneEditado:FED,foneNovo:FADD,contatoNome:FNOME,whatsapp:WA,rede:REDE,inativo:INAT,automacao:AUTO,equipamento:EQUIP,redeNome:REDENOME,fornecedor:FORN,preco:PRECO,rota:ROTA,progAuto:PROG,prazoPag:PRAZO,periodicidade:PERIOD,cnpj:CNPJINF,consumoMes:CMES,capital:CAPITAL,endereco:ENDER,receitaContato:RCONT,excluido:EXCL,separado:SEPAR,cadastro:CAD,prontuario:PRONT,razao:RAZAO,retorno:RETORNO}}
 function estadoAtual(){var m=mapas(),o={};Object.keys(m).forEach(function(k){o[k]=Object.assign({},m[k])});return o}
 function contar(s){var n=0;Object.keys(LS).forEach(function(k){if(s&&s[k])n+=Object.keys(s[k]).length});return n}
 function aplicaEstado(s,mesclar){var m=mapas(),n=0;
@@ -1485,7 +1487,9 @@ function vendasBox(p){var ic=irisCli(p);if(!ic)return null;var c=ic.c,l=ic.l,R=I
   var tot=tt.reduce(function(a,x){return a+x[2]},0),mx=Math.max.apply(null,tt.map(function(x){return x[3]}));
   var s2=document.createElement("span");s2.className="vsel tit";s2.textContent=tt.length+(tt.length>1?" títulos vencidos":" título vencido")+" · "+reais(tot)+" · até "+mx+(mx>1?" dias":" dia");
   s2.title=tt.map(function(x){return "Venc. "+x[1]+" · "+reais(x[2])+" · "+x[3]+" dias"}).join("\n");var d2=document.createElement("div");d2.appendChild(s2);box.appendChild(d2)}
- var det=document.createElement("details"),sm=document.createElement("summary");det.open=true;sm.textContent="mês a mês"+(l.length>1?" ("+l.length+" lojas)":"");det.appendChild(sm);
+ var det=document.createElement("details"),sm=document.createElement("summary");det.open=true;var tAno=0;for(var j=1;j<=mi;j++)tAno+=soma(j);var media=mi>0?tAno/mi:0;
+ sm.innerHTML="";sm.appendChild(document.createTextNode("Média: "));var mb=document.createElement("b");mb.textContent=Math.round(media).toLocaleString("pt-BR")+" L/mês";sm.appendChild(mb);
+ if(l.length>1)sm.appendChild(document.createTextNode(" ("+l.length+" lojas)"));sm.title="Média mensal de jan. até "+MESES[mi]+" (volume do ano ÷ "+mi+(mi>1?" meses":" mês")+"). Toque para ver mês a mês.";det.appendChild(sm);
  var g=document.createElement("div");g.className="meses";for(var i=0;i<=mi;i++){var v=soma(i),s=document.createElement("span");s.textContent=MESES[i]+": "+(v?Math.round(v).toLocaleString("pt-BR"):"–");g.appendChild(s)}det.appendChild(g);
  if(l.length>1)l.forEach(function(x){var d=document.createElement("div");d.className="fraco";d.textContent="Loja "+x[0]+" · "+titulo(x[1])+": "+MESES[mi]+" "+litros(x[6][mi])+" · ano "+litros(x[7]);det.appendChild(d)});
  box.appendChild(det);return box}
