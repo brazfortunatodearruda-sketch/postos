@@ -205,7 +205,7 @@ dialog#dlgprop::backdrop{background:rgba(10,20,16,.55)}
 #propeqbox[hidden]{display:none}.propdados summary{cursor:pointer;font-size:.88rem;color:var(--suave);margin-bottom:8px}
 dialog#dlgger{width:min(1100px,calc(100vw - 16px));max-width:none;max-height:calc(100vh - 24px);padding:0;border:1px solid var(--linha);border-radius:10px;background:var(--papel);color:var(--texto)}
 dialog#dlgger::backdrop{background:rgba(10,20,16,.55)}
-.gerfil{display:flex;flex-wrap:wrap;gap:12px;padding:12px 16px 0}.gerfil label{display:grid;gap:3px;font-size:.85rem;color:var(--suave)}.gerfil select{font:1rem var(--fonte);padding:6px 8px;border:1px solid var(--linha);border-radius:6px;background:var(--fundo);color:var(--texto);min-width:180px}
+.gerfil{display:flex;flex-wrap:wrap;gap:12px;padding:12px 16px 0;align-items:end}#gerpdfmsg{font-size:.85rem;align-self:center}.gerfil label{display:grid;gap:3px;font-size:.85rem;color:var(--suave)}.gerfil select{font:1rem var(--fonte);padding:6px 8px;border:1px solid var(--linha);border-radius:6px;background:var(--fundo);color:var(--texto);min-width:180px}
 #gercorpo{padding:12px 16px 20px;display:grid;gap:16px}
 .gkpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.gkpis>div{border:1px solid var(--linha);border-radius:8px;padding:10px 12px;display:grid;gap:2px;align-content:start}
 .gkpis span{font-size:.8rem;color:var(--suave)}.gkpis b{font-size:1.35rem;font-variant-numeric:tabular-nums}.gkpis small{font-size:.78rem;color:var(--suave)}.gcomp{display:grid;gap:2px;margin-top:6px;padding-top:6px;border-top:1px dashed var(--linha);font-size:.85rem}.gcomp small{display:inline}.gkpis .gcomp b{font-size:.9rem}.gkpis .gcomp span{font-size:inherit;color:inherit}
@@ -346,7 +346,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Prontuário de atendimento</h3>
 <p>O botão "📋 Prontuário", na coluna Bandeira / Segmento (abaixo de Automação), abre o resumo da situação: pontos de atenção (risco de churn, títulos vencidos, situação na Receita, visita antiga, rota a confirmar), dados do cliente, carteira Bioar (compras, volumes, preço, títulos), dados comerciais, rota com os dias de entrega, contato e o histórico de atendimentos. No celular, toque em "🎤 Gravar atendimento" e fale; toque de novo para parar. O texto aparece no campo e pode ser corrigido antes de "Salvar atendimento". No computador, é só digitar. Cada atendimento fica com data e hora e vai para o Drive junto com as marcações. "Compartilhar resumo" abre o WhatsApp no celular (no computador, copia o texto) e "PDF" gera o prontuário para salvar ou imprimir. O número entre parênteses no botão é a quantidade de atendimentos registrados.</p>
 <h3>Painel gerencial</h3>
-<p>"📊 Painel gerencial", no topo, abre a visão dos números do relatório Iris: clientes, volume, preço médio e margem do mês; pizzas de volume e margem entre Revendedor e Consumidor (mês ou ano); ranking dos clientes por volume no ano (toque no nome para abrir a ficha); e o menor preço por município, separando revendedor e consumidor, com o preço Bioar ao lado do preço da concorrência anotado nas fichas. Os filtros de Segmento e Município valem para o painel inteiro.</p>
+<p>"📊 Painel gerencial", no topo, abre a visão dos números do relatório Iris: clientes, volume, preço médio e margem do mês; pizzas de volume e margem entre Revendedor e Consumidor (mês ou ano); ranking dos clientes por volume no ano (toque no nome para abrir a ficha); e o menor preço por município, separando revendedor e consumidor, com o preço Bioar ao lado do preço da concorrência anotado nas fichas. Os filtros de Segmento e Município valem para o painel inteiro. "📤 Relatório PDF" monta um PDF com tudo o que está na tela (respeitando os filtros, o mês/ano das pizzas e os filtros do ranking) e abre o compartilhamento do celular para mandar pelo WhatsApp; no computador, o PDF é baixado.</p>
 <h3>Tipo de cliente</h3>
 <p>Na coluna Bandeira / Segmento, "Tipo de Cliente" mostra se o registro é Revendedor (posto) ou Consumidor (frota). "Automático" segue o marcador do Google Contatos. Se estiver errado, escolha o tipo certo (Revendedor, Consumidor · Transporte de cargas, Consumidor · Passageiros ou Consumidor · outro); a correção vale na hora, entra nos filtros e vai para o Drive com as marcações. Corrigir o marcador no Google Contatos e tocar em "Atualizar agenda" também acerta o tipo.</p>
 <h3>Proposta de preço</h3>
@@ -416,13 +416,13 @@ button.mais{display:block;margin:0 auto}
 <div class="prontacoes"><button type="button" id="propgera" class="cheio">Gerar proposta e salvar na pasta</button><button type="button" id="propshare" hidden>📤 Compartilhar</button><button type="button" id="propbaixa" hidden>Baixar</button><a id="proppasta" class="lnk" target="_blank" rel="noopener" hidden>📁 Abrir pasta</a></div>
 <p id="propmsg" role="status" aria-live="polite" class="fraco">Usa o modelo da Bioar: troca os dados da página da proposta e só inclui a página de tanques quando houver equipamento.</p></div></dialog>
 <dialog id="dlgger" aria-labelledby="gert"><div class="dlgcab"><h2 id="gert">📊 Painel gerencial</h2><button type="button" id="gerx" aria-label="Fechar">Fechar</button></div>
-<div class="gerfil"><label>Segmento<select id="gerseg"><option value="">Todos</option><option value="revendedor">Revendedor</option><option value="consumidor">Consumidor</option></select></label><label>Município<select id="gercid"></select></label></div>
+<div class="gerfil"><label>Segmento<select id="gerseg"><option value="">Todos</option><option value="revendedor">Revendedor</option><option value="consumidor">Consumidor</option></select></label><label>Município<select id="gercid"></select></label><button type="button" id="gerpdf" class="cheio">📤 Relatório PDF</button><span id="gerpdfmsg" class="fraco" role="status"></span></div>
 <div id="gercorpo"></div></dialog>
 <div id="rel" hidden></div>
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=48;
+var VERSAO_APP=49;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -1764,6 +1764,8 @@ function gerClientes(){if(!IRIS||!IRIS.dados)return [];var mi=IRIS.resumo.mes,vi
   o.push({p:p,tipo:p.tipo==="consumidor"?"consumidor":"revendedor",cidade:p.cidade||titulo(l[0][1]||""),volMes:vm,volAno:va,media:nc?tc/nc:0,
    preco:pv?pp/pv:pu,margUn:va?ma/va:(vm?mm/vm:0),margMes:mm,margAno:ma})});
  return o}
+/* município entra no quadro de preços só se tiver ao menos um preço (Bioar ou concorrência, revendedor ou consumidor) */
+function gerTemPreco(m){return ["revendedor","consumidor"].some(function(t){return (m[t].b&&m[t].b.v>0)||(m[t].c&&m[t].c.v>0)})}
 function gerFiltra(l){return l.filter(function(r){return (!GER.seg||r.tipo===GER.seg)&&(!GER.cid||sem(r.cidade)===GER.cid)})}
 function gerPizza(tit,partes,fmtv){var tot=partes.reduce(function(a,x){return a+Math.max(0,x.v)},0),R=70,C=80,ang=-Math.PI/2,svg="";
  if(!tot)return '<div class="gpizza"><h4>'+gerEh(tit)+'</h4><p class="fraco">Sem dados no filtro.</p></div>';
@@ -1820,7 +1822,7 @@ function gerPinta(){var tudo=gerClientes(),X=$("gercorpo");
  L.forEach(function(r){if(!r.preco)return;var m=cel(r.cidade);if(m)menor(m[r.tipo],"b",r.preco,r.p.nome)});
  postos.forEach(function(p){var ck=ckOf(p),f=sem(FORN[ck]||""),v=gerNum(PRECO[ck]);if(!v||!f||/BIOAR|AGRICOPEL/.test(f))return;var t=p.tipo==="consumidor"?"consumidor":"revendedor";
   if(GER.seg&&t!==GER.seg)return;if(GER.cid&&sem(p.cidade)!==GER.cid)return;var m=cel(p.cidade);if(m)menor(m[t],"c",v,p.nome+" · "+titulo(FORN[ck]))});
- var ks=Object.keys(M).sort();
+ var ks=Object.keys(M).filter(function(k){return gerTemPreco(M[k])}).sort();   /* município sem nenhum preço fica fora até ser alimentado */
  function cp(x){return x?'<b>'+gerR(x.v,3)+'</b><small>'+gerEh(titulo(x.n))+'</small>':'<span class="fraco">—</span>'}
  h+='<section class="gsec"><h3>Menor preço por município</h3><p class="fraco">Bioar: preço médio de '+mes+' no Iris (ou o último preço). Concorrência: “Preço praticado” anotado na ficha quando o fornecedor atual não é a Bioar.</p>';
  if(!ks.length)h+='<p class="fraco">Sem preços no filtro.</p>';
@@ -1833,9 +1835,92 @@ function gerPinta(){var tudo=gerClientes(),X=$("gercorpo");
  $("gerrseg").addEventListener("change",function(){GER.rseg=this.value;GER.todos=false;gerPinta()});$("gerrcid").addEventListener("change",function(){GER.rcid=this.value;GER.todos=false;gerPinta()});
  var tb=$("gertodos");if(tb)tb.addEventListener("click",function(){GER.todos=!GER.todos;gerPinta()});
  X.querySelectorAll(".gcli").forEach(function(b){b.addEventListener("click",function(){var r=tudo[+b.getAttribute("data-i")];if(!r)return;gerFechar();var q=$("q");q.value=r.p.nome;q.dispatchEvent(new Event("input"));window.scrollTo(0,0)})})}
+/* ---------- Relatório PDF do Painel gerencial (para compartilhar no WhatsApp) ---------- */
+function gerPdfTxt(t){return String(t==null?"":t).replace(/[−‐‑]/g,"-").replace(/[‘’´`]/g,"'").replace(/[“”]/g,'"').replace(/[^\x20-\x7E\xA0-\xFF—–…€•]/g,"")}
+function gerPdf(){var tudo=gerClientes();if(!tudo.length)return Promise.reject(new Error("semiris"));
+ return carregaPdfLib().then(function(){var Lb=window.PDFLib;return Lb.PDFDocument.create().then(function(doc){return Promise.all([doc.embedFont(Lb.StandardFonts.Helvetica),doc.embedFont(Lb.StandardFonts.HelveticaBold)]).then(function(f){
+  var reg=f[0],neg=f[1],W=595.28,H=841.89,M=36,pg,y,np=0,rgb=Lb.rgb;
+  function hex(h){h=h.replace("#","");return rgb(parseInt(h.slice(0,2),16)/255,parseInt(h.slice(2,4),16)/255,parseInt(h.slice(4,6),16)/255)}
+  var VERDE=hex("0b6b4f"),LARANJA=hex("d97a1e"),CINZA=hex("5b6963"),LINHA=hex("d5dcd8"),PRETO=rgb(0.09,0.13,0.11);
+  function nova(){pg=doc.addPage([W,H]);np++;y=M;pg.drawRectangle({x:0,y:H-6,width:W,height:6,color:VERDE});
+   pg.drawText(gerPdfTxt("Arruda Representações · Arla 32 Bioar · página "+np),{x:M,y:18,size:7.5,font:reg,color:CINZA})}
+  function txt(t,x,yy,o){o=o||{};var s=o.s||9,fo=o.b?neg:reg;t=gerPdfTxt(t);if(o.w)while(t.length>1&&fo.widthOfTextAtSize(t,s)>o.w)t=t.slice(0,-1);
+   if(o.dir)x=x-fo.widthOfTextAtSize(t,s);pg.drawText(t,{x:x,y:H-yy,size:s,font:fo,color:o.c||PRETO})}
+  function precisa(h){if(y+h>H-M){nova()}}
+  function titulo2(t){precisa(30);y+=10;txt(t,M,y+10,{s:12,b:true,c:VERDE});y+=18}
+  var L=gerFiltra(tudo),mi=IRIS.resumo.mes,mes=MESES[mi],ano=GER.per==="ano";
+  var vM=0,vA=0,mM=0,mA=0,pS=0,pV=0,comp=0;L.forEach(function(r){vM+=r.volMes;vA+=r.volAno;mM+=r.margMes;mA+=r.margAno;if(r.preco&&r.volMes){pS+=r.preco*r.volMes;pV+=r.volMes}if(r.volMes>0)comp++});
+  function med(l,c){var n=0,v=0;l.forEach(function(r){if(r[c]>0){n++;v+=r[c]}});return {n:n,m:n?v/n:0}}
+  function seg(t){return L.filter(function(r){return r.tipo===t})}
+  function soma(l,c){return l.reduce(function(a,r){return a+r[c]},0)}
+  nova();
+  txt("Painel gerencial — Arla 32",M,y+16,{s:18,b:true});y+=24;
+  var filt=[GER.seg?(GER.seg==="consumidor"?"Consumidor":"Revendedor"):"Todos os segmentos",GER.cid?($("gercid").selectedOptions[0]||{}).textContent||GER.cid:"Todos os municípios"].join(" · ");
+  txt("Relatório Iris de "+IRIS.data+"  ·  "+filt+"  ·  emitido em "+new Date().toLocaleDateString("pt-BR"),M,y+10,{s:8.5,c:CINZA});y+=22;
+  /* indicadores em cartões (3 por linha) */
+  var Mm=med(L,"volMes"),Aa=med(L,"volAno"),cards=[
+   ["Clientes no filtro",String(L.length),comp+" compraram em "+mes,null],
+   ["Volume em "+mes,litros(vM),"ano: "+litros(vA),null],
+   ["Preço médio em "+mes,pV?gerR(pS/pV,4):"—","por litro, ponderado pelo volume",null],
+   ["Volume médio por cliente",Mm.n?litros(Mm.m):"—","em "+mes+" ("+Mm.n+") · ano: "+(Aa.n?litros(Aa.m):"—")+" ("+Aa.n+")",["revendedor","consumidor"].map(function(t){var a=med(seg(t),"volMes"),b=med(seg(t),"volAno");return [t,(a.n?litros(a.m):"—")+" no mês · "+(b.n?litros(b.m):"—")+" no ano"]})],
+   ["Margem em "+mes,gerR(mM),vM?gerR(mM/vM,3)+"/L":"—",vM?["revendedor","consumidor"].map(function(t){var l=seg(t),m=soma(l,"margMes"),v=soma(l,"volMes");return [t,gerR(m/vM,3)+"/L do total · segmento "+(v?gerR(m/v,3)+"/L":"—")]}):null]];
+  var cx=0,ch=78;
+  cards.forEach(function(c,i){var lin2=i>=3,col=lin2?i-3:i,cw=lin2?(W-2*M-8)/2:(W-2*M-16)/3;if(col===0){precisa((lin2?ch:58)+8);cx=y}var x=M+col*(cw+8),top=cx,alt=lin2?ch:58;
+   pg.drawRectangle({x:x,y:H-top-alt,width:cw,height:alt,borderColor:LINHA,borderWidth:0.8});
+   txt(c[0],x+8,top+14,{s:8,c:CINZA,w:cw-16});txt(c[1],x+8,top+32,{s:14,b:true,w:cw-16});txt(c[2],x+8,top+45,{s:7,c:CINZA,w:cw-16});
+   if(c[3])c[3].forEach(function(s,j){pg.drawRectangle({x:x+8,y:H-top-56-j*11,width:6,height:6,color:s[0]==="consumidor"?LARANJA:VERDE});txt((s[0]==="consumidor"?"Consumidor: ":"Revendedor: ")+s[1],x+18,top+56+j*11,{s:6.8,w:cw-26})});
+   if(i===2)y=cx+58+8;else if(i===cards.length-1)y=cx+ch+8});
+  /* pizzas */
+  titulo2("Revendedor × Consumidor ("+(ano?"ano":mes)+")");precisa(150);
+  var cv=ano?"volAno":"volMes",cm=ano?"margAno":"margMes",R=seg("revendedor"),C=seg("consumidor");
+  function pizza(cx0,tit,a,b,fmtv,vols){var R0=48,cy=y+70,tot=a+b;txt(tit,cx0-neg.widthOfTextAtSize(gerPdfTxt(tit),9)/2,y+8,{s:9,b:true});
+   if(!tot){txt("Sem dados",cx0-20,cy,{s:8,c:CINZA});return}
+   var ang=-Math.PI/2;[[a,VERDE],[b,LARANJA]].forEach(function(p){if(!p[0])return;var an=p[0]/tot*2*Math.PI;
+    if(an>=2*Math.PI-1e-6){pg.drawCircle({x:cx0,y:H-cy,size:R0,color:p[1]});return}
+    var x1=R0*Math.cos(ang),y1=R0*Math.sin(ang),x2=R0*Math.cos(ang+an),y2=R0*Math.sin(ang+an);
+    pg.drawSvgPath("M0,0 L"+x1.toFixed(2)+","+y1.toFixed(2)+" A"+R0+","+R0+" 0 "+(an>Math.PI?1:0)+",1 "+x2.toFixed(2)+","+y2.toFixed(2)+" Z",{x:cx0,y:H-cy,color:p[1],borderColor:rgb(1,1,1),borderWidth:1});ang+=an});
+   [["Revendedor",a,VERDE,vols&&vols[0]],["Consumidor",b,LARANJA,vols&&vols[1]]].forEach(function(p,j){var ly=cy+R0+14+j*11;pg.drawRectangle({x:cx0-80,y:H-ly-1,width:7,height:7,color:p[2]});
+    txt(p[0]+": "+(p[1]/tot*100).toLocaleString("pt-BR",{maximumFractionDigits:1})+"%  ("+fmtv(p[1],p[3])+")",cx0-70,ly+5,{s:7.5})})}
+  pizza(M+(W-2*M)/4,"Volume",soma(R,cv),soma(C,cv),litros);
+  pizza(M+3*(W-2*M)/4,"Margem"+(ano?" (estimada)":""),soma(R,cm),soma(C,cm),function(v,vol){return gerR(v,0)+(vol?" · "+gerR(v/vol,3)+"/L":"")},[soma(R,cv),soma(C,cv)]);
+  y+=150;
+  /* ranking */
+  var rk=L.filter(function(r){return r.volAno>0&&(!GER.rseg||r.tipo===GER.rseg)&&(!GER.rcid||sem(r.cidade)===GER.rcid)}).sort(function(a,b){return b.volAno-a.volAno}),tot=rk.reduce(function(a,r){return a+r.volAno},0),N=GER.todos?rk.length:Math.min(20,rk.length);
+  titulo2("Ranking de clientes — volume no ano");
+  var rf=[GER.rseg?(GER.rseg==="consumidor"?"Consumidor":"Revendedor"):"",GER.rcid?($("gerrcid")&&$("gerrcid").selectedOptions[0]||{}).textContent||"":""].filter(Boolean).join(" · ");
+  txt(rk.length+(rk.length===1?" cliente":" clientes")+" · "+litros(tot)+" no ano"+(rf?" · filtro: "+rf:"")+(N<rk.length?" · mostrando os "+N+" primeiros":""),M,y+6,{s:7.5,c:CINZA});y+=14;
+  var cols=[["#",16,0],["Cliente",150,0],["Tipo",52,0],["Município",72,0],["Ano (L)",52,1],["%",30,1],["Média/mês",48,1],[mes+" (L)",42,1],["Preço",38,1],["Marg./L",38,1]];
+  function cab(){precisa(30);var x=M;pg.drawRectangle({x:M,y:H-y-14,width:W-2*M,height:14,color:hex("eef2f0")});cols.forEach(function(c){txt(c[0].toUpperCase(),c[2]?x+c[1]-3:x+3,y+10,{s:6.5,b:true,c:CINZA,dir:!!c[2]});x+=c[1]});y+=16}
+  cab();
+  rk.slice(0,N).forEach(function(r,i){if(y+13>H-M){nova();cab()}var v=[String(i+1),titulo(r.p.nome),r.tipo==="consumidor"?"Consumidor":"Revendedor",r.cidade,fmt(r.volAno),tot?(r.volAno/tot*100).toLocaleString("pt-BR",{maximumFractionDigits:1})+"%":"",fmt(r.media),r.volMes?fmt(r.volMes):"–",r.preco?gerR(r.preco,3).replace("R$ ",""):"—",r.margUn?gerR(r.margUn,3).replace("R$ ",""):"—"],x=M;
+   cols.forEach(function(c,j){txt(v[j],c[2]?x+c[1]-3:x+3,y+9,{s:7.2,dir:!!c[2],w:c[1]-6,c:j===2?(r.tipo==="consumidor"?LARANJA:VERDE):PRETO,b:j===2});x+=c[1]});
+   pg.drawLine({start:{x:M,y:H-y-12},end:{x:W-M,y:H-y-12},thickness:0.4,color:LINHA});y+=13});
+  /* menor preço por município */
+  var Mp={};function cel(c){var k=sem(c||"");if(!k)return null;return Mp[k]||(Mp[k]={cid:c,revendedor:{b:null,c:null},consumidor:{b:null,c:null}})}
+  function menor(o,campo,v,nome){if(!(v>0))return;if(!o[campo]||v<o[campo].v)o[campo]={v:v,n:nome}}
+  L.forEach(function(r){if(!r.preco)return;var m=cel(r.cidade);if(m)menor(m[r.tipo],"b",r.preco,r.p.nome)});
+  postos.forEach(function(p){var ck=ckOf(p),fo=sem(FORN[ck]||""),v=gerNum(PRECO[ck]);if(!v||!fo||/BIOAR|AGRICOPEL/.test(fo))return;var t=p.tipo==="consumidor"?"consumidor":"revendedor";
+   if(GER.seg&&t!==GER.seg)return;if(GER.cid&&sem(p.cidade)!==GER.cid)return;var m=cel(p.cidade);if(m)menor(m[t],"c",v,p.nome+" · "+titulo(FORN[ck]))});
+  var ks=Object.keys(Mp).filter(function(k){return gerTemPreco(Mp[k])}).sort();
+  if(ks.length){precisa(80);titulo2("Menor preço por município");txt("Bioar: preço médio de "+mes+" no Iris (ou o último). Concorrência: preço praticado anotado na ficha, quando o fornecedor não é a Bioar.",M,y+6,{s:7,c:CINZA});y+=14;
+   var pc=[["Município",107],["Revendedor · Bioar",108],["Revendedor · Concorrência",108],["Consumidor · Bioar",100],["Consumidor · Concorrência",100]];
+   function cab2(){precisa(30);var x=M;pg.drawRectangle({x:M,y:H-y-14,width:W-2*M,height:14,color:hex("eef2f0")});pc.forEach(function(c){txt(c[0].toUpperCase(),x+3,y+10,{s:6,b:true,c:CINZA,w:c[1]-6});x+=c[1]});y+=16}
+   cab2();
+   ks.forEach(function(k){if(y+22>H-M){nova();cab2()}var m=Mp[k],x=M,cs=[m.revendedor.b,m.revendedor.c,m.consumidor.b,m.consumidor.c];
+    txt(m.cid,x+3,y+9,{s:7.5,w:pc[0][1]-6});x+=pc[0][1];
+    cs.forEach(function(z,j){if(z){txt(gerR(z.v,3),x+3,y+9,{s:7.5,b:true});txt(titulo(z.n),x+3,y+17,{s:6,c:CINZA,w:pc[j+1][1]-6})}else txt("—",x+3,y+9,{s:7.5,c:CINZA});x+=pc[j+1][1]});
+    pg.drawLine({start:{x:M,y:H-y-20},end:{x:W-M,y:H-y-20},thickness:0.4,color:LINHA});y+=21})}
+  doc.setTitle("Painel gerencial Arla 32 - "+IRIS.data.slice(0,10));doc.setAuthor("Arruda Representações");
+  return doc.save()})})})}
+function gerPdfAcao(){var b=$("gerpdf"),m=$("gerpdfmsg"),t0=b.textContent;b.disabled=true;b.textContent="Montando PDF…";m.textContent="";
+ gerPdf().then(function(bytes){var dd=IRIS.data.slice(0,10).split("/"),nome="Painel gerencial Arla 32 - "+dd[2]+"-"+dd[1]+"-"+dd[0]+".pdf",bl=new Blob([bytes],{type:"application/pdf"}),fi=new File([bl],nome,{type:"application/pdf"});
+  if(navigator.canShare&&navigator.canShare({files:[fi]}))return navigator.share({files:[fi],title:nome}).catch(function(){});
+  var u=URL.createObjectURL(bl),a=document.createElement("a");a.href=u;a.download=nome;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);m.textContent="PDF baixado: "+nome})
+ .catch(function(e){m.textContent=e&&e.message==="semiris"?"Carregue o relatório Iris primeiro.":"Não consegui montar o PDF ("+((e&&e.message)||"erro")+")."})
+ .then(function(){b.disabled=false;b.textContent=t0})}
 function gerAbrir(){GER.todos=false;$("gerseg").value=GER.seg;gerPinta();var d=$("dlgger");if(d.showModal)d.showModal();else d.setAttribute("open","")}
 function gerFechar(){var d=$("dlgger");if(d.close)d.close();else d.removeAttribute("open")}
-$("painelger").addEventListener("click",gerAbrir);$("gerx").addEventListener("click",gerFechar);
+$("painelger").addEventListener("click",gerAbrir);$("gerpdf").addEventListener("click",gerPdfAcao);$("gerx").addEventListener("click",gerFechar);
 $("gerseg").addEventListener("change",function(){GER.seg=this.value;gerPinta()});$("gercid").addEventListener("change",function(){GER.cid=this.value;gerPinta()});
 function irisPinta(){if(!IRIS){return}var R=IRIS.resumo;
  function put(id,t,cl){var e=$(id);e.textContent=t;e.className=cl||""}
