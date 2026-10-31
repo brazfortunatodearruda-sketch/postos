@@ -398,7 +398,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=42;
+var VERSAO_APP=43;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -1487,9 +1487,9 @@ function vendasBox(p){var ic=irisCli(p);if(!ic)return null;var c=ic.c,l=ic.l,R=I
   var tot=tt.reduce(function(a,x){return a+x[2]},0),mx=Math.max.apply(null,tt.map(function(x){return x[3]}));
   var s2=document.createElement("span");s2.className="vsel tit";s2.textContent=tt.length+(tt.length>1?" títulos vencidos":" título vencido")+" · "+reais(tot)+" · até "+mx+(mx>1?" dias":" dia");
   s2.title=tt.map(function(x){return "Venc. "+x[1]+" · "+reais(x[2])+" · "+x[3]+" dias"}).join("\n");var d2=document.createElement("div");d2.appendChild(s2);box.appendChild(d2)}
- var det=document.createElement("details"),sm=document.createElement("summary");det.open=true;var tAno=0;for(var j=1;j<=mi;j++)tAno+=soma(j);var media=mi>0?tAno/mi:0;
+ var det=document.createElement("details"),sm=document.createElement("summary");det.open=true;var tAno=0,nCom=0;for(var j=1;j<=mi;j++){var vj=soma(j);tAno+=vj;if(vj>0)nCom++}var media=nCom?tAno/nCom:0;   /* média só dos meses com compra */
  sm.innerHTML="";sm.appendChild(document.createTextNode("Média: "));var mb=document.createElement("b");mb.textContent=Math.round(media).toLocaleString("pt-BR")+" L/mês";sm.appendChild(mb);
- if(l.length>1)sm.appendChild(document.createTextNode(" ("+l.length+" lojas)"));sm.title="Média mensal de jan. até "+MESES[mi]+" (volume do ano ÷ "+mi+(mi>1?" meses":" mês")+"). Toque para ver mês a mês.";det.appendChild(sm);
+ if(l.length>1)sm.appendChild(document.createTextNode(" ("+l.length+" lojas)"));sm.title="Média dos meses com compra de jan. até "+MESES[mi]+" (volume do ano ÷ "+nCom+(nCom===1?" mês":" meses")+"). Toque para ver mês a mês.";det.appendChild(sm);
  var g=document.createElement("div");g.className="meses";for(var i=0;i<=mi;i++){var v=soma(i),s=document.createElement("span");s.textContent=MESES[i]+": "+(v?Math.round(v).toLocaleString("pt-BR"):"–");g.appendChild(s)}det.appendChild(g);
  if(l.length>1)l.forEach(function(x){var d=document.createElement("div");d.className="fraco";d.textContent="Loja "+x[0]+" · "+titulo(x[1])+": "+MESES[mi]+" "+litros(x[6][mi])+" · ano "+litros(x[7]);det.appendChild(d)});
  box.appendChild(det);return box}
