@@ -207,8 +207,8 @@ dialog#dlgger{width:min(1100px,calc(100vw - 16px));max-width:none;max-height:cal
 dialog#dlgger::backdrop{background:rgba(10,20,16,.55)}
 .gerfil{display:flex;flex-wrap:wrap;gap:12px;padding:12px 16px 0}.gerfil label{display:grid;gap:3px;font-size:.85rem;color:var(--suave)}.gerfil select{font:1rem var(--fonte);padding:6px 8px;border:1px solid var(--linha);border-radius:6px;background:var(--fundo);color:var(--texto);min-width:180px}
 #gercorpo{padding:12px 16px 20px;display:grid;gap:16px}
-.gkpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.gkpis>div{border:1px solid var(--linha);border-radius:8px;padding:10px 12px;display:grid;gap:2px}
-.gkpis span{font-size:.8rem;color:var(--suave)}.gkpis b{font-size:1.35rem;font-variant-numeric:tabular-nums}.gkpis small{font-size:.78rem;color:var(--suave)}.gcomp{display:grid;gap:2px;margin-top:6px;padding-top:6px;border-top:1px dashed var(--linha);font-size:.85rem}.gcomp small{display:inline}
+.gkpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.gkpis>div{border:1px solid var(--linha);border-radius:8px;padding:10px 12px;display:grid;gap:2px;align-content:start}
+.gkpis span{font-size:.8rem;color:var(--suave)}.gkpis b{font-size:1.35rem;font-variant-numeric:tabular-nums}.gkpis small{font-size:.78rem;color:var(--suave)}.gcomp{display:grid;gap:2px;margin-top:6px;padding-top:6px;border-top:1px dashed var(--linha);font-size:.85rem}.gcomp small{display:inline}.gkpis .gcomp b{font-size:.9rem}.gkpis .gcomp span{font-size:inherit;color:inherit}
 .gsec{border:1px solid var(--linha);border-radius:8px;padding:12px}.gsec h3{margin:0 0 8px;font-size:1rem}.gsec>p{margin:0 0 8px;font-size:.85rem}
 .gsectop{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.gper{display:flex;gap:4px}.gper button{font-size:.8rem;padding:3px 12px}.gper button.ativo{background:var(--acento);color:var(--acento-texto);border-color:var(--acento)}
 .gpizzas{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.gpizza{display:grid;justify-items:center;gap:6px}.gpizza h4{margin:0;font-size:.9rem}.gpizza svg{width:170px;height:170px}
@@ -422,7 +422,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=47;
+var VERSAO_APP=48;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -1774,6 +1774,12 @@ function gerPizza(tit,partes,fmtv){var tot=partes.reduce(function(a,x){return a+
  var leg=partes.map(function(x){var pc=tot?x.v/tot:0;return '<li><span class="gcor" style="background:'+x.cor+'"></span>'+gerEh(x.rot)+': <b>'+(pc*100).toLocaleString("pt-BR",{maximumFractionDigits:1})+'%</b> <span class="fraco">('+gerEh(fmtv(x.v,x))+')</span></li>'}).join("");
  return '<div class="gpizza"><h4>'+gerEh(tit)+'</h4><svg viewBox="0 0 160 160" role="img" aria-label="'+gerEh(tit)+'">'+svg+'</svg><ul>'+leg+'</ul></div>'}
 /* Quanto cada segmento contribui, em R$/L, para a margem por litro da carteira (as duas parcelas somam o total) */
+/* Volume médio por cliente comprador: no mês (quem comprou no mês) e no ano (quem comprou no ano), com a divisão por segmento */
+function gerMedio(L,mes){function med(lst,c){var n=0,v=0;lst.forEach(function(r){if(r[c]>0){n++;v+=r[c]}});return {n:n,m:n?v/n:0}}
+ var M=med(L,"volMes"),A=med(L,"volAno"),seg="";
+ ["revendedor","consumidor"].forEach(function(t){var l=L.filter(function(r){return r.tipo===t}),m=med(l,"volMes"),a=med(l,"volAno");if(!m.n&&!a.n)return;
+  seg+='<div><span class="gcor" style="background:'+GER_COR[t]+'"></span>'+(t==="consumidor"?"Consumidor":"Revendedor")+': <b>'+(m.n?litros(m.m):"—")+'</b> <small>no mês · '+(a.n?litros(a.m):"—")+' no ano</small></div>'});
+ return '<div><span>Volume médio por cliente</span><b>'+(M.n?litros(M.m):"—")+'</b><small>em '+mes+' ('+M.n+' compradores) · ano: '+(A.n?litros(A.m):"—")+' ('+A.n+' compradores)</small>'+(seg?'<div class="gcomp">'+seg+'</div>':'')+'</div>'}
 function gerComp(L,vM){if(!vM)return "";var h='<div class="gcomp">';["revendedor","consumidor"].forEach(function(t){var m=0,v=0;L.forEach(function(r){if(r.tipo===t){m+=r.margMes;v+=r.volMes}});if(!m&&!v)return;
   h+='<div><span class="gcor" style="background:'+GER_COR[t]+'"></span>'+(t==="consumidor"?"Consumidor":"Revendedor")+': <b>'+gerR(m/vM,3)+'/L</b> <small>do total · no segmento '+(v?gerR(m/v,3)+"/L":"—")+'</small></div>'});
  return h+'</div>'}
@@ -1788,6 +1794,7 @@ function gerPinta(){var tudo=gerClientes(),X=$("gercorpo");
  var h='<div class="gkpis">'
   +'<div><span>Clientes no filtro</span><b>'+L.length+'</b><small>'+comp+' compraram em '+mes+'</small></div>'
   +'<div><span>Volume em '+mes+'</span><b>'+litros(vM)+'</b><small>ano: '+litros(vA)+'</small></div>'
+  +gerMedio(L,mes)
   +'<div><span>Preço médio em '+mes+'</span><b>'+(pV?gerR(pS/pV,4):"—")+'</b><small>por litro, ponderado pelo volume</small></div>'
   +'<div><span>Margem em '+mes+'</span><b>'+gerR(mM)+'</b><small>'+(vM?gerR(mM/vM,3)+"/L":"—")+'</small>'+gerComp(L,vM)+'</div></div>';
  /* pizzas */
