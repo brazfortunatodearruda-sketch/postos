@@ -353,7 +353,7 @@ button.mais{display:block;margin:0 auto}
 <p>"📄 Proposta", junto dos outros botões da coluna Bandeira / Segmento, abre a janela da proposta. Informe o preço por litro, o prazo, a validade, o frete (FOB ou CIF e a cidade) e marque "Incluir equipamento" só quando houver tanque em comodato (aí entra a página de tanques do modelo, sem a parte de automação). Nome, contato, telefone e e-mail vêm do cadastro e podem ser corrigidos em "Dados do cliente na proposta". No celular, toque em "🎤 Ditar proposta" e fale tudo de uma vez, por exemplo: "preço 1,72, prazo 14 dias, validade 15 de novembro, FOB Vespasiano, com tanque de 5 mil litros"; os campos se preenchem sozinhos. "Gerar proposta e salvar na pasta" monta o PDF no modelo da Bioar, salva em Documentos › Clientes › (cliente) e registra a proposta no prontuário. Depois, "Compartilhar" manda o PDF pelo WhatsApp. O app lembra os últimos valores de cada cliente.</p>
 <p>"📤 Portfólio de tanques", ao lado de "📄 Proposta", manda pelo WhatsApp (no celular) ou baixa (no computador) a página dos tanques em comodato da Bioar, sem a parte de automação.</p>
 <h3>Retorno ao cliente</h3>
-<p>"📅 Agendar retorno" (na coluna Bandeira / Segmento e dentro do Prontuário) abre uma janela para escolher data, hora, duração, tipo (visita, ligação ou WhatsApp) e o assunto. Há atalhos para amanhã, 1 semana, 15 e 30 dias e para a próxima saída da rota do cliente. "Abrir no Google Agenda" abre o evento já preenchido com cliente, CNPJ, telefones, endereço, rota, último atendimento e um link que abre a ficha no app; confira e toque em Salvar. A data fica gravada no app: o botão passa a mostrar o retorno (em vermelho quando atrasado), o Prontuário avisa retornos de hoje e atrasados, e o filtro Visita mostra quem tem retorno agendado, atrasado ou nos próximos 7 dias.</p>
+<p>"📅 Agendar retorno" (na coluna Bandeira / Segmento e dentro do Prontuário) abre uma janela para escolher data, hora, duração, tipo (visita, ligação ou WhatsApp) e o assunto. Há atalhos para amanhã, 1 semana, 15 e 30 dias e para a próxima saída da rota do cliente. "Salvar no Google Agenda" grava o evento direto na sua agenda, com cliente, CNPJ, telefones, endereço, rota, último atendimento, lembrete e um link que abre a ficha no app. Na primeira vez o Google pede a permissão de agenda: aceite. Remarcar altera o mesmo evento e "Cancelar retorno agendado" apaga o evento da agenda. Cada agendamento, remarcação ou cancelamento fica registrado no histórico do Prontuário. Sem internet ou sem permissão, o app abre o Google Agenda preenchido para você salvar lá. A data fica gravada no app: o botão passa a mostrar o retorno (em vermelho quando atrasado), o Prontuário avisa retornos de hoje e atrasados, e o filtro Visita mostra quem tem retorno agendado, atrasado ou nos próximos 7 dias.</p>
 <h3>Rotas de entrega</h3>
 <p>O campo Rota mostra a rota de entrega do cliente e, logo abaixo, os dias da tabela de rotas da Bioar: saída, chegada e o limite para fazer o pedido. Vale nesta ordem: a rota que você escolher no app; a rota escrita na agenda ("ROTA SETE LAGOAS"); e, sem nenhuma das duas, a rota do município — a mais usada pelos clientes daquele município ("rota dos clientes do município"), ou a do município vizinho mais próximo que tenha rota, até 35 km ("sugerida: vizinho"), ou o polo de rota em MG mais perto ("sugerida: polo mais perto"). As sugeridas aparecem em itálico; ao confirmar com o cliente, escolha a rota no campo e ela passa a valer. O filtro Rota e a planilha usam a rota que vale.</p>
 <h3>Situação na Receita</h3>
@@ -389,8 +389,8 @@ button.mais{display:block;margin:0 auto}
 <label>Tipo<select id="rettipo"><option value="visita">Visita</option><option value="ligacao">Ligação</option><option value="whatsapp">WhatsApp</option></select></label></div>
 <div class="retatalhos"><button type="button" data-d="1">Amanhã</button><button type="button" data-d="7">1 semana</button><button type="button" data-d="15">15 dias</button><button type="button" data-d="30">30 dias</button><button type="button" id="retrota" hidden>Próxima saída da rota</button></div>
 <label class="retobs">Assunto do retorno<textarea id="retobs" rows="3" placeholder="ex.: levar proposta de 2.000 L; confirmar equipamento"></textarea></label>
-<div class="prontacoes"><button type="button" id="retok" class="cheio">Abrir no Google Agenda</button><button type="button" id="retapaga" class="lnk perigo" hidden>Cancelar retorno agendado</button></div>
-<p id="retmsg" class="fraco">Abre o Google Agenda com o evento preenchido (cliente, telefones, endereço, rota, último atendimento e link para a ficha no app). Confira e toque em Salvar.</p></div></dialog>
+<div class="prontacoes"><button type="button" id="retok" class="cheio">Salvar no Google Agenda</button><button type="button" id="retlink" hidden>Abrir no Google Agenda</button><button type="button" id="retapaga" class="lnk perigo" hidden>Cancelar retorno agendado</button></div>
+<p id="retmsg" class="fraco">Grava o evento direto no seu Google Agenda, com cliente, telefones, endereço, rota, último atendimento e link para a ficha no app. Se o retorno já estava agendado, o evento é alterado, sem duplicar.</p></div></dialog>
 <dialog id="dlgpront" aria-labelledby="prontt"><div class="dlgcab"><h2 id="prontt">Prontuário de atendimento</h2><button type="button" id="prontx" aria-label="Fechar">Fechar</button></div>
 <div class="prontcorpo"><div id="prontres"></div>
 <section class="prontnovo"><h3>Registrar atendimento</h3>
@@ -422,7 +422,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=49;
+var VERSAO_APP=50;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -632,7 +632,7 @@ var PRONT=marcas("postos_prontuario");
 var ANOANT=marcas("postos_ano_anterior");   /* clientes compradores no mesmo mês do ano anterior (digitado): "AAAA-MM" -> número */
 var TIPOCLI=marcas("postos_tipo_cli");   /* tipo de cliente corrigido à mão: "revendedor" ou "consumidor|segmento" */
 var RAZAO=marcas("postos_razao");      /* razão social trazida da Receita (substitui o nome do cadastro) */
-var RETORNO=marcas("postos_retorno");  /* retorno agendado: "AAAA-MM-DDTHH:MM|tipo" */   /* atendimentos: ck:<carimbo ms> -> texto (até 400 caracteres por parte) */   /* chave do cliente/rede -> id da pasta no Drive (cache deste aparelho) */
+var RETORNO=marcas("postos_retorno");  /* retorno agendado: "AAAA-MM-DDTHH:MM|tipo|id do evento no Google Agenda" */   /* atendimentos: ck:<carimbo ms> -> texto (até 400 caracteres por parte) */   /* chave do cliente/rede -> id da pasta no Drive (cache deste aparelho) */
 function pastaAlvo(p){var rn=REDE[p.ck]?String(REDENOME[p.ck]||"").replace(/\s+/g," ").trim():"";
  if(rn)return {rede:true,chave:("rede:"+sem(rn)).slice(0,100),nome:rn};
  return {rede:false,chave:"cli:"+p.ck,nome:String(p.nome||"Cliente").replace(/\s+/g," ").trim()}}
@@ -1110,13 +1110,16 @@ var CFG=window.APP_CONFIG||{};
 function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function lsSet(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v);return true}catch(e){return false}}
 function clientId(){return String(CFG.clientId||lsGet("cfg_client_id")||"").trim()}
-var SCOPE="https://www.googleapis.com/auth/drive";
+var SC_CAL="https://www.googleapis.com/auth/calendar.events",SCOPE="https://www.googleapis.com/auth/drive "+SC_CAL;
+var CAL="https://www.googleapis.com/calendar/v3/calendars/primary/events";
 var PASTA_APP=CFG.nomePasta||"App Consulta de Postos",ARQ_MARC="postos-marcacoes.json";
 var BASES_ARQ={"postos-anp.json":"anp","postos-carteira.json":"carteira","postos-agenda.json":"agenda","postos-consumidores.json":"consumidores","postos-iris.json":"iris"};
 var DR="https://www.googleapis.com/drive/v3/files",UP="https://www.googleapis.com/upload/drive/v3/files";
 var sujo=pendente(),corrente=null,deNovo=false,timer=null,retry=null,tc=null,tok=null,tokExp=0;
 var remVer=lsGet("drive_versao")||"",arqId=lsGet("drive_arq")||"",pastaId=lsGet("drive_pasta")||"";
-(function(){try{var o=JSON.parse(lsGet("drive_token")||"null");if(o&&o.exp>Date.now()){tok=o.tok;tokExp=o.exp}}catch(e){}})();
+var tokScope="";
+(function(){try{var o=JSON.parse(lsGet("drive_token")||"null");if(o&&o.exp>Date.now()){tok=o.tok;tokExp=o.exp;tokScope=o.sc||""}}catch(e){}})();
+function agendaOk(){return conectado()&&tokScope.indexOf(SC_CAL)>=0}
 function conectado(){return !!tok&&Date.now()<tokExp}
 function status(t,tipo){var e=$("salvo");e.textContent=t;e.className=tipo||""}
 function hora(){return new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}
@@ -1137,10 +1140,10 @@ function pedirToken(){return new Promise(function(res,rej){
  if(!(window.google&&google.accounts&&google.accounts.oauth2)){rej({code:"gis"});return}
  if(!tc)tc=google.accounts.oauth2.initTokenClient({client_id:clientId(),scope:SCOPE,callback:function(){}});
  tc.callback=function(r){if(r&&r.access_token){tok=r.access_token;tokExp=Date.now()+((+r.expires_in||3600)-120)*1000;
-  lsSet("drive_token",JSON.stringify({tok:tok,exp:tokExp}));lsSet("drive_ligado","1");botao();res(tok)}else rej({code:(r&&r.error)||"negado"})};
+  tokScope=String(r.scope||"");lsSet("drive_token",JSON.stringify({tok:tok,exp:tokExp,sc:tokScope}));if(tokScope.indexOf(SC_CAL)>=0)lsSet("agenda_ligada","1");lsSet("drive_ligado","1");botao();res(tok)}else rej({code:(r&&r.error)||"negado"})};
  tc.error_callback=function(e){rej({code:(e&&e.type)||"popup"})};
- tc.requestAccessToken({prompt:lsGet("drive_ligado")?"":"consent"})})}
-function expirou(){tok=null;tokExp=0;lsSet("drive_token",null);botao()}
+ tc.requestAccessToken({prompt:lsGet("drive_ligado")&&lsGet("agenda_ligada")?"":"consent"})})}
+function expirou(){tok=null;tokExp=0;tokScope="";lsSet("drive_token",null);botao()}
 
 /* Chamadas à API do Drive */
 function api(url,op){op=op||{};op.headers=Object.assign({Authorization:"Bearer "+tok},op.headers||{});
@@ -1522,7 +1525,7 @@ function vendasBox(p){var ic=irisCli(p);if(!ic)return null;var c=ic.c,l=ic.l,R=I
 var RET_TXT={visita:"Visita",ligacao:"Ligação",whatsapp:"WhatsApp"};
 function retInfo(p){var v=String(RETORNO[p.ck]||"");if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(v))return null;var q=v.split("|"),d=new Date(q[0]+":00");if(isNaN(d))return null;
  var hoje=new Date();hoje.setHours(0,0,0,0);var dia=new Date(d);dia.setHours(0,0,0,0);
- return {iso:q[0],d:d,tipo:q[1]||"visita",dias:Math.round((dia-hoje)/864e5),atrasado:dia<hoje,txt:d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})+" "+q[0].slice(11,16)}}
+ return {iso:q[0],d:d,tipo:q[1]||"visita",ev:q[2]||"",dias:Math.round((dia-hoje)/864e5),atrasado:dia<hoje,txt:d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})+" "+q[0].slice(11,16)}}
 function botaoRetorno(p){var b=document.createElement("button");b.type="button";var r=retInfo(p);
  b.className="gc1 retbt"+(r?(r.atrasado?" atr":" tem"):"");b.textContent=r?"📅 "+(RET_TXT[r.tipo]||"Retorno")+" "+r.txt+(r.atrasado?" (atrasado)":""):"📅 Agendar retorno";
  b.title=r?"Retorno agendado. Toque para mudar ou agendar de novo no Google Agenda":"Escolha a data de retorno e crie o evento no Google Agenda";b.addEventListener("click",function(){retAbrir(p)});return b}
@@ -1533,13 +1536,14 @@ function proxSaida(p){var ri=rotaInfo(rotaEf(p));if(!ri)return null;var M={"DOM"
  for(var i=1;i<=7;i++){var d=new Date();d.setDate(d.getDate()+i);if(ds.indexOf(d.getDay())>=0)return d}return null}
 function retAbrir(p){RT.p=p;var r=retInfo(p),d=new Date();d.setDate(d.getDate()+7);
  $("retcli").textContent=titulo(p.nome)+(p.cidade?" · "+p.cidade:"")+(r?" · agendado: "+(RET_TXT[r.tipo]||"")+" "+r.d.toLocaleDateString("pt-BR")+" "+r.iso.slice(11,16):"");
- $("retdata").value=r?r.iso.slice(0,10):isoDia(d);$("rethora").value=r?r.iso.slice(11,16):"09:00";$("rettipo").value=r?r.tipo:"visita";$("retobs").value="";$("retapaga").hidden=!r;
+ $("retdata").value=r?r.iso.slice(0,10):isoDia(d);$("rethora").value=r?r.iso.slice(11,16):"09:00";$("rettipo").value=r?r.tipo:"visita";$("retobs").value="";$("retapaga").hidden=!r;$("retlink").hidden=true;RT.link=false;$("retok").disabled=false;$("retmsg").textContent=r&&r.ev?"Este retorno já está no Google Agenda: salvar de novo altera o mesmo evento.":"Grava o evento direto no seu Google Agenda, com cliente, telefones, endereço, rota, último atendimento e link para a ficha no app.";
  var ps=proxSaida(p);$("retrota").hidden=!ps;if(ps){$("retrota").textContent="Próxima saída da rota ("+ps.toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"2-digit"})+")";$("retrota").dataset.dia=isoDia(ps)}
  var dl=$("dlgret");if(dl.showModal)dl.showModal();else dl.setAttribute("open","")}
 function retFechar(){var dl=$("dlgret");if(dl.close)dl.close();else dl.removeAttribute("open")}
 $("retx").addEventListener("click",retFechar);
 document.querySelectorAll(".retatalhos button[data-d]").forEach(function(b){b.addEventListener("click",function(){var d=new Date();d.setDate(d.getDate()+(+b.dataset.d));$("retdata").value=isoDia(d)})});
 $("retrota").addEventListener("click",function(){$("retdata").value=this.dataset.dia||""});
+function gcalData2(iso,min){var d=new Date(iso+":00");d.setMinutes(d.getMinutes()+(min||0));function z(n){return String(n).padStart(2,"0")}return d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate())+"T"+z(d.getHours())+":"+z(d.getMinutes())+":00"}
 function gcalData(iso,min){var d=new Date(iso+":00");d.setMinutes(d.getMinutes()+(min||0));function z(n){return String(n).padStart(2,"0")}return d.getFullYear()+z(d.getMonth()+1)+z(d.getDate())+"T"+z(d.getHours())+z(d.getMinutes())+"00"}
 $("retok").addEventListener("click",function(){var p=RT.p;if(!p)return;var dt=$("retdata").value,hr=$("rethora").value||"09:00",tp=$("rettipo").value,obs=$("retobs").value.trim();
  if(!/^\d{4}-\d{2}-\d{2}$/.test(dt)){$("retmsg").textContent="Escolha a data do retorno.";return}
@@ -1549,9 +1553,35 @@ $("retok").addEventListener("click",function(){var p=RT.p;if(!p)return;var dt=$(
   h[0]?"\nÚltimo atendimento ("+dataHora(h[0].t)+"): "+h[0].x.slice(0,400):"",cj?"\nFicha no app: "+location.origin+location.pathname+"#c"+cj:""].filter(function(x,i){return x!==""||i===2}).join("\n");
  var titu=(tp==="ligacao"?"Ligar: ":tp==="whatsapp"?"WhatsApp: ":"Visita: ")+titulo(p.nome)+(p.cidade?" ("+p.cidade+")":"");
  var url="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(titu)+"&dates="+gcalData(iso)+"/"+gcalData(iso,dur)+"&ctz=America/Sao_Paulo&details="+encodeURIComponent(det)+(tp==="visita"&&endTxt(p)?"&location="+encodeURIComponent(endTxt(p).replace(/ · /g,", ")):"");
- carimbo(p.ck,"retorno",iso,RETORNO[p.ck]||"");RETORNO[p.ck]=iso+"|"+tp;setLS("postos_retorno",RETORNO);
- window.open(url,"_blank","noopener");retFechar();filtrar();if($("dlgpront").open)prontPinta()});
-$("retapaga").addEventListener("click",function(){var p=RT.p;if(!p)return;carimbo(p.ck,"retorno","",RETORNO[p.ck]||"");delete RETORNO[p.ck];setLS("postos_retorno",RETORNO);retFechar();filtrar();if($("dlgpront").open)prontPinta();arqMsg("Retorno removido do app. Se o evento já estava no Google Agenda, apague-o lá também.")});
+ var ant=retInfo(p),evAnt=ant&&ant.ev||"";
+ function grava(ev){carimbo(p.ck,"retorno",iso,RETORNO[p.ck]||"");RETORNO[p.ck]=iso+"|"+tp+(ev?"|"+ev:"");
+  var nota="📅 Retorno agendado"+(ant?" (remarcado)":"")+": "+(RET_TXT[tp]||"Retorno")+" em "+new Date(iso+":00").toLocaleDateString("pt-BR")+" às "+hr.slice(0,5)+(obs?" · "+obs:"")+(ev?" · no Google Agenda":"");
+  PRONT[p.ck+":"+Date.now()]=nota.slice(0,400);setLS("postos_prontuario",PRONT);setLS("postos_retorno",RETORNO);
+  retFechar();filtrar();if($("dlgpront").open)prontPinta()}
+ function porLink(msg){window.open(url,"_blank","noopener");grava(evAnt);if(msg)arqMsg(msg)}
+ if(RT.link){RT.link=false;porLink("");return}
+ if(navigator.onLine===false){porLink("Sem internet: abri o Google Agenda preenchido; confira e salve lá.");return}
+ var ev={summary:titu,description:det,start:{dateTime:iso+":00",timeZone:"America/Sao_Paulo"},end:{dateTime:gcalData2(iso,dur),timeZone:"America/Sao_Paulo"},
+  reminders:{useDefault:false,overrides:[{method:"popup",minutes:tp==="visita"?60:15}]},extendedProperties:{private:{app:"gestor-arla32",cliente:String(p.ck)}}};
+ if(tp==="visita"&&endTxt(p))ev.location=endTxt(p).replace(/ · /g,", ");
+ var bt=$("retok");bt.disabled=true;$("retmsg").textContent="Gravando no Google Agenda…";
+ function envia(){var u=evAnt?CAL+"/"+encodeURIComponent(evAnt):CAL;
+  return api(u,{method:evAnt?"PATCH":"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(ev)}).then(json)
+   .catch(function(e){if(evAnt&&e&&(e.code==="http404"||e.code==="http410")){evAnt="";return api(CAL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(ev)}).then(json)}throw e})}
+ var pronto=agendaOk()?Promise.resolve():pedirToken().then(function(){if(!agendaOk())throw {code:"semAgenda"};lsSet("agenda_ligada","1")});
+ pronto.then(envia).then(function(j){bt.disabled=false;lsSet("agenda_ligada","1");grava(j.id||"");arqMsg("Retorno gravado no Google Agenda: "+titu+" em "+new Date(iso+":00").toLocaleDateString("pt-BR")+" às "+hr.slice(0,5)+".")},
+  function(e){bt.disabled=false;var c=e&&e.code||"";
+   if(c==="auth"||c==="http403"||c==="semAgenda"){lsSet("agenda_ligada",null);$("retmsg").textContent="O Google não liberou a agenda para o app. Toque de novo em “Salvar no Google Agenda” e, na janela do Google, marque a permissão de agenda. Ou use “Abrir no Google Agenda”.";$("retlink").hidden=false;return}
+   porLink("Não consegui gravar direto ("+(c||"erro")+"): abri o Google Agenda preenchido; confira e salve lá.")})});
+$("retlink").addEventListener("click",function(){var p=RT.p;if(!p)return;RT.link=true;$("retok").click()});
+$("retapaga").addEventListener("click",function(){var p=RT.p;if(!p)return;var r=retInfo(p),ev=r&&r.ev||"";
+ carimbo(p.ck,"retorno","",RETORNO[p.ck]||"");delete RETORNO[p.ck];setLS("postos_retorno",RETORNO);
+ PRONT[p.ck+":"+Date.now()]="📅 Retorno cancelado"+(r?" ("+(RET_TXT[r.tipo]||"Retorno")+" de "+r.d.toLocaleDateString("pt-BR")+")":"");setLS("postos_prontuario",PRONT);
+ retFechar();filtrar();if($("dlgpront").open)prontPinta();
+ if(!ev){arqMsg("Retorno removido do app. Se o evento já estava no Google Agenda, apague-o lá também.");return}
+ if(!agendaOk()){arqMsg("Retorno removido do app. Conecte ao Drive e à agenda para o app apagar o evento sozinho; por enquanto, apague-o no Google Agenda.");return}
+ api(CAL+"/"+encodeURIComponent(ev),{method:"DELETE"}).then(function(){arqMsg("Retorno removido do app e do Google Agenda.")},
+  function(e){arqMsg(e&&(e.code==="http404"||e.code==="http410")?"Retorno removido do app (o evento já não estava no Google Agenda).":"Retorno removido do app, mas não consegui apagar o evento no Google Agenda: apague-o lá.")})});
 /* ---------- Prontuário de atendimento: resumo da situação + histórico (voz no celular, digitado no computador) ---------- */
 function prontLista(ck){var pre=ck+":",o=[];Object.keys(PRONT).forEach(function(k){if(k.indexOf(pre)===0&&/^\d{13}$/.test(k.slice(pre.length)))o.push({k:k,t:+k.slice(pre.length),x:String(PRONT[k])})});
  o.sort(function(a,b){return a.t-b.t});var g=[];o.forEach(function(e){var u=g[g.length-1];if(u&&e.x.charAt(0)==="…"&&e.t-u.t2<50){u.x+=" "+e.x.slice(1);u.ks.push(e.k);u.t2=e.t}else g.push({t:e.t,t2:e.t,x:e.x,ks:[e.k]})});return g.reverse()}
