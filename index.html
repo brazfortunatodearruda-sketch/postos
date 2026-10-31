@@ -326,6 +326,8 @@ button.mais{display:block;margin:0 auto}
 <p>A lista só aparece depois que você escolhe um município, digita uma busca ou usa um filtro, e mostra 60 registros por vez (botão "Mostrar mais" no fim). O filtro "Tipo de Cliente" separa revendedores (postos) de consumidores (transportadoras, ônibus e frotas). Nos consumidores, informe na coluna Vol S10 o diesel da frota em m³ por mês para calcular o potencial de Arla. Município, busca livre, WhatsApp, visita, consumo de Arla, perfil do posto, bandeira, fornecedor atual, equipamento e rede de postos podem ser combinados. O filtro "Rede de postos" mostra só os postos de rede, só os independentes, ou os postos de uma rede específica; a lista de redes se monta com os nomes digitados no campo "Posto de Rede" de cada posto, com a quantidade entre parênteses. "Limpar filtros" volta à lista completa. A lista de fornecedores se monta com os nomes que você digitar nos postos.</p>
 <h3>Prontuário de atendimento</h3>
 <p>O botão "📋 Prontuário", na coluna Bandeira / Segmento (abaixo de Automação), abre o resumo da situação: pontos de atenção (risco de churn, títulos vencidos, situação na Receita, visita antiga, rota a confirmar), dados do cliente, carteira Bioar (compras, volumes, preço, títulos), dados comerciais, rota com os dias de entrega, contato e o histórico de atendimentos. No celular, toque em "🎤 Gravar atendimento" e fale; toque de novo para parar. O texto aparece no campo e pode ser corrigido antes de "Salvar atendimento". No computador, é só digitar. Cada atendimento fica com data e hora e vai para o Drive junto com as marcações. "Compartilhar resumo" abre o WhatsApp no celular (no computador, copia o texto) e "PDF" gera o prontuário para salvar ou imprimir. O número entre parênteses no botão é a quantidade de atendimentos registrados.</p>
+<h3>Tipo de cliente</h3>
+<p>Na coluna Bandeira / Segmento, "Tipo de Cliente" mostra se o registro é Revendedor (posto) ou Consumidor (frota). "Automático" segue o marcador do Google Contatos. Se estiver errado, escolha o tipo certo (Revendedor, Consumidor · Transporte de cargas, Consumidor · Passageiros ou Consumidor · outro); a correção vale na hora, entra nos filtros e vai para o Drive com as marcações. Corrigir o marcador no Google Contatos e tocar em "Atualizar agenda" também acerta o tipo.</p>
 <h3>Proposta de preço</h3>
 <p>"📄 Proposta", junto dos outros botões da coluna Bandeira / Segmento, abre a janela da proposta. Informe o preço por litro, o prazo, a validade, o frete (FOB ou CIF e a cidade) e marque "Incluir equipamento" só quando houver tanque em comodato (aí entra a página de tanques do modelo, sem a parte de automação). Nome, contato, telefone e e-mail vêm do cadastro e podem ser corrigidos em "Dados do cliente na proposta". No celular, toque em "🎤 Ditar proposta" e fale tudo de uma vez, por exemplo: "preço 1,72, prazo 14 dias, validade 15 de novembro, FOB Vespasiano, com tanque de 5 mil litros"; os campos se preenchem sozinhos. "Gerar proposta e salvar na pasta" monta o PDF no modelo da Bioar, salva em Documentos › Clientes › (cliente) e registra a proposta no prontuário. Depois, "Compartilhar" manda o PDF pelo WhatsApp. O app lembra os últimos valores de cada cliente.</p>
 <p>"📤 Portfólio de tanques", ao lado de "📄 Proposta", manda pelo WhatsApp (no celular) ou baixa (no computador) a página dos tanques em comodato da Bioar, sem a parte de automação.</p>
@@ -396,7 +398,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=40;
+var VERSAO_APP=41;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -504,7 +506,7 @@ function cnpjDe(p){if(p.cnpj)return p.cnpj;var d=dig(CNPJINF[p.ck]);return d.len
 var CONS_TXT={granel:"A granel",embalado:"Embalado",ambos:"Granel e embalado",nao:"Não vende Arla"};
 function perfilDe(p){return PERFIL[p.ck]||p.perfilAuto}
 var CAMPO={"postos_capital":"capital","postos_cnpj":"cnpj","postos_consumo_mes":"consumoMes","postos_visita":"visita","postos_consumo":"consumo","postos_tanque_arla":"tanque","postos_fornecedor":"fornecedor","postos_preco":"preco","postos_volume":"volume","postos_inativo":"inativo","postos_rede":"rede","postos_automacao":"automacao","postos_rota":"rota","postos_prog_auto":"progAuto","postos_prazo_pag":"prazoPag","postos_periodicidade":"periodicidade"};
-var ROT={razao:"Razão social",retorno:"Retorno agendado",prontuario:"Atendimento registrado",cadastro:"Cadastro pela Consulta de CNPJs",excluido:"Registro apagado",endereco:"Endereço",capital:"Capital social",cnpj:"CNPJ",visita:"Data da visita",consumo:"Consumo de Arla",consumoMes:"Consumo mensal de Arla",perfil:"Perfil",tanque:"Tanque de Arla",volume:"Volume S10",fornecedor:"Fornecedor",preco:"Preço",equipamento:"Equipamento",automacao:"Automação",rota:"Rota",progAuto:"Programação automática",prazoPag:"Prazo de pagamento",periodicidade:"Periodicidade de entrega",rede:"Posto de rede",redeNome:"Nome da rede",inativo:"Inativo",telefones:"Telefones",whatsapp:"Teste de WhatsApp"};
+var ROT={tipo:"Tipo de cliente",razao:"Razão social",retorno:"Retorno agendado",prontuario:"Atendimento registrado",cadastro:"Cadastro pela Consulta de CNPJs",excluido:"Registro apagado",endereco:"Endereço",capital:"Capital social",cnpj:"CNPJ",visita:"Data da visita",consumo:"Consumo de Arla",consumoMes:"Consumo mensal de Arla",perfil:"Perfil",tanque:"Tanque de Arla",volume:"Volume S10",fornecedor:"Fornecedor",preco:"Preço",equipamento:"Equipamento",automacao:"Automação",rota:"Rota",progAuto:"Programação automática",prazoPag:"Prazo de pagamento",periodicidade:"Periodicidade de entrega",rede:"Posto de rede",redeNome:"Nome da rede",inativo:"Inativo",telefones:"Telefones",whatsapp:"Teste de WhatsApp"};
 function hojeISO(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function dtCurta(iso){return iso?iso.slice(8,10)+"/"+iso.slice(5,7)+"/"+iso.slice(2,4):""}
 function dtLonga(iso){return iso?iso.slice(8,10)+"/"+iso.slice(5,7)+"/"+iso.slice(0,4):""}
@@ -601,6 +603,7 @@ var postos=DADOS.map(function(r){
 var CAD=marcas("postos_cadastro");
 var PASTAS=marcas("drive_pastas_cli");
 var PRONT=marcas("postos_prontuario");
+var TIPOCLI=marcas("postos_tipo_cli");   /* tipo de cliente corrigido à mão: "revendedor" ou "consumidor|segmento" */
 var RAZAO=marcas("postos_razao");      /* razão social trazida da Receita (substitui o nome do cadastro) */
 var RETORNO=marcas("postos_retorno");  /* retorno agendado: "AAAA-MM-DDTHH:MM|tipo" */   /* atendimentos: ck:<carimbo ms> -> texto (até 400 caracteres por parte) */   /* chave do cliente/rede -> id da pasta no Drive (cache deste aparelho) */
 function pastaAlvo(p){var rn=REDE[p.ck]?String(REDENOME[p.ck]||"").replace(/\s+/g," ").trim():"";
@@ -697,6 +700,9 @@ var IRIS_LIG={cod:0,nome:0,criados:0};
   p.busca=sem([p.ck,"COD "+cod,cod,c.n,p.cidade,mun,"IRIS"].concat(c.l.map(function(x){return x[1]})).join(" "));
   postos.push(p);IRIS_LIG.criados++})})();
 function irisMes(p){var ic=irisCli(p);if(!ic)return null;var mi=IRIS.resumo.mes;function soma(i){return ic.l.reduce(function(a,x){return a+(x[6][i]||0)},0)}return {at:soma(mi),an:soma(mi-1),ac:ic.l.reduce(function(a,x){return a+x[7]},0)}}
+function tipoAplica(p){if(p.tipoOrig==null){p.tipoOrig=p.tipo;p.segOrig=p.segmento||""}var v=String(TIPOCLI[p.ck]||"");
+ if(!v){p.tipo=p.tipoOrig;p.segmento=p.segOrig;return}var q=v.split("|");p.tipo=q[0]==="revendedor"?"revendedor":"consumidor";p.segmento=p.tipo==="consumidor"?(q[1]||p.segOrig||""):p.segOrig}
+postos.forEach(function(p){if(TIPOCLI[p.ck])tipoAplica(p)});
 postos.forEach(function(p){var r=String(RAZAO[p.ck]||"").trim();if(r&&r!==p.nome){p.nomeOrig=p.nome;p.nome=r;p.busca+=" "+sem(r)}});
 function usaRazao(p,nome){nome=String(nome||"").replace(/\s+/g," ").trim();if(!nome||nome===p.nome)return;if(!p.nomeOrig)p.nomeOrig=p.nome;
  carimbo(p.ck,"razao",nome,RAZAO[p.ck]||"");if(nome===p.nomeOrig){delete RAZAO[p.ck];delete p.nomeOrig}else RAZAO[p.ck]=nome;p.nome=nome;p.busca+=" "+sem(nome);setLS("postos_razao",RAZAO)}
@@ -844,7 +850,13 @@ function filtrar(){
   if(!EDEND[ck]){var ee=document.createElement("button");ee.type="button";ee.className="edfones";ee.textContent="Editar endereço";ee.addEventListener("click",function(){EDEND[ck]=1;filtrar();var f=document.querySelector(".edend input");if(f)f.focus()});e.appendChild(ee);
    if(endEditado(p))e.appendChild(dtSpan(ck,"endereco","endereço editado em"))}
   var fx=document.createElement("div");fx.className="ficha";e.appendChild(fx);
-  tr.appendChild(a);var bd=td(p.tipo==="consumidor"?"Consumidor · "+p.segmento:p.bandeira);
+  tr.appendChild(a);var bd=td(p.tipo==="consumidor"?"Consumidor"+(p.segmento?" · "+p.segmento:""):p.bandeira);
+  (function(){var lb=document.createElement("label");lb.className="equip tipocli";var lt=document.createElement("span");lt.textContent="Tipo de Cliente";lt.appendChild(dtSpan(ck,"tipo"));lb.appendChild(lt);
+   var sl=document.createElement("select"),auto=(p.tipoOrig==null?p.tipo:p.tipoOrig)==="consumidor"?"Consumidor":"Revendedor";
+   [["","Automático: "+auto],["revendedor","Revendedor (posto)"],["consumidor|Transporte de cargas","Consumidor · Transporte de cargas"],["consumidor|Passageiros","Consumidor · Passageiros"],["consumidor|","Consumidor · outro"]].forEach(function(o){var op=document.createElement("option");op.value=o[0];op.textContent=o[1];sl.appendChild(op)});
+   sl.value=TIPOCLI[ck]||"";sl.className=sl.value?"proprio":"";sl.setAttribute("aria-label","Tipo de cliente de "+p.nome);
+   sl.addEventListener("change",function(){carimbo(ck,"tipo",sl.value,TIPOCLI[ck]||"");if(sl.value)TIPOCLI[ck]=sl.value;else delete TIPOCLI[ck];setLS("postos_tipo_cli",TIPOCLI);tipoAplica(p);filtrar()});
+   lb.appendChild(sl);bd.appendChild(lb)})();
   var eq=document.createElement("label");eq.className="equip";var eqt=document.createElement("span");eqt.textContent="Equipamento";eqt.appendChild(dtSpan(ck,"equipamento"));eq.appendChild(eqt);
   var es=document.createElement("select");[["","—"],["terceiros","Terceiros"],["proprio","Próprio"]].forEach(function(o){var op=document.createElement("option");op.value=o[0];op.textContent=o[1];es.appendChild(op)});
   es.value=EQUIP[ck]||"";es.className=es.value;es.addEventListener("change",function(){equipSet(ck,es.value);es.className=es.value});
@@ -1048,8 +1060,8 @@ function relatorio(){
  setTimeout(function(){window.print();arqMsg("Relatório com "+lista.length+(lista.length>1?" clientes":" cliente")+". Na janela de impressão, escolha \"Salvar como PDF\".")},50)}
 $("relpdf").addEventListener("click",relatorio);
 /* ---------- Salvamento: Google Drive (pasta BIOAR) + arquivo de backup ---------- */
-var LS={visita:"postos_visita",consumo:"postos_consumo",tanque:"postos_tanque_arla",perfil:"postos_perfil",datas:"postos_datas",volume:"postos_volume",foneEditado:"postos_fone_editado",foneNovo:"postos_fone_novo",contatoNome:"postos_contato_nome",whatsapp:"postos_whatsapp",rede:"postos_rede",inativo:"postos_inativo",automacao:"postos_automacao",equipamento:"postos_equipamento",redeNome:"postos_rede_nome",fornecedor:"postos_fornecedor",preco:"postos_preco",rota:"postos_rota",progAuto:"postos_prog_auto",prazoPag:"postos_prazo_pag",periodicidade:"postos_periodicidade",cnpj:"postos_cnpj",consumoMes:"postos_consumo_mes",capital:"postos_capital",endereco:"postos_endereco",receitaContato:"postos_receita_contato",excluido:"postos_excluido",separado:"postos_separado",cadastro:"postos_cadastro",prontuario:"postos_prontuario",razao:"postos_razao",retorno:"postos_retorno"};
-function mapas(){return {visita:VISITA,consumo:CONSUMO,tanque:TANQ,perfil:PERFIL,datas:DATAS,volume:VOL,foneEditado:FED,foneNovo:FADD,contatoNome:FNOME,whatsapp:WA,rede:REDE,inativo:INAT,automacao:AUTO,equipamento:EQUIP,redeNome:REDENOME,fornecedor:FORN,preco:PRECO,rota:ROTA,progAuto:PROG,prazoPag:PRAZO,periodicidade:PERIOD,cnpj:CNPJINF,consumoMes:CMES,capital:CAPITAL,endereco:ENDER,receitaContato:RCONT,excluido:EXCL,separado:SEPAR,cadastro:CAD,prontuario:PRONT,razao:RAZAO,retorno:RETORNO}}
+var LS={tipoCli:"postos_tipo_cli",visita:"postos_visita",consumo:"postos_consumo",tanque:"postos_tanque_arla",perfil:"postos_perfil",datas:"postos_datas",volume:"postos_volume",foneEditado:"postos_fone_editado",foneNovo:"postos_fone_novo",contatoNome:"postos_contato_nome",whatsapp:"postos_whatsapp",rede:"postos_rede",inativo:"postos_inativo",automacao:"postos_automacao",equipamento:"postos_equipamento",redeNome:"postos_rede_nome",fornecedor:"postos_fornecedor",preco:"postos_preco",rota:"postos_rota",progAuto:"postos_prog_auto",prazoPag:"postos_prazo_pag",periodicidade:"postos_periodicidade",cnpj:"postos_cnpj",consumoMes:"postos_consumo_mes",capital:"postos_capital",endereco:"postos_endereco",receitaContato:"postos_receita_contato",excluido:"postos_excluido",separado:"postos_separado",cadastro:"postos_cadastro",prontuario:"postos_prontuario",razao:"postos_razao",retorno:"postos_retorno"};
+function mapas(){return {tipoCli:TIPOCLI,visita:VISITA,consumo:CONSUMO,tanque:TANQ,perfil:PERFIL,datas:DATAS,volume:VOL,foneEditado:FED,foneNovo:FADD,contatoNome:FNOME,whatsapp:WA,rede:REDE,inativo:INAT,automacao:AUTO,equipamento:EQUIP,redeNome:REDENOME,fornecedor:FORN,preco:PRECO,rota:ROTA,progAuto:PROG,prazoPag:PRAZO,periodicidade:PERIOD,cnpj:CNPJINF,consumoMes:CMES,capital:CAPITAL,endereco:ENDER,receitaContato:RCONT,excluido:EXCL,separado:SEPAR,cadastro:CAD,prontuario:PRONT,razao:RAZAO,retorno:RETORNO}}
 function estadoAtual(){var m=mapas(),o={};Object.keys(m).forEach(function(k){o[k]=Object.assign({},m[k])});return o}
 function contar(s){var n=0;Object.keys(LS).forEach(function(k){if(s&&s[k])n+=Object.keys(s[k]).length});return n}
 function aplicaEstado(s,mesclar){var m=mapas(),n=0;
@@ -1371,7 +1383,7 @@ function contatosDoCSV(txt){var L=lerCSV(txt);if(L.length<2)return null;var H=L[
   var razao=org&&dig(org).length<8?org.replace(/^CNPJ:?\s*/i,""):rest&&fst?rest:nome,pessoa=razao===nome?"":(org&&dig(org).length<8?nome:fst);
   var pre=v(r,"Name Prefix");if(pre&&!pessoa&&!/^\d+$/.test(pre))pessoa=pre;
   var cod=(String(cargo).match(/^\s*(\d{4,6})\b/)||String(nome).match(/^\s*(\d{5,6})\b/)||[])[1]||"";
-  return {nome:nome,razao:razao,pessoa:pessoa,org:org,cod:cod,rev:marc.some(function(m){return sem(m)==="REVENDEDOR"}),notas:notas.replace(/https?:\/\/\S+/g,"").replace(/\s+/g," ").trim(),fones:fones,email:emails[0]||"",mun:mun,cidade:cid||NOMES[mun]||"",seg:seg,cnpjs:cnpjs,
+  return {nome:nome,razao:razao,pessoa:pessoa,org:org,cod:cod,rev:marc.some(function(m){return sem(m)==="REVENDEDOR"}),consum:marc.some(function(m){return sem(m)==="CONSUMIDOR"}),notas:notas.replace(/https?:\/\/\S+/g,"").replace(/\s+/g," ").trim(),fones:fones,email:emails[0]||"",mun:mun,cidade:cid||NOMES[mun]||"",seg:seg,cnpjs:cnpjs,
    rua:partes(v(r,"Address 1 - Street"))[0]||"",cep:partes(v(r,"Address 1 - Postal Code"))[0]||""}}).filter(function(c){return c.nome||c.org})}
 function hashCk(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%9007199254;return String(1e12+h).slice(0,13)}
 function montarAgenda(cs){
@@ -1379,7 +1391,7 @@ function montarAgenda(cs){
  Object.keys(CARTEIRA||{}).forEach(function(k){var c=String((CARTEIRA[k]||[])[0]||"").split(/[^0-9]/)[0];if(c)porCod[c]=k});
  var cons=(B.consumidores||[]).map(function(r){return r.slice()}),cK={},cN={};
  var cCod={};cons.forEach(function(r,i){if(r[8])cCod[codN(r[8])]=i;if(r[1])cK[dig(r[1])]=i;cN[nomeChave(r[2])]=i;(r[9]||[]).forEach(function(g){if(g[0])cN[nomeChave(g[0])]=i})});
- var ag={},novaAg={},novoCons={},novos=0,semPar=0,n={posto:0,cons:0},trocaCnpj=[],trocaCod=[];
+ var ag={},novaAg={},novoCons={},novos=0,semPar=0,n={posto:0,cons:0},trocaCnpj=[],trocaCod=[],trocaTipo=[];
  cs.forEach(function(c){
   var ck="",como="";
   c.cnpjs.some(function(d){if(anp[d]){ck=d;como="CNPJ";return true}});
@@ -1391,17 +1403,19 @@ function montarAgenda(cs){
   if(i<0)[c.org,c.nome,c.razao].some(function(s){var k=nomeChave(s);if(s&&k in cN&&!/^(TRANSPORTES?|TRANSPORTADORA|LOGISTICA|POSTO|AUTO POSTO|COMERCIO|SERVICOS|MINERACAO|CONSTRUTORA|VIACAO|EMPRESA|CONTATO)$/.test(k)&&k.length>=4){i=cN[k];return true}});
   if(i>=0){var nc=c.cnpjs[0]||"",vc=dig(cons[i][1]||"");if(nc&&nc!==vc&&!(cK[nc]>=0&&cK[nc]!==i)){if(vc&&cK[vc]===i)delete cK[vc];cons[i][1]=nc;cK[nc]=i;trocaCnpj.push({ck:cons[i][0],nome:cons[i][2],de:vc,para:nc})}
    if(c.cod&&c.cod!==String(cons[i][8]||"")){trocaCod.push({nome:cons[i][2],de:String(cons[i][8]||""),para:c.cod});cons[i][8]=c.cod}
+   var tAnt=cons[i][10]==="revendedor"?"revendedor":"consumidor",tNovo=c.seg||c.consum?"consumidor":c.rev?"revendedor":tAnt;
+   if(c.seg&&c.seg!==cons[i][3])cons[i][3]=c.seg;if(tNovo!==tAnt){if(tNovo==="revendedor")cons[i][10]="revendedor";else cons[i].length=10;trocaTipo.push({ck:cons[i][0],nome:cons[i][2],de:tAnt,para:tNovo})}
    (novoCons[i]=novoCons[i]||[]).push([c.nome,c.fones,c.email,c.notas,"contatos"]);n.cons++;return}
   if(!c.seg&&!c.cod){semPar++;return}
   var cn=c.cnpjs[0]||"",razao=String(c.razao||"").replace(/^\s*\d{4,6}(-\d+)?\s*-?\s*/,"").trim();if(razao.length<3)razao=String(c.nome||c.org).replace(/^\s*\d{4,6}(-\d+)?\s*-?\s*/,"").trim()||c.nome;
   var key=cn||hashCk(nomeChave(razao)+"|"+c.mun);
-  var r=[key,cn,razao,c.seg,c.rua,c.mun,c.cidade,c.cep,c.cod,[[c.pessoa,c.fones,c.email,c.notas,"contatos"]]];if(c.rev&&!c.seg)r[10]="revendedor";
+  var r=[key,cn,razao,c.seg,c.rua,c.mun,c.cidade,c.cep,c.cod,[[c.pessoa,c.fones,c.email,c.notas,"contatos"]]];if(c.rev&&!c.seg&&!c.consum)r[10]="revendedor";
   cons.push(r);i=cons.length-1;if(cn)cK[cn]=i;cN[nomeChave(razao)]=i;if(c.cod)cCod[codN(c.cod)]=i;novos++});
  Object.keys(AGENDA||{}).forEach(function(k){ag[k]=AGENDA[k]});
  function unico(l){var v={};return l.filter(function(g){var s=JSON.stringify(g);if(v[s])return false;v[s]=1;return true})}
  Object.keys(novaAg).forEach(function(k){ag[k]=unico(novaAg[k])});
  Object.keys(novoCons).forEach(function(i){cons[i][9]=unico(novoCons[i])});
- return {agenda:ag,consumidores:cons,postos:Object.keys(novaAg).length,consAtual:Object.keys(novoCons).length,novos:novos,semPar:semPar,trocaCnpj:trocaCnpj,trocaCod:trocaCod}}
+ return {agenda:ag,consumidores:cons,postos:Object.keys(novaAg).length,consAtual:Object.keys(novoCons).length,novos:novos,semPar:semPar,trocaCnpj:trocaCnpj,trocaCod:trocaCod,trocaTipo:trocaTipo}}
 function gravarBaseDrive(nome,txt){
  return (pastaId?Promise.resolve(pastaId):acharPasta()).then(function(){return buscar("name='"+nome+"' and '"+pastaId+"' in parents and trashed=false","id")}).then(function(f){
   if(f[0])return api(UP+"/"+f[0].id+"?uploadType=media&fields=id,modifiedTime",{method:"PATCH",headers:{"Content-Type":"application/json; charset=UTF-8"},body:txt}).then(json);
@@ -1738,6 +1752,7 @@ $("agin").addEventListener("change",function(){
   var tA=JSON.stringify({tipo:"postos-agenda",data:hoje,dados:R.agenda}),tC=JSON.stringify({tipo:"postos-consumidores",data:hoje,dados:R.consumidores});
   if(!lsSet("base_agenda",tA)||!lsSet("base_consumidores",tC)){arqMsg("Sem espaço neste aparelho para guardar a agenda nova.");return}
   var res="Agenda atualizada com "+cs.length+" contatos: "+R.postos+" postos, "+R.consAtual+" consumidores atualizados"+(R.novos?", "+R.novos+" cadastros novos (marcador de transporte ou código de cliente no Cargo)":"")+(R.semPar?"; "+R.semPar+" contatos sem posto ou consumidor correspondente ficaram de fora":"")+"."
+   +(R.trocaTipo&&R.trocaTipo.length?" Tipo de cliente corrigido pela agenda: "+R.trocaTipo.map(function(t){return titulo(t.nome)+" ("+(t.para==="consumidor"?"agora Consumidor":"agora Revendedor")+")"}).join("; ")+".":"")
    +(R.trocaCnpj.length?" CNPJ corrigido pela agenda: "+R.trocaCnpj.map(function(t){return titulo(t.nome)+" ("+(t.de?cnpj(t.de):"sem CNPJ")+" → "+cnpj(t.para)+")"}).join("; ")+".":"")
    +(R.trocaCod.length?" Código de cliente atualizado pela agenda: "+R.trocaCod.map(function(t){return titulo(t.nome)+" ("+(t.de||"sem código")+" → "+t.para+")"}).join("; ")+".":"");
   R.trocaCnpj.forEach(function(t){carimbo(t.ck,"cnpj",t.para,t.de);if(CNPJINF[t.ck]){delete CNPJINF[t.ck];try{localStorage.setItem("postos_cnpj",JSON.stringify(CNPJINF))}catch(e){}}});
