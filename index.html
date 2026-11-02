@@ -335,6 +335,7 @@ button.mais{display:block;margin:0 auto}
  <div class="linha">
   <button type="button" id="baixar">Baixar planilha (CSV)</button>
   <button type="button" id="gc">Exportar para Google Contatos</button>
+  <button type="button" id="gctodos" title="Junta revendedores e consumidores de toda a base (menos a lixeira) num arquivo só, sem precisar filtrar">Exportar todos (Google Contatos)</button>
   <button type="button" id="atuag">Atualizar agenda</button>
   <input type="file" id="agin" accept=".csv,text/csv" hidden>
   <label class="desde">só atualizados desde <input type="date" id="desde"></label>
@@ -406,7 +407,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Sem internet</h3>
 <p>Depois de instalado e aberto uma vez com internet, o app abre e funciona sem sinal: filtros, busca e marcações. O que você preencher fica no aparelho e vai para o Drive quando a conexão voltar e o login estiver válido.</p>
 <h3>Planilha e Google Contatos</h3>
-<p>"Baixar planilha (CSV)" exporta a lista atual com todas as informações. "Exportar para Google Contatos" gera um arquivo no formato do Google. Padrão (revendedores e consumidores): prefixo = nome do contato (o da visita ou o da agenda), nome = razão social, empresa = CNPJ, cargo = código de cliente do relatório Iris, e-mails, telefones, endereço, marcadores = município e Revendedor/Consumidor, e os campos personalizados preenchidos entre Equipamento, Tanque de Arla, Capital Social, Consumo de Arla, Consumo Mensal, Rota, Atual Fornecedor, Preço Praticado, Prazo, Periodicidade Entrega, Rede/Grupo e Bandeira (só revendedores). No computador, o botão "Google Contatos" de cada cliente gera o mesmo padrão só para ele; no celular, o botão compartilha pelo WhatsApp. O Google cria sozinho um marcador "Importado em…"; depois de conferir, apague só o marcador e mantenha os contatos. Reimportar não atualiza contato existente: cria outro em duplicado. Use "só atualizados desde" para não repetir quem já foi importado, ou o botão "Google Contatos" na linha de um posto para exportar só ele. Importe o arquivo em contacts.google.com, opção Importar.</p>
+<p>"Baixar planilha (CSV)" exporta a lista atual com todas as informações. "Exportar para Google Contatos" gera um arquivo no formato do Google com a lista atual; "Exportar todos (Google Contatos)" junta toda a base (revendedores e consumidores, menos a lixeira) num arquivo único, sem precisar filtrar, e respeita o campo "só atualizados desde" se ele estiver preenchido. Padrão (revendedores e consumidores): prefixo = nome do contato (o da visita ou o da agenda), nome = razão social, empresa = CNPJ, cargo = código de cliente do relatório Iris, e-mails, telefones, endereço, marcadores = município e Revendedor/Consumidor, e os campos personalizados preenchidos entre Equipamento, Tanque de Arla, Capital Social, Consumo de Arla, Consumo Mensal, Rota, Atual Fornecedor, Preço Praticado, Prazo, Periodicidade Entrega, Rede/Grupo e Bandeira (só revendedores). No computador, o botão "Google Contatos" de cada cliente gera o mesmo padrão só para ele; no celular, o botão compartilha pelo WhatsApp. O Google cria sozinho um marcador "Importado em…"; depois de conferir, apague só o marcador e mantenha os contatos. Reimportar não atualiza contato existente: cria outro em duplicado. Use "só atualizados desde" para não repetir quem já foi importado, ou o botão "Google Contatos" na linha de um posto para exportar só ele. Importe o arquivo em contacts.google.com, opção Importar.</p>
 <h3>Fontes</h3>
 <p>Postos revendedores autorizados pela ANP nos 107 municípios da sua lista de contatos (dados de <span class="d-anp"></span>). Códigos de cliente conforme a Carteira de Clientes de <span class="d-cart"></span>. Agenda exportada em <span class="d-ag"></span>.</p><p id="origem-bases" class="fraco"></p>
 </div></dialog>
@@ -454,7 +455,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=53;
+var VERSAO_APP=54;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -2201,6 +2202,12 @@ $("gc").addEventListener("click",function(){
  var ds=$("desde").value,lista=atual.filter(function(p){return !ds||ultima(ckOf(p))>=ds});
  if(!lista.length){arqMsg(ds?"Nenhum posto da lista foi atualizado desde "+dtLonga(ds)+".":"Nenhum posto na lista.");return}
  baixar("google-contatos-"+hojeISO()+".csv",csvGoogle(lista),"text/csv;charset=utf-8").then(function(){var m=$("arqmsg").textContent;if(/salvo|baixado/.test(m))arqMsg(lista.length+" contato(s) no arquivo. Importe em contacts.google.com, opção Importar.")})});
+/* Exporta toda a base (revendedores + consumidores, sem a lixeira) num CSV único, sem depender dos filtros */
+$("gctodos").addEventListener("click",function(){
+ var ds=$("desde").value,lista=postos.filter(function(p){return !EXCL[p.ck]&&(!ds||ultima(ckOf(p))>=ds)});
+ if(!lista.length){arqMsg(ds?"Nenhum cliente da base foi atualizado desde "+dtLonga(ds)+".":"A base está vazia.");return}
+ var rv=lista.filter(function(p){return p.tipo!=="consumidor"}).length;
+ baixar("google-contatos-todos-"+hojeISO()+".csv",csvGoogle(lista),"text/csv;charset=utf-8").then(function(){var m=$("arqmsg").textContent;if(/salvo|baixado/.test(m))arqMsg(lista.length+" contato(s) no arquivo ("+rv+" revendedores e "+(lista.length-rv)+" consumidores). Importe em contacts.google.com, opção Importar.")})});
 /* No celular, o botão do contato abre o WhatsApp com os dados prontos para enviar (você escolhe a conversa) */
 function textoContato(p){var c=contatoGoogle(p),l=["*"+c.org+"*"];
  if(c.nome&&sem(c.nome)!==sem(c.org))l.push("Contato: "+c.nome);
