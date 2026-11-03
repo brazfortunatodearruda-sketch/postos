@@ -458,7 +458,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=54;
+var VERSAO_APP=56;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -2259,7 +2259,7 @@ document.querySelectorAll(".d-cart").forEach(function(e){e.textContent=B.datas.c
 document.querySelectorAll(".d-ag").forEach(function(e){e.textContent=B.datas.agenda});
 document.querySelectorAll(".d-cons").forEach(function(e){e.textContent=B.datas.consumidores});
 $("vapp").textContent=VERSAO_APP;$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: "+VERSAO_APP+".";
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
+if("serviceWorker" in navigator){var swTinha=!!navigator.serviceWorker.controller,swRecarregou=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(swTinha&&!swRecarregou){swRecarregou=true;location.reload()}});navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(function(rg){rg.update().catch(function(){});document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")rg.update().catch(function(){})})}).catch(function(){})}
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});
 irisPinta();botao();if(conectado())sincronizar();else avisoLocal();
 
