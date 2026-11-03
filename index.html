@@ -243,6 +243,7 @@ dialog#dlgchurn::backdrop{background:rgba(10,20,16,.55)}
 .gsectop{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.gper{display:flex;gap:4px}.gper button{font-size:.8rem;padding:3px 12px}.gper button.ativo{background:var(--acento);color:var(--acento-texto);border-color:var(--acento)}
 .gpizzas{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.gpizza{display:grid;justify-items:center;gap:6px}.gpizza h4{margin:0;font-size:.9rem}.gpizza svg{width:170px;height:170px}
 .gpizza ul{list-style:none;margin:0;padding:0;font-size:.88rem;display:grid;gap:3px}.gcor{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.gtab tr.gtot td{border-top:2px solid var(--linha)}
 .grkfil{display:flex;flex-wrap:wrap;gap:10px}.grkfil label{display:grid;gap:2px;font-size:.78rem;color:var(--suave)}.grkfil select{font:.9rem var(--fonte);padding:4px 6px;border:1px solid var(--linha);border-radius:6px;background:var(--fundo);color:var(--texto);min-width:150px}
 .gtabw{overflow-x:auto}.gtab{border-collapse:collapse;width:100%;font-size:.86rem}.gtab th,.gtab td{padding:5px 8px;border-bottom:1px solid var(--linha);text-align:left;vertical-align:top}.gtab th{font-size:.75rem;text-transform:uppercase;letter-spacing:.03em;color:var(--suave)}
 .gtab .n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.gtab small{display:block;color:var(--suave);font-size:.75rem}.gtab th.grp{text-align:center}.gtab th.rev{color:#0b6b4f}.gtab th.con{color:#b8630f}
@@ -458,7 +459,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=57;
+var VERSAO_APP=58;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -1854,7 +1855,7 @@ $("propgera").addEventListener("click",function(){var p=PROP.p;if(!p)return;prop
 $("propbaixa").addEventListener("click",function(){if(!PROP.bytes)return;var u=URL.createObjectURL(propBlob()),a=document.createElement("a");a.href=u;a.download=PROP.nome;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000)});
 $("propshare").addEventListener("click",function(){if(!PROP.bytes)return;var f=new File([propBlob()],PROP.nome,{type:"application/pdf"});navigator.share({files:[f],title:PROP.nome}).catch(function(){})});
 /* ---------- Painel gerencial: indicadores, pizzas Revendedor × Consumidor, ranking e menor preço por cidade ---------- */
-var GER={seg:"",cid:"",per:"mes",todos:false,rseg:"",rcid:"",pcid:"",pseg:""};
+var GER={seg:"",cid:"",per:"mes",todos:false,rseg:"",rcid:"",pcid:"",pseg:"",rota:""};
 var GER_COR={revendedor:"#0b6b4f",consumidor:"#d97a1e"};
 function gerNum(v){var s=String(v||"").replace(/[^\d,.]/g,"");if(!s)return 0;var n=parseFloat(s.indexOf(",")>=0?s.replace(/\./g,"").replace(",","."):s);return isFinite(n)?n:0}
 function gerR(v,d){return "R$ "+(v||0).toLocaleString("pt-BR",{minimumFractionDigits:d==null?2:d,maximumFractionDigits:d==null?2:d})}
@@ -1871,6 +1872,10 @@ function gerClientes(){if(!IRIS||!IRIS.dados)return [];var mi=IRIS.resumo.mes,vi
  return o}
 /* município entra no quadro de preços só se tiver ao menos um preço (Bioar ou concorrência, revendedor ou consumidor) */
 function gerTemPreco(m){return ["revendedor","consumidor"].some(function(t){return (m[t].b&&m[t].b.v>0)||(m[t].c&&m[t].c.v>0)})}
+/* agrupa os clientes com compra no ano pela rota efetiva (ficha > agenda > município); "~" = sem rota */
+function gerRotas(L){var o={};L.forEach(function(r){if(!(r.volAno>0))return;var n=rotaEf(r.p)||"",k=n?chavePP(n):"~";
+  var t=o[k]||(o[k]={nome:n?((rotaInfo(n)||{}).nome||n):"Sem rota definida",cli:[],mes:0,ano:0});t.cli.push(r);t.mes+=r.volMes;t.ano+=r.volAno});
+ Object.keys(o).forEach(function(k){o[k].cli.sort(function(a,b){return b.volAno-a.volAno})});return o}
 function gerFiltra(l){return l.filter(function(r){return (!GER.seg||r.tipo===GER.seg)&&(!GER.cid||sem(r.cidade)===GER.cid)})}
 function gerPizza(tit,partes,fmtv){var tot=partes.reduce(function(a,x){return a+Math.max(0,x.v)},0),R=70,C=80,ang=-Math.PI/2,svg="";
  if(!tot)return '<div class="gpizza"><h4>'+gerEh(tit)+'</h4><p class="fraco">Sem dados no filtro.</p></div>';
@@ -1940,11 +1945,30 @@ function gerPinta(){var tudo=gerClientes(),X=$("gercorpo");
   h+='<div class="gtabw"><table class="gtab gpreco"><thead><tr><th rowspan="2">Município</th>'+pTipos.map(function(t){return t==="consumidor"?'<th colspan="2" class="grp con">Consumidor</th>':'<th colspan="2" class="grp rev">Revendedor</th>'}).join("")+'</tr><tr>'+pTipos.map(function(){return '<th>Bioar</th><th>Concorrência</th>'}).join("")+'</tr></thead><tbody>';
   var nl=0;sel.forEach(function(k){var m=M[k];if(GER.pseg&&!m[GER.pseg].b&&!m[GER.pseg].c&&GER.pcid==="*")return;nl++;h+='<tr><td>'+gerEh(m.cid)+'</td>'+pTipos.map(function(t){return '<td>'+cp(m[t].b)+'</td><td>'+cp(m[t].c)+'</td>'}).join("")+'</tr>'});
   h+='</tbody></table></div>';if(!nl)h+='<p class="fraco">Nenhum preço para este tipo de cliente.</p>'}
+ h+='</section>';
+ /* volume por rota: total da rota e os clientes dela (razão social e volume) */
+ var RT=gerRotas(L),rks=Object.keys(RT).sort(function(a,b){return a==="~"?1:b==="~"?-1:a<b?-1:1});
+ if(GER.rota&&GER.rota!=="*"&&!(GER.rota in RT))GER.rota="";
+ h+='<section class="gsec"><div class="gsectop"><h3>Volume por rota</h3><div class="grkfil"><label>Rota<select id="gerrota">'+opc([["","Escolha a rota…"]].concat(rks.map(function(k){return [k,RT[k].nome+" ("+RT[k].cli.length+")"]})).concat(rks.length>1?[["*","Todas as rotas (resumo)"]]:[]),GER.rota)+'</select></label></div></div>'
+  +'<p class="fraco">Rota da ficha do cliente; sem ela, a da agenda ou a sugerida pelo município. Clientes com compra no ano.</p>';
+ if(!rks.length)h+='<p class="fraco">Sem clientes com volume no filtro.</p>';
+ else if(!GER.rota)h+='<p class="fraco">Escolha uma rota para ver o volume ('+rks.length+(rks.length===1?" rota":" rotas")+' com clientes).</p>';
+ else if(GER.rota==="*"){var tA=0,tM=0;rks.forEach(function(k){tA+=RT[k].ano;tM+=RT[k].mes});
+  h+='<div class="gtabw"><table class="gtab"><thead><tr><th>Rota</th><th class="n">Clientes</th><th class="n">'+mes+' (L)</th><th class="n">Ano (L)</th><th class="n">%</th></tr></thead><tbody>';
+  rks.slice().sort(function(a,b){return RT[b].ano-RT[a].ano}).forEach(function(k){var t=RT[k];h+='<tr><td><button type="button" class="lnk grota" data-k="'+gerEh(k)+'">'+gerEh(t.nome)+'</button></td><td class="n">'+t.cli.length+'</td><td class="n">'+(t.mes?fmt(t.mes):"–")+'</td><td class="n">'+fmt(t.ano)+'</td><td class="n">'+(tA?(t.ano/tA*100).toLocaleString("pt-BR",{maximumFractionDigits:1})+"%":"")+'</td></tr>'});
+  h+='<tr class="gtot"><td><b>Total</b></td><td class="n"><b>'+L.filter(function(r){return r.volAno>0}).length+'</b></td><td class="n"><b>'+fmt(tM)+'</b></td><td class="n"><b>'+fmt(tA)+'</b></td><td></td></tr></tbody></table></div>'}
+ else{var t=RT[GER.rota];
+  h+='<div class="gkpis"><div><span>Volume em '+mes+'</span><b>'+litros(t.mes)+'</b><small>'+t.cli.filter(function(r){return r.volMes>0}).length+' compraram no mês</small></div><div><span>Volume no ano</span><b>'+litros(t.ano)+'</b><small>'+t.cli.length+(t.cli.length===1?" cliente":" clientes")+'</small></div></div>'
+   +'<div class="gtabw"><table class="gtab"><thead><tr><th>Razão social</th><th>Tipo</th><th>Município</th><th class="n">'+mes+' (L)</th><th class="n">Ano (L)</th><th class="n">%</th></tr></thead><tbody>';
+  t.cli.forEach(function(r){h+='<tr><td><button type="button" class="lnk gcli" data-i="'+tudo.indexOf(r)+'">'+gerEh(r.p.nome)+'</button></td><td><span class="gtipo '+r.tipo+'">'+(r.tipo==="consumidor"?"Consumidor":"Revendedor")+'</span></td><td>'+gerEh(r.cidade)+'</td><td class="n">'+(r.volMes?fmt(r.volMes):"–")+'</td><td class="n">'+fmt(r.volAno)+'</td><td class="n">'+(t.ano?(r.volAno/t.ano*100).toLocaleString("pt-BR",{maximumFractionDigits:1})+"%":"")+'</td></tr>'});
+  h+='<tr class="gtot"><td colspan="3"><b>Total da rota</b></td><td class="n"><b>'+fmt(t.mes)+'</b></td><td class="n"><b>'+fmt(t.ano)+'</b></td><td></td></tr></tbody></table></div>'}
  h+='</section><p class="fraco">Relatório Iris de '+gerEh(IRIS.data)+'.</p>';
  X.innerHTML=h;
  X.querySelectorAll(".gper button").forEach(function(b){b.addEventListener("click",function(){GER.per=b.getAttribute("data-per");gerPinta()})});
  $("gerrseg").addEventListener("change",function(){GER.rseg=this.value;GER.todos=false;gerPinta()});$("gerrcid").addEventListener("change",function(){GER.rcid=this.value;GER.todos=false;gerPinta()});
  var pc1=$("gerpcid");if(pc1)pc1.addEventListener("change",function(){GER.pcid=this.value;gerPinta()});var pc2=$("gerpseg");if(pc2)pc2.addEventListener("change",function(){GER.pseg=this.value;gerPinta()});
+ var ro=$("gerrota");if(ro)ro.addEventListener("change",function(){GER.rota=this.value;gerPinta()});
+ X.querySelectorAll(".grota").forEach(function(b){b.addEventListener("click",function(){GER.rota=b.getAttribute("data-k");gerPinta();var s=$("gerrota");if(s)s.scrollIntoView({block:"center"})})});
  var tb=$("gertodos");if(tb)tb.addEventListener("click",function(){GER.todos=!GER.todos;gerPinta()});
  X.querySelectorAll(".gcli").forEach(function(b){b.addEventListener("click",function(){var r=tudo[+b.getAttribute("data-i")];if(!r)return;abrirFicha(r.p,"dlgger")})})}
 /* ---------- Relatório PDF do Painel gerencial (para compartilhar no WhatsApp) ---------- */
