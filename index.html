@@ -459,7 +459,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=58;
+var VERSAO_APP=59;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -2049,6 +2049,23 @@ function gerPdf(){var tudo=gerClientes();if(!tudo.length)return Promise.reject(n
     txt(m.cid,x+3,y+9,{s:7.5,w:pc[0][1]-6});x+=pc[0][1];
     cs.forEach(function(z,j){if(z){txt(gerR(z.v,3),x+3,y+9,{s:7.5,b:true});txt(titulo(z.n),x+3,y+17,{s:6,c:CINZA,w:pc[j+1][1]-6})}else txt("—",x+3,y+9,{s:7.5,c:CINZA});x+=pc[j+1][1]});
     pg.drawLine({start:{x:M,y:H-y-20},end:{x:W-M,y:H-y-20},thickness:0.4,color:LINHA});y+=21})}
+  /* volume por rota (a rota escolhida no painel, ou o resumo de todas) */
+  var RTp=gerRotas(L);
+  if(GER.rota&&(GER.rota==="*"||RTp[GER.rota])){
+   function linhaT(cs,v,o){if(y+13>H-M){nova();o.cab()}var x=M;cs.forEach(function(c,j){txt(v[j],c[2]?x+c[1]-3:x+3,y+9,{s:7.4,dir:!!c[2],w:c[1]-6,b:!!o.b,c:o.cor&&o.cor[j]||PRETO});x+=c[1]});
+    pg.drawLine({start:{x:M,y:H-y-12},end:{x:W-M,y:H-y-12},thickness:o.b?0.9:0.4,color:LINHA});y+=13}
+   function cabT(cs){precisa(30);var x=M;pg.drawRectangle({x:M,y:H-y-14,width:W-2*M,height:14,color:hex("eef2f0")});cs.forEach(function(c){var t=c[0].toUpperCase();txt(t,c[2]?x+c[1]-3:x+3,y+10,{s:6,b:true,c:CINZA,w:c[1]-6,dir:!!c[2]});x+=c[1]});y+=16}
+   function pct(v,t){return t?(v/t*100).toLocaleString("pt-BR",{maximumFractionDigits:1})+"%":""}
+   if(GER.rota==="*"){var rk2=Object.keys(RTp).sort(function(a,b){return RTp[b].ano-RTp[a].ano}),tA=0,tM=0,nC=0;rk2.forEach(function(k){tA+=RTp[k].ano;tM+=RTp[k].mes;nC+=RTp[k].cli.length});
+    precisa(60);titulo2("Volume por rota — todas as rotas");
+    var c1=[["Rota",223],["Clientes",60,1],["Volume "+mes+" (L)",90,1],["Volume ano (L)",90,1],["%",60,1]],o1={cab:function(){cabT(c1)}};cabT(c1);
+    rk2.forEach(function(k){var t=RTp[k];linhaT(c1,[t.nome,String(t.cli.length),t.mes?fmt(t.mes):"–",fmt(t.ano),pct(t.ano,tA)],o1)});
+    linhaT(c1,["Total",String(nC),fmt(tM),fmt(tA),""],{cab:o1.cab,b:true})}
+   else{var t=RTp[GER.rota];precisa(70);titulo2("Volume por rota — "+t.nome);
+    txt(t.cli.length+(t.cli.length===1?" cliente":" clientes")+"  ·  "+mes+": "+litros(t.mes)+"  ·  ano: "+litros(t.ano),M,y+6,{s:8.5,c:CINZA});y+=14;
+    var c2=[["Razão social",190],["Tipo",62],["Município",88],[mes+" (L)",60,1],["Ano (L)",63,1],["%",60,1]],o2={cab:function(){cabT(c2)}};cabT(c2);
+    t.cli.forEach(function(r){var con=r.tipo==="consumidor";linhaT(c2,[r.p.nome,con?"Consumidor":"Revendedor",r.cidade,r.volMes?fmt(r.volMes):"–",fmt(r.volAno),pct(r.volAno,t.ano)],{cab:o2.cab,cor:[null,con?LARANJA:VERDE]})});
+    linhaT(c2,["Total da rota","","",fmt(t.mes),fmt(t.ano),""],{cab:o2.cab,b:true})}}
   doc.setTitle("Painel gerencial Arla 32 - "+IRIS.data.slice(0,10));doc.setAuthor("Arruda Representações");
   return doc.save()})})})}
 function gerPdfAcao(){var b=$("gerpdf"),m=$("gerpdfmsg"),t0=b.textContent;b.disabled=true;b.textContent="Montando PDF…";m.textContent="";
