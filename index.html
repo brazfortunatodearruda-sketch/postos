@@ -458,7 +458,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=56;
+var VERSAO_APP=57;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -1854,7 +1854,7 @@ $("propgera").addEventListener("click",function(){var p=PROP.p;if(!p)return;prop
 $("propbaixa").addEventListener("click",function(){if(!PROP.bytes)return;var u=URL.createObjectURL(propBlob()),a=document.createElement("a");a.href=u;a.download=PROP.nome;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000)});
 $("propshare").addEventListener("click",function(){if(!PROP.bytes)return;var f=new File([propBlob()],PROP.nome,{type:"application/pdf"});navigator.share({files:[f],title:PROP.nome}).catch(function(){})});
 /* ---------- Painel gerencial: indicadores, pizzas Revendedor × Consumidor, ranking e menor preço por cidade ---------- */
-var GER={seg:"",cid:"",per:"mes",todos:false,rseg:"",rcid:""};
+var GER={seg:"",cid:"",per:"mes",todos:false,rseg:"",rcid:"",pcid:"",pseg:""};
 var GER_COR={revendedor:"#0b6b4f",consumidor:"#d97a1e"};
 function gerNum(v){var s=String(v||"").replace(/[^\d,.]/g,"");if(!s)return 0;var n=parseFloat(s.indexOf(",")>=0?s.replace(/\./g,"").replace(",","."):s);return isFinite(n)?n:0}
 function gerR(v,d){return "R$ "+(v||0).toLocaleString("pt-BR",{minimumFractionDigits:d==null?2:d,maximumFractionDigits:d==null?2:d})}
@@ -1929,15 +1929,22 @@ function gerPinta(){var tudo=gerClientes(),X=$("gercorpo");
   if(GER.seg&&t!==GER.seg)return;if(GER.cid&&sem(p.cidade)!==GER.cid)return;var m=cel(p.cidade);if(m)menor(m[t],"c",v,p.nome+" · "+titulo(FORN[ck]))});
  var ks=Object.keys(M).filter(function(k){return gerTemPreco(M[k])}).sort();   /* município sem nenhum preço fica fora até ser alimentado */
  function cp(x){return x?'<b>'+gerR(x.v,3)+'</b><small>'+gerEh(titulo(x.n))+'</small>':'<span class="fraco">—</span>'}
- h+='<section class="gsec"><h3>Menor preço por município</h3><p class="fraco">Bioar: preço médio de '+mes+' no Iris (ou o último preço). Concorrência: “Preço praticado” anotado na ficha quando o fornecedor atual não é a Bioar.</p>';
+ if(GER.pcid&&GER.pcid!=="*"&&!(GER.pcid in M&&gerTemPreco(M[GER.pcid])))GER.pcid="";
+ var pTipos=GER.pseg?[GER.pseg]:["revendedor","consumidor"];
+ h+='<section class="gsec"><div class="gsectop"><h3>Menor preço por município</h3><div class="grkfil"><label>Município<select id="gerpcid">'+opc([["","Escolha o município…"]].concat(ks.map(function(k){return [k,M[k].cid]})).concat(ks.length>1?[["*","Todos (tabela completa)"]]:[]),GER.pcid)+'</select></label>'
+  +'<label>Tipo de cliente<select id="gerpseg">'+opc([["","Todos"],["revendedor","Revendedor"],["consumidor","Consumidor"]],GER.pseg)+'</select></label></div></div>'
+  +'<p class="fraco">Bioar: preço médio de '+mes+' no Iris (ou o último preço). Concorrência: “Preço praticado” anotado na ficha quando o fornecedor atual não é a Bioar.</p>';
  if(!ks.length)h+='<p class="fraco">Sem preços no filtro.</p>';
- else{h+='<div class="gtabw"><table class="gtab gpreco"><thead><tr><th rowspan="2">Município</th><th colspan="2" class="grp rev">Revendedor</th><th colspan="2" class="grp con">Consumidor</th></tr><tr><th>Bioar</th><th>Concorrência</th><th>Bioar</th><th>Concorrência</th></tr></thead><tbody>';
-  ks.forEach(function(k){var m=M[k];h+='<tr><td>'+gerEh(m.cid)+'</td><td>'+cp(m.revendedor.b)+'</td><td>'+cp(m.revendedor.c)+'</td><td>'+cp(m.consumidor.b)+'</td><td>'+cp(m.consumidor.c)+'</td></tr>'});
-  h+='</tbody></table></div>'}
+ else if(!GER.pcid)h+='<p class="fraco">Escolha um município para ver os preços ('+ks.length+(ks.length===1?" município":" municípios")+' com preço).</p>';
+ else{var sel=GER.pcid==="*"?ks:[GER.pcid];
+  h+='<div class="gtabw"><table class="gtab gpreco"><thead><tr><th rowspan="2">Município</th>'+pTipos.map(function(t){return t==="consumidor"?'<th colspan="2" class="grp con">Consumidor</th>':'<th colspan="2" class="grp rev">Revendedor</th>'}).join("")+'</tr><tr>'+pTipos.map(function(){return '<th>Bioar</th><th>Concorrência</th>'}).join("")+'</tr></thead><tbody>';
+  var nl=0;sel.forEach(function(k){var m=M[k];if(GER.pseg&&!m[GER.pseg].b&&!m[GER.pseg].c&&GER.pcid==="*")return;nl++;h+='<tr><td>'+gerEh(m.cid)+'</td>'+pTipos.map(function(t){return '<td>'+cp(m[t].b)+'</td><td>'+cp(m[t].c)+'</td>'}).join("")+'</tr>'});
+  h+='</tbody></table></div>';if(!nl)h+='<p class="fraco">Nenhum preço para este tipo de cliente.</p>'}
  h+='</section><p class="fraco">Relatório Iris de '+gerEh(IRIS.data)+'.</p>';
  X.innerHTML=h;
  X.querySelectorAll(".gper button").forEach(function(b){b.addEventListener("click",function(){GER.per=b.getAttribute("data-per");gerPinta()})});
  $("gerrseg").addEventListener("change",function(){GER.rseg=this.value;GER.todos=false;gerPinta()});$("gerrcid").addEventListener("change",function(){GER.rcid=this.value;GER.todos=false;gerPinta()});
+ var pc1=$("gerpcid");if(pc1)pc1.addEventListener("change",function(){GER.pcid=this.value;gerPinta()});var pc2=$("gerpseg");if(pc2)pc2.addEventListener("change",function(){GER.pseg=this.value;gerPinta()});
  var tb=$("gertodos");if(tb)tb.addEventListener("click",function(){GER.todos=!GER.todos;gerPinta()});
  X.querySelectorAll(".gcli").forEach(function(b){b.addEventListener("click",function(){var r=tudo[+b.getAttribute("data-i")];if(!r)return;abrirFicha(r.p,"dlgger")})})}
 /* ---------- Relatório PDF do Painel gerencial (para compartilhar no WhatsApp) ---------- */
@@ -2007,11 +2014,14 @@ function gerPdf(){var tudo=gerClientes();if(!tudo.length)return Promise.reject(n
   postos.forEach(function(p){var ck=ckOf(p),fo=sem(FORN[ck]||""),v=gerNum(PRECO[ck]);if(!v||!fo||/BIOAR|AGRICOPEL/.test(fo))return;var t=p.tipo==="consumidor"?"consumidor":"revendedor";
    if(GER.seg&&t!==GER.seg)return;if(GER.cid&&sem(p.cidade)!==GER.cid)return;var m=cel(p.cidade);if(m)menor(m[t],"c",v,p.nome+" · "+titulo(FORN[ck]))});
   var ks=Object.keys(Mp).filter(function(k){return gerTemPreco(Mp[k])}).sort();
+  if(GER.pcid&&GER.pcid!=="*")ks=ks.filter(function(k){return k===GER.pcid});
+  if(GER.pseg)ks=ks.filter(function(k){return Mp[k][GER.pseg].b||Mp[k][GER.pseg].c});
+  var pT=GER.pseg?[GER.pseg]:["revendedor","consumidor"];
   if(ks.length){precisa(80);titulo2("Menor preço por município");txt("Bioar: preço médio de "+mes+" no Iris (ou o último). Concorrência: preço praticado anotado na ficha, quando o fornecedor não é a Bioar.",M,y+6,{s:7,c:CINZA});y+=14;
-   var pc=[["Município",107],["Revendedor · Bioar",108],["Revendedor · Concorrência",108],["Consumidor · Bioar",100],["Consumidor · Concorrência",100]];
+   var pc=[["Município",107]];pT.forEach(function(t){var nm=t==="consumidor"?"Consumidor":"Revendedor",lw=pT.length===1?208:104;pc.push([nm+" · Bioar",lw],[nm+" · Concorrência",lw])});
    function cab2(){precisa(30);var x=M;pg.drawRectangle({x:M,y:H-y-14,width:W-2*M,height:14,color:hex("eef2f0")});pc.forEach(function(c){txt(c[0].toUpperCase(),x+3,y+10,{s:6,b:true,c:CINZA,w:c[1]-6});x+=c[1]});y+=16}
    cab2();
-   ks.forEach(function(k){if(y+22>H-M){nova();cab2()}var m=Mp[k],x=M,cs=[m.revendedor.b,m.revendedor.c,m.consumidor.b,m.consumidor.c];
+   ks.forEach(function(k){if(y+22>H-M){nova();cab2()}var m=Mp[k],x=M,cs=[];pT.forEach(function(t){cs.push(m[t].b,m[t].c)});
     txt(m.cid,x+3,y+9,{s:7.5,w:pc[0][1]-6});x+=pc[0][1];
     cs.forEach(function(z,j){if(z){txt(gerR(z.v,3),x+3,y+9,{s:7.5,b:true});txt(titulo(z.n),x+3,y+17,{s:6,c:CINZA,w:pc[j+1][1]-6})}else txt("—",x+3,y+9,{s:7.5,c:CINZA});x+=pc[j+1][1]});
     pg.drawLine({start:{x:M,y:H-y-20},end:{x:W-M,y:H-y-20},thickness:0.4,color:LINHA});y+=21})}
