@@ -305,7 +305,7 @@ button.mais{display:block;margin:0 auto}
  </div>
  <div class="filtros filtros2">
   <label class="campo">Tipo de Cliente
-   <select id="ftipo"><option value="">Todos</option><option value="revendedor">Revendedores (postos)</option><option value="consumidor">Consumidores (frotas)</option><option value="iris">Clientes da carteira (Iris)</option><option value="irischurn">Sem compra no mês (comprou no anterior)</option><option value="irisparado">Sem compra no mês</option><option value="irisnovo">Criados pelo Iris (completar cadastro)</option><option value="cadastrados">Cadastrados pela Consulta de CNPJs</option><option value="excluidos">Apagados (lixeira)</option></select></label>
+   <select id="ftipo"><option value="">Todos</option><option value="revendedor">Revendedores (postos)</option><option value="consumidor">Consumidores (frotas)</option><option value="iris">Clientes da carteira (Iris)</option><option value="irischurn">Sem compra no mês (comprou no anterior)</option><option value="irisparado">Sem compra no mês</option><option value="irisnovo">Criados pelo Iris (completar cadastro)</option><option value="cadastrados">Cadastrados pela Consulta de CNPJs</option><option value="inativos">Inativos</option><option value="excluidos">Apagados (lixeira)</option></select></label>
   <label class="campo">Capital social (consumidores)
    <select id="fcap"><option value="">Todos</option><option value="acima">R$ 150 mil ou mais</option><option value="abaixo">Abaixo de R$ 150 mil</option><option value="__sem">Capital não informado</option></select></label>
   <label class="campo">CNPJ
@@ -463,7 +463,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=61;
+var VERSAO_APP=62;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -737,6 +737,8 @@ var EXCL=marcas("postos_excluido"),SEPAR=marcas("postos_separado");
   b.absorvido=true});
  Object.keys(UNIF_NOMES).forEach(function(k){if(cons[k]&&cons[k].unidos){cons[k].nomeAgenda=cons[k].nome;cons[k].nome=UNIF_NOMES[k]}});
  postos=postos.filter(function(p){return !p.absorvido})})();
+/* Registro inativo: fica fora de todos os cálculos, painéis e listas (só aparece no filtro "Inativos") */
+function inativo(p){return !!(INAT[p.ck]||INAT[ckOf(p)])}
 function excluir(p){EXCL[p.ck]=1;carimbo(p.ck,"excluido",1,0);setLS("postos_excluido",EXCL);filtrar()}
 function restaurar(p){delete EXCL[p.ck];carimbo(p.ck,"excluido","","x");setLS("postos_excluido",EXCL);filtrar()}
 function separar(p){(p.unidos||[]).forEach(function(u){SEPAR[u.ck]=1});setLS("postos_separado",SEPAR);setTimeout(function(){location.reload()},600)}
@@ -803,7 +805,7 @@ function calcular(){var g=GIRO,pc=PCT;postos.forEach(function(p){var k=p.ck,v=vo
 var MIN_ARLA=3000;calcular();postos=postos.filter(function(p){return p.tipo==="consumidor"||p.cad||(p.cart&&p.cart.ok)||p.s10Est*1000*PCT/100>=MIN_ARLA});
 var atual=[],limite=60,ultChave="";
 function contaTxt(l){var r=0,c=0;l.forEach(function(p){if(p.tipo==="consumidor")c++;else r++});return [r?r+(r>1?" postos":" posto"):"",c?c+(c>1?" consumidores":" consumidor"):""].filter(Boolean).join(" e ")||"Nenhum registro"}
-function totalBase(){return contaTxt(postos.filter(function(p){return !EXCL[p.ck]}))+" na base. A lista aparece quando você escolhe um critério."}
+function totalBase(){return contaTxt(postos.filter(function(p){return !EXCL[p.ck]&&!inativo(p)}))+" na base. A lista aparece quando você escolhe um critério."}
 function td(t,c){var e=document.createElement("td");if(c)e.className=c;e.textContent=t;return e}
 /* Prazo de pagamento: o digitado na visita vale; sem ele, usa o prazo do relatório Iris */
 function prazoIris(p){var ic=irisCli(p);if(!ic)return "";var l=ic.l.length?ic.l:[],mi=IRIS.resumo.mes,v=l.filter(function(x){return x[5]>0});if(!v.length)return "";
@@ -830,7 +832,7 @@ function agendaRota(ri){if(!ri)return "";var a=[],x;if((x=diasTxt(ri.ini)))a.pus
 var MUNROTA=null;
 function coMun(m){return window.MUN_MG?MUN_MG[String(m||"").replace(/[^A-Z]/g,"")]:null}
 function munRotas(){if(MUNROTA)return MUNROTA;MUNROTA={};
- var votos={};postos.forEach(function(p){if(!p.mun||EXCL[p.ck])return;var ri=rotaInfo(ROTA[p.ck]||rotaAgenda(p));if(!ri)return;var v=votos[p.mun]=votos[p.mun]||{};v[ri.k]=(v[ri.k]||0)+1});
+ var votos={};postos.forEach(function(p){if(!p.mun||EXCL[p.ck]||inativo(p))return;var ri=rotaInfo(ROTA[p.ck]||rotaAgenda(p));if(!ri)return;var v=votos[p.mun]=votos[p.mun]||{};v[ri.k]=(v[ri.k]||0)+1});
  var base=Object.keys(votos).map(function(m){var v=votos[m],k=Object.keys(v).sort(function(a,b){return v[b]-v[a]||a.localeCompare(b)})[0];MUNROTA[m]={k:k,via:"mun",n:v[k]};return {m:m,k:k,c:coMun(m)}}).filter(function(x){return x.c});
  var polos=Object.keys(ROTA_INFO).filter(function(k){return ROTA_INFO[k].mg}).map(function(k){return {k:k,c:coMun(k)}}).filter(function(x){return x.c});
  var todos={};postos.forEach(function(p){if(p.mun)todos[p.mun]=1});
@@ -861,7 +863,7 @@ function filtrar(){
  atual=postos.filter(function(p){
   if(d&&!p.diesel)return false;
   if(mu&&p.mun!==mu)return false;
-  var tv=$("ftipo").value;if(tv==="excluidos"){if(!EXCL[p.ck])return false}else{if(EXCL[p.ck])return false;if(tv==="iris"){if(!irisCli(p))return false}else if(tv==="irischurn"||tv==="irisparado"){var im=irisMes(p);if(!im||im.at>0||(tv==="irischurn"&&!(im.an>0)))return false}else if(tv==="irisnovo"){if(!p.irisNovo)return false}else if(tv==="cadastrados"){if(!p.cad)return false}else if(tv&&p.tipo!==tv)return false}
+  var tv=$("ftipo").value;if(tv==="excluidos"){if(!EXCL[p.ck])return false}else if(tv==="inativos"){if(EXCL[p.ck]||!inativo(p))return false}else{if(EXCL[p.ck]||inativo(p))return false;if(tv==="iris"){if(!irisCli(p))return false}else if(tv==="irischurn"||tv==="irisparado"){var im=irisMes(p);if(!im||im.at>0||(tv==="irischurn"&&!(im.an>0)))return false}else if(tv==="irisnovo"){if(!p.irisNovo)return false}else if(tv==="cadastrados"){if(!p.cad)return false}else if(tv&&p.tipo!==tv)return false}
   var nv=$("fcnpj").value;if(nv==="naoconsult"){if(sitInfo(p)||!temCnpj(p))return false}else if(nv==="baixado"||nv==="rj"||nv==="regular"){var si=sitInfo(p);if(nv==="baixado"&&!(si&&si.baixado))return false;if(nv==="rj"&&!(si&&si.rj))return false;if(nv==="regular"&&!(si&&!si.baixado&&!si.esp))return false}
   else if(nv){var tc=temCnpj(p);if(nv==="sem"?tc&&!CNPJ_SESSAO[p.ck]:!tc)return false}
   var sfv=$("fsf").value;if(sfv){var sfc=p.cart&&p.cart.cod?(p.cart.ok?"sim":"filial"):"nao";if(sfc!==sfv)return false}
@@ -1870,7 +1872,7 @@ function gerR(v,d){return "R$ "+(v||0).toLocaleString("pt-BR",{minimumFractionDi
 function gerEh(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 /* Uma linha por cliente com dados do Iris (cada código/loja conta uma vez) */
 function gerClientes(){if(!IRIS||!IRIS.dados)return [];var mi=IRIS.resumo.mes,vist={},o=[];
- postos.forEach(function(p){var ic=irisCli(p);if(!ic)return;var l=ic.l.filter(function(x){var k=codN(p.cart.cod)+"|"+x[0];if(vist[k])return false;vist[k]=1;return true});if(!l.length)return;
+ postos.forEach(function(p){if(inativo(p)||EXCL[p.ck])return;var ic=irisCli(p);if(!ic)return;var l=ic.l.filter(function(x){var k=codN(p.cart.cod)+"|"+x[0];if(vist[k])return false;vist[k]=1;return true});if(!l.length)return;
   var vm=0,va=0,vmeses=[],mm=0,ma=0,pp=0,pv=0,pu=0;for(var j=0;j<=12;j++)vmeses[j]=0;
   l.forEach(function(x){var m=x[6][mi]||0,a=x[7]||0;vm+=m;va+=a;for(var j=1;j<=mi;j++)vmeses[j]+=x[6][j]||0;mm+=(x[4]||0)*m;ma+=(x[4]||0)*a;
    var pr=x[2]||x[3]||0;if(pr){pp+=pr*(m||a||1);pv+=(m||a||1)}if(x[3])pu=x[3]});
@@ -1938,7 +1940,7 @@ function gerPinta(){var tudo=gerClientes(),X=$("gercorpo");
  var M={};function cel(c){var k=sem(c||"");if(!k)return null;return M[k]||(M[k]={cid:c,revendedor:{b:null,c:null},consumidor:{b:null,c:null}})}
  function menor(o,campo,v,nome){if(!(v>0))return;if(!o[campo]||v<o[campo].v)o[campo]={v:v,n:nome}}
  L.forEach(function(r){if(!r.preco)return;var m=cel(r.cidade);if(m)menor(m[r.tipo],"b",r.preco,r.p.nome)});
- postos.forEach(function(p){var ck=ckOf(p),f=sem(FORN[ck]||""),v=gerNum(PRECO[ck]);if(!v||!f||/BIOAR|AGRICOPEL/.test(f))return;var t=p.tipo==="consumidor"?"consumidor":"revendedor";
+ postos.forEach(function(p){if(inativo(p)||EXCL[p.ck])return;var ck=ckOf(p),f=sem(FORN[ck]||""),v=gerNum(PRECO[ck]);if(!v||!f||/BIOAR|AGRICOPEL/.test(f))return;var t=p.tipo==="consumidor"?"consumidor":"revendedor";
   if(GER.seg&&t!==GER.seg)return;if(GER.cid&&sem(p.cidade)!==GER.cid)return;var m=cel(p.cidade);if(m)menor(m[t],"c",v,p.nome+" · "+titulo(FORN[ck]))});
  var ks=Object.keys(M).filter(function(k){return gerTemPreco(M[k])}).sort();   /* município sem nenhum preço fica fora até ser alimentado */
  function cp(x){return x?'<b>'+gerR(x.v,3)+'</b><small>'+gerEh(titulo(x.n))+'</small>':'<span class="fraco">—</span>'}
@@ -2043,7 +2045,7 @@ function gerPdf(){var tudo=gerClientes();if(!tudo.length)return Promise.reject(n
   var Mp={};function cel(c){var k=sem(c||"");if(!k)return null;return Mp[k]||(Mp[k]={cid:c,revendedor:{b:null,c:null},consumidor:{b:null,c:null}})}
   function menor(o,campo,v,nome){if(!(v>0))return;if(!o[campo]||v<o[campo].v)o[campo]={v:v,n:nome}}
   L.forEach(function(r){if(!r.preco)return;var m=cel(r.cidade);if(m)menor(m[r.tipo],"b",r.preco,r.p.nome)});
-  postos.forEach(function(p){var ck=ckOf(p),fo=sem(FORN[ck]||""),v=gerNum(PRECO[ck]);if(!v||!fo||/BIOAR|AGRICOPEL/.test(fo))return;var t=p.tipo==="consumidor"?"consumidor":"revendedor";
+  postos.forEach(function(p){if(inativo(p)||EXCL[p.ck])return;var ck=ckOf(p),fo=sem(FORN[ck]||""),v=gerNum(PRECO[ck]);if(!v||!fo||/BIOAR|AGRICOPEL/.test(fo))return;var t=p.tipo==="consumidor"?"consumidor":"revendedor";
    if(GER.seg&&t!==GER.seg)return;if(GER.cid&&sem(p.cidade)!==GER.cid)return;var m=cel(p.cidade);if(m)menor(m[t],"c",v,p.nome+" · "+titulo(FORN[ck]))});
   var ks=Object.keys(Mp).filter(function(k){return gerTemPreco(Mp[k])}).sort();
   if(GER.pcid&&GER.pcid!=="*")ks=ks.filter(function(k){return k===GER.pcid});
@@ -2094,7 +2096,7 @@ function abrirFicha(p,dlg){var d=dlg&&$(dlg);if(d&&d.open){if(d.close)d.close();
 /* ---------- Churn: semáforo dos clientes que compraram nos últimos 3 meses ---------- */
 var CH={cor:"",seg:"",cid:""};
 function chDados(){if(!IRIS||!IRIS.dados)return null;var mi=IRIS.resumo.mes,ms=[mi-2,mi-1,mi].filter(function(m){return m>=0}),vist={},L=[];
- postos.forEach(function(p){if(vist[p.ck]||EXCL[p.ck])return;var ic=irisCli(p);if(!ic||!ic.l.length)return;vist[p.ck]=1;
+ postos.forEach(function(p){if(vist[p.ck]||EXCL[p.ck]||inativo(p))return;var ic=irisCli(p);if(!ic||!ic.l.length)return;vist[p.ck]=1;
   var v=ms.map(function(m){return ic.l.reduce(function(a,x){return a+(x[6][m]||0)},0)});if(!v.some(function(x){return x>0}))return;
   var ult=v.length-1;while(ult>=0&&!(v[ult]>0))ult--;var cor=ult===v.length-1?"vd":ult===v.length-2?"am":"vm";
   var comp=v.filter(function(x){return x>0}),med=comp.reduce(function(a,x){return a+x},0)/comp.length;
