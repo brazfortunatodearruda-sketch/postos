@@ -310,6 +310,8 @@ button.mais{display:block;margin:0 auto}
    <select id="fcap"><option value="">Todos</option><option value="acima">R$ 150 mil ou mais</option><option value="abaixo">Abaixo de R$ 150 mil</option><option value="__sem">Capital não informado</option></select></label>
   <label class="campo">CNPJ
    <select id="fcnpj"><option value="">Todos</option><option value="sem">Sem CNPJ (para pesquisar)</option><option value="com">Com CNPJ</option><option value="regular">Ativos na Receita (sem restrição)</option><option value="baixado">Inativos na Receita (baixados, inaptos, suspensos)</option><option value="rj">Em recuperação judicial</option><option value="naoconsult">Situação na Receita não consultada</option></select></label>
+  <label class="campo">Perfil do Consumidor
+   <select id="fpcons"><option value="">Todos</option><option value="passageiros">Transporte de passageiros</option><option value="cargas">Transporte de cargas</option><option value="mineradora">Mineradora</option><option value="outros">Outros segmentos</option><option value="__sem">Segmento não informado</option></select></label>
   <label class="campo">Visita
    <select id="fvis"><option value="">Todos</option><option value="sim">Já visitados</option><option value="nao">Ainda não visitados</option><option value="ret">Com retorno agendado</option><option value="retatr">Retorno atrasado</option><option value="retsem">Hoje e próximos 7 dias</option></select></label>
   <label class="campo">Consumo de Arla
@@ -459,11 +461,13 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=59;
+var VERSAO_APP=60;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
 function sem(s){return String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase()}
+/* Perfil do cliente consumidor, pelo segmento: passageiros, cargas, mineradora, outros ou "" (não informado) */
+function perfilCons(p){var g=sem(p.segmento||"").trim();if(!g)return "";if(/PASSAG|COLETIV|ONIBUS|TURISMO|FRETAMENTO|URBANO/.test(g))return "passageiros";if(/MINER/.test(g))return "mineradora";if(/CARGA|TRANSPORTADOR|LOGIST|FRIGORIF/.test(g))return "cargas";return "outros"}
 function fone(t){t=String(t||"").replace(/\D/g,"");if(t.length===11)return "("+t.slice(0,2)+") "+t.slice(2,7)+"-"+t.slice(7);if(t.length===10)return "("+t.slice(0,2)+") "+t.slice(2,6)+"-"+t.slice(6);return t}
 var WA={};try{WA=JSON.parse(localStorage.getItem("postos_whatsapp")||"{}")||{}}catch(e){WA={}}
 function waGet(t){return WA[String(t||"").replace(/\D/g,"")]||""}
@@ -845,7 +849,7 @@ function filtrar(){
  postos.forEach(aplicaEnd);calcular();opPrazoPer();
  var termos=sem($("q").value).split(",").map(function(t){return t.trim()}).filter(Boolean);
  var soDig=$("q").value.replace(/\D/g,"");
- var d=false,mu=$("mun").value,FILTROS=["wa","fvis","fcons","fperf","fband","fforn","feq","frede","ftipo","fcap","fcnpj","frota","fprog","fprazo","fper"];
+ var d=false,mu=$("mun").value,FILTROS=["wa","fvis","fcons","fperf","fband","fforn","feq","frede","ftipo","fcap","fcnpj","fpcons","frota","fprog","fprazo","fper"];
  var chave=[mu,$("q").value].concat(FILTROS.map(function(id){return $(id).value})).join("|");if(chave!==ultChave){limite=60;ultChave=chave}
  if(!mu&&!termos.length&&!(soDig.length>=8)&&!FILTROS.some(function(id){return $(id).value})){
   atual=[];$("tb").textContent="";$("mais").hidden=true;$("vazio").hidden=false;
@@ -858,6 +862,7 @@ function filtrar(){
   var tv=$("ftipo").value;if(tv==="excluidos"){if(!EXCL[p.ck])return false}else{if(EXCL[p.ck])return false;if(tv==="iris"){if(!irisCli(p))return false}else if(tv==="irischurn"||tv==="irisparado"){var im=irisMes(p);if(!im||im.at>0||(tv==="irischurn"&&!(im.an>0)))return false}else if(tv==="irisnovo"){if(!p.irisNovo)return false}else if(tv==="cadastrados"){if(!p.cad)return false}else if(tv&&p.tipo!==tv)return false}
   var nv=$("fcnpj").value;if(nv==="naoconsult"){if(sitInfo(p)||!temCnpj(p))return false}else if(nv==="baixado"||nv==="rj"||nv==="regular"){var si=sitInfo(p);if(nv==="baixado"&&!(si&&si.baixado))return false;if(nv==="rj"&&!(si&&si.rj))return false;if(nv==="regular"&&!(si&&!si.baixado&&!si.esp))return false}
   else if(nv){var tc=temCnpj(p);if(nv==="sem"?tc&&!CNPJ_SESSAO[p.ck]:!tc)return false}
+  var pcv=$("fpcons").value;if(pcv){if(p.tipo!=="consumidor")return false;var pcx=perfilCons(p);if(pcv==="__sem"?pcx:pcx!==pcv)return false}
   var kv=$("fcap").value;if(kv){if(p.tipo!=="consumidor")return false;var kn=capNum(p.ck);if(kv==="__sem"?kn!=null:kn==null||(kv==="acima"?kn<CORTE_CAPITAL:kn>=CORTE_CAPITAL))return false}
   var wf=$("wa").value;if(wf){var ts=fonesEfetivos(p),st=ts.map(waGet);
    if(wf==="sim"&&st.indexOf("sim")<0)return false;
@@ -919,7 +924,7 @@ function filtrar(){
   tr.appendChild(a);var bd=td(p.tipo==="consumidor"?"Consumidor"+(p.segmento?" · "+p.segmento:""):p.bandeira);
   (function(){var lb=document.createElement("label");lb.className="equip tipocli";var lt=document.createElement("span");lt.textContent="Tipo de Cliente";lt.appendChild(dtSpan(ck,"tipo"));lb.appendChild(lt);
    var sl=document.createElement("select"),auto=(p.tipoOrig==null?p.tipo:p.tipoOrig)==="consumidor"?"Consumidor":"Revendedor";
-   [["","Automático: "+auto],["revendedor","Revendedor (posto)"],["consumidor|Transporte de cargas","Consumidor · Transporte de cargas"],["consumidor|Passageiros","Consumidor · Passageiros"],["consumidor|","Consumidor · outro"]].forEach(function(o){var op=document.createElement("option");op.value=o[0];op.textContent=o[1];sl.appendChild(op)});
+   [["","Automático: "+auto],["revendedor","Revendedor (posto)"],["consumidor|Transporte de cargas","Consumidor · Transporte de cargas"],["consumidor|Passageiros","Consumidor · Passageiros"],["consumidor|Mineração","Consumidor · Mineradora"],["consumidor|","Consumidor · outro"]].forEach(function(o){var op=document.createElement("option");op.value=o[0];op.textContent=o[1];sl.appendChild(op)});
    sl.value=TIPOCLI[ck]||"";sl.className=sl.value?"proprio":"";sl.setAttribute("aria-label","Tipo de cliente de "+p.nome);
    sl.addEventListener("change",function(){carimbo(ck,"tipo",sl.value,TIPOCLI[ck]||"");if(sl.value)TIPOCLI[ck]=sl.value;else delete TIPOCLI[ck];setLS("postos_tipo_cli",TIPOCLI);tipoAplica(p);filtrar()});
    lb.appendChild(sl);bd.appendChild(lb)})();
@@ -1046,9 +1051,9 @@ Object.keys(NOMES).sort(function(a,b){return a.localeCompare(b)}).forEach(functi
  var o=document.createElement("option");o.value=m;
  o.textContent=NOMES[m]+" ("+postos.filter(function(p){return p.mun===m}).length+")";
  $("mun").appendChild(o)});
-$("mun").addEventListener("change",filtrar);["fvis","fcons","fperf","fband","fforn","feq","frede","ftipo","fcap","fcnpj","frota","fprog","fprazo","fper"].forEach(function(id){$(id).addEventListener("change",filtrar)});
+$("mun").addEventListener("change",filtrar);["fvis","fcons","fperf","fband","fforn","feq","frede","ftipo","fcap","fcnpj","fpcons","frota","fprog","fprazo","fper"].forEach(function(id){$(id).addEventListener("change",filtrar)});
 (function(){var u={};postos.forEach(function(p){u[p.bandeira]=(u[p.bandeira]||0)+1});Object.keys(u).sort(function(a,b){return (a==="BANDEIRA BRANCA")-(b==="BANDEIRA BRANCA")||u[b]-u[a]||a.localeCompare(b)}).forEach(function(b){var o=document.createElement("option");o.value=b;o.textContent=({"ALE":"ALE","RAIZEN":"Raízen","TORRAO":"Torrão","SIM DISTRIBUIDOR":"SIM Distribuidor"}[b]||titulo(b))+" ("+u[b]+")";$("fband").appendChild(o)})})();
-$("limpar").addEventListener("click",function(){["mun","wa","fvis","fcons","fperf","fband","fforn","feq","frede","ftipo","fcap","fcnpj","frota","fprog","fprazo","fper"].forEach(function(id){$(id).value=""});$("q").value="";$("desde").value="";filtrar()});
+$("limpar").addEventListener("click",function(){["mun","wa","fvis","fcons","fperf","fband","fforn","feq","frede","ftipo","fcap","fcnpj","fpcons","frota","fprog","fprazo","fper"].forEach(function(id){$(id).value=""});$("q").value="";$("desde").value="";filtrar()});
 $("ajuda").addEventListener("click",function(){var d=$("dlg");if(d.showModal)d.showModal();else d.setAttribute("open","")});
 $("dlgx").addEventListener("click",function(){var d=$("dlg");if(d.close)d.close();else d.removeAttribute("open")});
 $("dlg").addEventListener("click",function(e){if(e.target===this&&this.close)this.close()});$("wa").addEventListener("change",filtrar);$("ord").addEventListener("change",filtrar);
@@ -1089,7 +1094,7 @@ function valorCampo(p,c){var k=p.ck;switch(c){
  case "whatsapp":return fonesEfetivos(p).map(function(t){return t+": "+waTxt(t)}).join(", ");
  default:return ""}}
 function descFiltro(){var o=[],mu=$("mun");if(mu.value)o.push("Município: "+mu.options[mu.selectedIndex].text);if($("q").value.trim())o.push("Busca: “"+$("q").value.trim()+"”");
- ["ftipo","fcap","fcnpj","fvis","fcons","fperf","fband","fforn","feq","frede","frota","fprog","fprazo","fper","wa"].forEach(function(id){var s=$(id);if(s&&s.value){var lb=s.closest("label");var nm=lb?lb.firstChild.textContent.trim():id;o.push(nm+": "+s.options[s.selectedIndex].text)}});return o.join(" · ")}
+ ["ftipo","fcap","fcnpj","fpcons","fvis","fcons","fperf","fband","fforn","feq","frede","frota","fprog","fprazo","fper","wa"].forEach(function(id){var s=$(id);if(s&&s.value){var lb=s.closest("label");var nm=lb?lb.firstChild.textContent.trim():id;o.push(nm+": "+s.options[s.selectedIndex].text)}});return o.join(" · ")}
 function relatorio(){
  var ds=$("desde").value;postos.forEach(aplicaEnd);
  var filtro=atual.length>0,lista;
@@ -2081,7 +2086,7 @@ $("gerseg").addEventListener("change",function(){GER.seg=this.value;gerPinta()})
 /* Abre a ficha do cliente na lista: fecha o diálogo de origem e filtra pelo nome */
 function abrirFicha(p,dlg){var d=dlg&&$(dlg);if(d&&d.open){if(d.close)d.close();else d.removeAttribute("open")}
  /* limpa os filtros para o cliente aparecer mesmo que esteja em outro município ou segmento */
- ["mun","wa","fvis","fcons","fperf","fband","fforn","feq","frede","ftipo","fcap","fcnpj","frota","fprog","fprazo","fper"].forEach(function(id){var x=$(id);if(x)x.value=""});var ds=$("desde");if(ds)ds.value="";
+ ["mun","wa","fvis","fcons","fperf","fband","fforn","feq","frede","ftipo","fcap","fcnpj","fpcons","frota","fprog","fprazo","fper"].forEach(function(id){var x=$(id);if(x)x.value=""});var ds=$("desde");if(ds)ds.value="";
  var q=$("q");q.value=p.nome;filtrar();window.scrollTo(0,0)}
 /* ---------- Churn: semáforo dos clientes que compraram nos últimos 3 meses ---------- */
 var CH={cor:"",seg:"",cid:""};
