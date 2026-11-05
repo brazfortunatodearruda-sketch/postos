@@ -463,7 +463,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=62;
+var VERSAO_APP=63;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -1878,9 +1878,11 @@ function gerClientes(){if(!IRIS||!IRIS.dados)return [];var mi=IRIS.resumo.mes,vi
    var pr=x[2]||x[3]||0;if(pr){pp+=pr*(m||a||1);pv+=(m||a||1)}if(x[3])pu=x[3]});
   var nc=0,tc=0;for(var j=1;j<=mi;j++)if(vmeses[j]>0){nc++;tc+=vmeses[j]}
   o.push({p:p,tipo:p.tipo==="consumidor"?"consumidor":"revendedor",cidade:p.cidade||titulo(l[0][1]||""),volMes:vm,volAno:va,media:nc?tc/nc:0,
-   preco:pv?pp/pv:pu,margUn:va?ma/va:(vm?mm/vm:0),margMes:mm,margAno:ma})});
+   preco:pv?pp/pv:pu,ult:ic.c.u||"",margUn:va?ma/va:(vm?mm/vm:0),margMes:mm,margAno:ma})});
  return o}
 /* município entra no quadro de preços só se tiver ao menos um preço (Bioar ou concorrência, revendedor ou consumidor) */
+/* preço Bioar só vale no "menor preço" se o cliente comprou nos últimos 12 meses (preço antigo não é preço praticado) */
+function gerRecente(u){var m=String(u||"").match(/(\d{2})\/(\d{2})\/(\d{4})/);if(!m)return false;return new Date(+m[3],+m[2]-1,+m[1]).getTime()>=Date.now()-365*864e5}
 function gerTemPreco(m){return ["revendedor","consumidor"].some(function(t){return (m[t].b&&m[t].b.v>0)||(m[t].c&&m[t].c.v>0)})}
 /* agrupa os clientes com compra no ano pela rota efetiva (ficha > agenda > município); "~" = sem rota */
 function gerRotas(L){var o={};L.forEach(function(r){if(!(r.volAno>0))return;var n=rotaEf(r.p)||"",k=n?chavePP(n):"~";
@@ -1939,7 +1941,7 @@ function gerPinta(){var tudo=gerClientes(),X=$("gercorpo");
  /* menor preço por município: Bioar (Iris) e concorrência (preço praticado de outro fornecedor) */
  var M={};function cel(c){var k=sem(c||"");if(!k)return null;return M[k]||(M[k]={cid:c,revendedor:{b:null,c:null},consumidor:{b:null,c:null}})}
  function menor(o,campo,v,nome){if(!(v>0))return;if(!o[campo]||v<o[campo].v)o[campo]={v:v,n:nome}}
- L.forEach(function(r){if(!r.preco)return;var m=cel(r.cidade);if(m)menor(m[r.tipo],"b",r.preco,r.p.nome)});
+ L.forEach(function(r){if(!r.preco||!gerRecente(r.ult))return;var m=cel(r.cidade);if(m)menor(m[r.tipo],"b",r.preco,r.p.nome)});
  postos.forEach(function(p){if(inativo(p)||EXCL[p.ck])return;var ck=ckOf(p),f=sem(FORN[ck]||""),v=gerNum(PRECO[ck]);if(!v||!f||/BIOAR|AGRICOPEL/.test(f))return;var t=p.tipo==="consumidor"?"consumidor":"revendedor";
   if(GER.seg&&t!==GER.seg)return;if(GER.cid&&sem(p.cidade)!==GER.cid)return;var m=cel(p.cidade);if(m)menor(m[t],"c",v,p.nome+" · "+titulo(FORN[ck]))});
  var ks=Object.keys(M).filter(function(k){return gerTemPreco(M[k])}).sort();   /* município sem nenhum preço fica fora até ser alimentado */
@@ -1948,7 +1950,7 @@ function gerPinta(){var tudo=gerClientes(),X=$("gercorpo");
  var pTipos=GER.pseg?[GER.pseg]:["revendedor","consumidor"];
  h+='<section class="gsec"><div class="gsectop"><h3>Menor preço por município</h3><div class="grkfil"><label>Município<select id="gerpcid">'+opc([["","Escolha o município…"]].concat(ks.map(function(k){return [k,M[k].cid]})).concat(ks.length>1?[["*","Todos (tabela completa)"]]:[]),GER.pcid)+'</select></label>'
   +'<label>Tipo de cliente<select id="gerpseg">'+opc([["","Todos"],["revendedor","Revendedor"],["consumidor","Consumidor"]],GER.pseg)+'</select></label></div></div>'
-  +'<p class="fraco">Bioar: preço médio de '+mes+' no Iris (ou o último preço). Concorrência: “Preço praticado” anotado na ficha quando o fornecedor atual não é a Bioar.</p>';
+  +'<p class="fraco">Bioar: preço médio de '+mes+' no Iris (ou o último preço), só de clientes com compra nos últimos 12 meses; inativos ficam de fora. Concorrência: “Preço praticado” anotado na ficha quando o fornecedor atual não é a Bioar.</p>';
  if(!ks.length)h+='<p class="fraco">Sem preços no filtro.</p>';
  else if(!GER.pcid)h+='<p class="fraco">Escolha um município para ver os preços ('+ks.length+(ks.length===1?" município":" municípios")+' com preço).</p>';
  else{var sel=GER.pcid==="*"?ks:[GER.pcid];
@@ -2044,14 +2046,14 @@ function gerPdf(){var tudo=gerClientes();if(!tudo.length)return Promise.reject(n
   /* menor preço por município */
   var Mp={};function cel(c){var k=sem(c||"");if(!k)return null;return Mp[k]||(Mp[k]={cid:c,revendedor:{b:null,c:null},consumidor:{b:null,c:null}})}
   function menor(o,campo,v,nome){if(!(v>0))return;if(!o[campo]||v<o[campo].v)o[campo]={v:v,n:nome}}
-  L.forEach(function(r){if(!r.preco)return;var m=cel(r.cidade);if(m)menor(m[r.tipo],"b",r.preco,r.p.nome)});
+  L.forEach(function(r){if(!r.preco||!gerRecente(r.ult))return;var m=cel(r.cidade);if(m)menor(m[r.tipo],"b",r.preco,r.p.nome)});
   postos.forEach(function(p){if(inativo(p)||EXCL[p.ck])return;var ck=ckOf(p),fo=sem(FORN[ck]||""),v=gerNum(PRECO[ck]);if(!v||!fo||/BIOAR|AGRICOPEL/.test(fo))return;var t=p.tipo==="consumidor"?"consumidor":"revendedor";
    if(GER.seg&&t!==GER.seg)return;if(GER.cid&&sem(p.cidade)!==GER.cid)return;var m=cel(p.cidade);if(m)menor(m[t],"c",v,p.nome+" · "+titulo(FORN[ck]))});
   var ks=Object.keys(Mp).filter(function(k){return gerTemPreco(Mp[k])}).sort();
   if(GER.pcid&&GER.pcid!=="*")ks=ks.filter(function(k){return k===GER.pcid});
   if(GER.pseg)ks=ks.filter(function(k){return Mp[k][GER.pseg].b||Mp[k][GER.pseg].c});
   var pT=GER.pseg?[GER.pseg]:["revendedor","consumidor"];
-  if(ks.length){precisa(80);titulo2("Menor preço por município");txt("Bioar: preço médio de "+mes+" no Iris (ou o último). Concorrência: preço praticado anotado na ficha, quando o fornecedor não é a Bioar.",M,y+6,{s:7,c:CINZA});y+=14;
+  if(ks.length){precisa(80);titulo2("Menor preço por município");txt("Bioar: preço médio de "+mes+" no Iris (ou o último), só de clientes com compra nos últimos 12 meses. Concorrência: preço praticado anotado na ficha, quando o fornecedor não é a Bioar.",M,y+6,{s:7,c:CINZA});y+=14;
    var pc=[["Município",107]];pT.forEach(function(t){var nm=t==="consumidor"?"Consumidor":"Revendedor",lw=pT.length===1?208:104;pc.push([nm+" · Bioar",lw],[nm+" · Concorrência",lw])});
    function cab2(){precisa(30);var x=M;pg.drawRectangle({x:M,y:H-y-14,width:W-2*M,height:14,color:hex("eef2f0")});pc.forEach(function(c){txt(c[0].toUpperCase(),x+3,y+10,{s:6,b:true,c:CINZA,w:c[1]-6});x+=c[1]});y+=16}
    cab2();
