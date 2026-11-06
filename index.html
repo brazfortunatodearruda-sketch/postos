@@ -211,6 +211,35 @@ dialog#dlgger{width:min(1100px,calc(100vw - 16px));max-width:none;max-height:cal
 dialog#dlgger::backdrop{background:rgba(10,20,16,.55)}
 dialog#dlgchurn{width:min(1000px,calc(100vw - 16px));max-width:none;max-height:calc(100vh - 24px);padding:0;border:1px solid var(--linha);border-radius:10px;background:var(--papel);color:var(--texto)}
 dialog#dlgchurn::backdrop{background:rgba(10,20,16,.55)}
+dialog#dlgrota{width:min(900px,calc(100vw - 16px));max-width:none;max-height:calc(100vh - 24px);padding:0;border:1px solid var(--linha);border-radius:10px;background:var(--papel);color:var(--texto)}
+dialog#dlgrota::backdrop{background:rgba(10,20,16,.55)}
+.vrc{padding:12px 16px 22px;display:grid;gap:14px}
+.vrnav{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.vrnav b{font-size:1rem}.vrnav .fraco{flex-basis:100%;margin:0}
+.vrdia{border:1px solid var(--linha);border-radius:10px;overflow:hidden;background:var(--papel)}
+.vrcab{padding:10px 14px;display:grid;gap:5px;border-bottom:1px solid var(--linha);background:var(--fundo)}
+.vrtop{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline}
+.vrtop h3{margin:0;font-size:1.05rem}.vrtop h3 em{font-style:normal;color:var(--acento);margin-right:6px}
+.vrkm{font-size:.82rem;color:var(--suave);font-variant-numeric:tabular-nums}
+.vrobs{margin:0;font-size:.86rem;color:var(--suave)}.vraviso{margin:0;font-size:.86rem;color:var(--erro);font-weight:600}
+.vracoes{display:flex;gap:8px;flex-wrap:wrap}
+.vrmapa{display:inline-block;background:var(--acento);color:var(--acento-texto);text-decoration:none;font-weight:600;font-size:.86rem;padding:6px 12px;border-radius:6px}
+.vrlista{list-style:none;margin:0;padding:4px 0}
+.vrp{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;padding:9px 14px;border-top:1px dashed var(--linha);align-items:start}
+.vrp:first-child{border-top:0}
+.vrnum{width:26px;height:26px;border-radius:50%;border:2px solid var(--texto);display:grid;place-items:center;font-weight:700;font-size:.8rem;font-variant-numeric:tabular-nums}
+.vrp.frota .vrnum{border-style:dashed}.vrp.feito .vrnum{background:var(--acento);border-color:var(--acento);color:var(--acento-texto)}
+.vrp.feito .chnome{text-decoration:line-through;color:var(--suave)}
+.vrmid{min-width:0}.vrend{font-size:.82rem;color:var(--suave);overflow-wrap:anywhere}
+.vrlin{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:3px;font-size:.82rem}
+.vrpill{font-size:.72rem;font-weight:700;padding:1px 8px;border-radius:99px;white-space:nowrap;border:1px solid currentColor}
+.vrpill.rec{color:#b3352a}.vrpill.ate{color:#a5640a}.vrpill.ati{color:#2e8b57}.vrpill.pro{color:#0d5fa8}.vrpill.fro{color:var(--texto)}.vrpill.ret{color:#7b3fb3}
+.vrinfo{color:var(--suave)}.vrtel{font-variant-numeric:tabular-nums;user-select:all}.vrlk{color:var(--acento);font-weight:600}
+.vrbts{display:flex;flex-direction:column;gap:5px;align-items:stretch}.vrbts button{font-size:.78rem;padding:3px 8px}
+.vrvazio{padding:12px 14px;color:var(--suave)}
+.vrres{border-top:1px solid var(--linha);padding:8px 14px;font-size:.86rem}.vrres summary{cursor:pointer;color:var(--suave);font-weight:600}.vrres ul{margin:6px 0 0;padding-left:18px;display:grid;gap:3px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .vrpill.rec{color:#ef8378}:root:not([data-theme="light"]) .vrpill.ate{color:#e7a94a}:root:not([data-theme="light"]) .vrpill.ati{color:#5cc791}:root:not([data-theme="light"]) .vrpill.pro{color:#6fb0ee}:root:not([data-theme="light"]) .vrpill.ret{color:#c79af0}}
+:root[data-theme="dark"] .vrpill.rec{color:#ef8378}:root[data-theme="dark"] .vrpill.ate{color:#e7a94a}:root[data-theme="dark"] .vrpill.ati{color:#5cc791}:root[data-theme="dark"] .vrpill.pro{color:#6fb0ee}:root[data-theme="dark"] .vrpill.ret{color:#c79af0}
+@media (max-width:520px){.vrp{grid-template-columns:28px minmax(0,1fr)}.vrbts{grid-column:2;flex-direction:row;flex-wrap:wrap}}
 #lkchurn{color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .chc{--vm:#c62828;--am:#e0a800;--vd:#2e8b57;padding:14px 20px 22px}
 .chres{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px}
@@ -279,7 +308,7 @@ button.mais{display:block;margin:0 auto}
 .vendas details summary{cursor:pointer;color:var(--acento)}.vendas .meses{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:0 10px}
 @media (max-width:600px){.iris{display:grid}.irisg{width:100%}.irisg th,.irisg td{padding:3px 6px;min-width:0;font-size:.82rem}.iris-lado{max-width:none}}
 </style><main>
-<header><div class="topo"><h1>Gestor de Carteira Arla 32 <span class="versao">versão <span id="vapp"></span></span></h1><span class="topo-acoes"><a id="lkreceita" href="consulta-cnpj.html" target="receitaws" rel="noopener">Consulta de CNPJs</a><a id="lkportal" href="https://agricopel.portaldocliente.online/?redirect_url=%2Fdashboard" target="portalcliente" rel="noopener">Portal do cliente</a><button type="button" id="painelger" class="cheio">📊 Painel gerencial</button><button type="button" id="ajuda">Como funciona</button></span></div>
+<header><div class="topo"><h1>Gestor de Carteira Arla 32 <span class="versao">versão <span id="vapp"></span></span></h1><span class="topo-acoes"><a id="lkreceita" href="consulta-cnpj.html" target="receitaws" rel="noopener">Consulta de CNPJs</a><a id="lkportal" href="https://agricopel.portaldocliente.online/?redirect_url=%2Fdashboard" target="portalcliente" rel="noopener">Portal do cliente</a><button type="button" id="painelger" class="cheio">📊 Painel gerencial</button><button type="button" id="rotasbtn" class="cheio">🗺️ Rotas de visita</button><button type="button" id="ajuda">Como funciona</button></span></div>
 <div id="destaque" class="destaque"><div class="iris">
  <table class="irisg" aria-label="Resultado do mês no relatório Iris"><thead><tr><th id="ir-data">DATA</th><th>Volume</th><th>Margem</th><th><a href="#churn" id="lkchurn" title="Ver os clientes que compraram nos últimos 90 dias e quem você está perdendo">Churn ↗</a></th></tr></thead>
  <tbody><tr><th>Real</th><td id="ir-vr">—</td><td id="ir-mr">—</td><td id="ir-cr">—</td></tr>
@@ -392,6 +421,8 @@ button.mais{display:block;margin:0 auto}
 <p>"📤 Portfólio de tanques", ao lado de "📄 Proposta", manda pelo WhatsApp (no celular) ou baixa (no computador) a página dos tanques em comodato da Bioar, sem a parte de automação.</p>
 <h3>Retorno ao cliente</h3>
 <p>"📅 Agendar retorno" (nos botões de ação da coluna Nome e dentro do Prontuário) abre uma janela para escolher data, hora, duração, tipo (visita, ligação ou WhatsApp) e o assunto. Há atalhos para amanhã, 1 semana, 15 e 30 dias e para a próxima saída da rota do cliente. "Salvar no Google Agenda" grava o evento direto na sua agenda, com cliente, CNPJ, telefones, endereço, rota, último atendimento, lembrete e um link que abre a ficha no app. Na primeira vez o Google pede a permissão de agenda: aceite. Remarcar altera o mesmo evento e "Cancelar retorno agendado" apaga o evento da agenda. Cada agendamento, remarcação ou cancelamento fica registrado no histórico do Prontuário. Sem internet ou sem permissão, o app abre o Google Agenda preenchido para você salvar lá. A data fica gravada no app: o botão passa a mostrar o retorno (em vermelho quando atrasado), o Prontuário avisa retornos de hoje e atrasados, e o filtro Visita mostra quem tem retorno agendado, atrasado ou nos próximos 7 dias.</p>
+<h3>Rotas de visita</h3>
+<p>"🗺️ Rotas de visita", no topo, monta a semana de campo num ciclo de 4 semanas: segunda e terça em bate-volta saindo de Divinópolis (circuitos A e B, alternados) e quarta a sexta saindo de Betim (Norte BR-040, Inconfidentes, Leste BR-381 e Grande BH, um por semana), com volta na sexta à tarde. As setas trocam de semana. As paradas saem dos dados do app: primeiro quem tem retorno agendado para aquele dia (retornos marcados para o dia em outro município aparecem como aviso) e os retornos atrasados; depois os clientes da carteira (Recuperar, Atenção e Ativo, pela carga Iris ou pela última compra), os postos prospects de maior potencial e uma frota do município. Quem foi visitado nos 30 dias anteriores fica de fora. "Rota completa no Maps" abre o trajeto com as paradas na ordem, "Visitei" grava a data da visita e "Agendar retorno" funciona como na lista. A quilometragem é estimada (linha reta × 1,3).</p>
 <h3>Rotas de entrega</h3>
 <p>O campo Rota mostra a rota de entrega do cliente e, logo abaixo, os dias da tabela de rotas da Bioar: saída, chegada e o limite para fazer o pedido. Vale nesta ordem: a rota que você escolher no app; a rota escrita na agenda ("ROTA SETE LAGOAS"); e, sem nenhuma das duas, a rota do município — a mais usada pelos clientes daquele município ("rota dos clientes do município"), ou a do município vizinho mais próximo que tenha rota, até 35 km ("sugerida: vizinho"), ou o polo de rota em MG mais perto ("sugerida: polo mais perto"). As sugeridas aparecem em itálico; ao confirmar com o cliente, escolha a rota no campo e ela passa a valer. O filtro Rota e a planilha usam a rota que vale.</p>
 <h3>Situação na Receita</h3>
@@ -459,11 +490,14 @@ button.mais{display:block;margin:0 auto}
 <dialog id="dlgchurn" aria-labelledby="cht"><div class="dlgcab"><h2 id="cht">🚦 Churn: clientes dos últimos 90 dias</h2><button type="button" id="chx" aria-label="Fechar">Fechar</button></div>
 <div class="gerfil"><label>Segmento<select id="chseg"><option value="">Todos</option><option value="revendedor">Revendedor</option><option value="consumidor">Consumidor</option></select></label><label>Município<select id="chcid"></select></label></div>
 <div id="chcorpo" class="chc"></div></dialog>
+<dialog id="dlgrota" aria-labelledby="vrt"><div class="dlgcab"><h2 id="vrt">🗺️ Rotas de visita</h2><button type="button" id="vrx" aria-label="Fechar">Fechar</button></div>
+<div class="vrc"><div class="vrnav"><button type="button" id="vrant" aria-label="Semana anterior">◀</button><b id="vrsem"></b><button type="button" id="vrprox" aria-label="Próxima semana">▶</button><button type="button" id="vrhoje">Esta semana</button><p id="vrplano" class="fraco"></p></div>
+<div id="vrcorpo" style="display:grid;gap:14px"></div></div></dialog>
 <div id="rel" hidden></div>
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=63;
+var VERSAO_APP=64;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -2321,6 +2355,117 @@ document.querySelectorAll(".d-anp").forEach(function(e){e.textContent=B.datas.an
 document.querySelectorAll(".d-cart").forEach(function(e){e.textContent=B.datas.carteira});
 document.querySelectorAll(".d-ag").forEach(function(e){e.textContent=B.datas.agenda});
 document.querySelectorAll(".d-cons").forEach(function(e){e.textContent=B.datas.consumidores});
+/* ---------- Rotas de visita: modelo fixo de 4 semanas (seg–ter saindo de Divinópolis, qua–sex saindo de Betim) ----------
+   As paradas saem dos dados vivos do app: retornos agendados para o dia entram primeiro; quem foi visitado nos 30 dias
+   anteriores fica de fora; depois clientes (Recuperar > Atenção > Ativo), prospects pelo potencial e 1 frota pelo nome.
+   Para mudar um circuito, edite VROT.circ abaixo (municípios na ordem do trajeto). */
+var VROT={ref:new Date(2026,10,9),sem:null,
+ circ:{
+  A:[{dia:1,t:"Oeste: Formiga · Arcos · Lagoa da Prata · S. A. do Monte",ini:"DIVINOPOLIS",fim:"DIVINOPOLIS",mun:["FORMIGA","ARCOS","LAGOA DA PRATA","SANTO ANTONIO DO MONTE","PEDRA DO INDAIA"],n:6,obs:"Saia cedo: Formiga é o ponto mais distante; volta pela MG-050."},
+     {dia:2,t:"Norte: Nova Serrana · Pitangui · Pará de Minas · Itaúna",ini:"DIVINOPOLIS",fim:"DIVINOPOLIS",mun:["NOVA SERRANA","PITANGUI","PARA DE MINAS","ITAUNA"],n:6,obs:"Circuito em anel, sem voltar pelo mesmo trecho."}],
+  B:[{dia:1,t:"Divinópolis + Sul: Itapecerica · Cláudio · Carmópolis",ini:"DIVINOPOLIS",fim:"DIVINOPOLIS",mun:["DIVINOPOLIS","ITAPECERICA","CLAUDIO","CARMOPOLIS DE MINAS"],n:6,obs:"Manhã nos clientes de Divinópolis; tarde no anel Itapecerica–Cláudio."},
+     {dia:2,t:"Noroeste: Araújos · Bom Despacho · Luz",ini:"DIVINOPOLIS",fim:"DIVINOPOLIS",mun:["ARAUJOS","BOM DESPACHO","LUZ"],n:6,obs:"Dia mais longo do ciclo. Luz concentra clientes para recuperar."}],
+  C1:{nome:"Norte BR-040",d:[{dia:3,t:"Betim → Esmeraldas → Sete Lagoas",ini:"BETIM",fim:"SETE LAGOAS",mun:["ESMERALDAS","SETE LAGOAS"],n:6,obs:"Pernoite em Sete Lagoas."},
+     {dia:4,t:"Sete Lagoas → Paraopeba → Curvelo",ini:"SETE LAGOAS",fim:"CURVELO",mun:["SETE LAGOAS","PARAOPEBA","CAETANOPOLIS","CURVELO"],n:6,obs:"Pernoite em Curvelo."},
+     {dia:5,t:"Curvelo → Matozinhos → Pedro Leopoldo → Betim",ini:"CURVELO",fim:"BETIM",mun:["CURVELO","MATOZINHOS","PEDRO LEOPOLDO"],n:4,obs:"Visitas só de manhã; saia de Curvelo até 12h."}]},
+  C2:{nome:"Inconfidentes",d:[{dia:3,t:"Betim → Brumadinho → Itabirito → Ouro Preto",ini:"BETIM",fim:"OURO PRETO",mun:["BRUMADINHO","ITABIRITO","OURO PRETO"],n:6,obs:"Pernoite em Ouro Preto."},
+     {dia:4,t:"Ouro Preto → Mariana → Ouro Branco → C. Lafaiete",ini:"OURO PRETO",fim:"CONSELHEIRO LAFAIETE",mun:["OURO PRETO","MARIANA","OURO BRANCO","CONSELHEIRO LAFAIETE"],n:6,obs:"Pernoite em Conselheiro Lafaiete."},
+     {dia:5,t:"C. Lafaiete → Congonhas → Betim (BR-040)",ini:"CONSELHEIRO LAFAIETE",fim:"BETIM",mun:["CONSELHEIRO LAFAIETE","CONGONHAS"],n:4,obs:"Congonhas por último; dali a Betim são cerca de 1h30."}]},
+  C3:{nome:"Leste BR-381",d:[{dia:3,t:"Betim → Sabará → Caeté → B. J. do Amparo → J. Monlevade",ini:"BETIM",fim:"JOAO MONLEVADE",mun:["SABARA","CAETE","BOM JESUS DO AMPARO","JOAO MONLEVADE"],n:6,obs:"Pernoite em João Monlevade."},
+     {dia:4,t:"Monlevade → Itabira → S. Gonçalo → Barão de Cocais",ini:"JOAO MONLEVADE",fim:"ITABIRA",mun:["JOAO MONLEVADE","ITABIRA","SAO GONCALO DO RIO ABAIXO","SANTA BARBARA","BARAO DE COCAIS"],n:6,obs:"Pernoite em Itabira."},
+     {dia:5,t:"Itabira → Nova União → Santa Luzia → Betim",ini:"ITABIRA",fim:"BETIM",mun:["ITABIRA","NOVA UNIAO","SANTA LUZIA"],n:4,obs:"Visitas de manhã; volta pela BR-381."}]},
+  C4:{nome:"Grande BH",d:[{dia:3,t:"Betim · Sarzedo · Ibirité · Itatiaiuçu · Igarapé",ini:"BETIM",fim:"BETIM",mun:["BETIM","SARZEDO","IBIRITE","ITATIAIUCU","IGARAPE","SAO JOAQUIM DE BICAS","JUATUBA"],n:7,obs:"Sem pernoite."},
+     {dia:4,t:"Contagem · Belo Horizonte",ini:"BETIM",fim:"BETIM",mun:["CONTAGEM","BELO HORIZONTE"],n:7,obs:"Maior potencial da base em prospects."},
+     {dia:5,t:"Nova Lima · Vespasiano · Ribeirão das Neves",ini:"BETIM",fim:"BETIM",mun:["NOVA LIMA","VESPASIANO","SAO JOSE DA LAPA","RIBEIRAO DAS NEVES"],n:4,obs:"Visitas de manhã."}]}
+ },
+ /* semana do ciclo: 1 = A + C1, 2 = B + C2, 3 = A + C3, 4 = B + C4 */
+ plano:[["A","C1"],["B","C2"],["A","C3"],["B","C4"]]};
+var VROT_DIAS=["","Segunda","Terça","Quarta","Quinta","Sexta"];
+function vrSegunda(d){var x=new Date(d);x.setHours(0,0,0,0);var w=(x.getDay()+6)%7;x.setDate(x.getDate()-w);return x}
+function vrCiclo(seg){var s=Math.round((seg-VROT.ref)/(7*864e5));return ((s%4)+4)%4}
+function vrCoord(p){var la=parseFloat(p.lat),lo=parseFloat(p.lon);if(la&&lo)return [la,lo];var c=coMun(p.mun);return c?[c[0],c[1]]:null}
+function vrNomeMun(m){return NOMES[m]||titulo(m)}
+/* situação do cliente: pela carga Iris (meses com compra) ou, sem ela, pela última compra da carteira */
+function vrSit(p){if(!p.cart||!p.cart.ok)return null;var ic=irisCli(p);
+ if(ic&&IRIS&&IRIS.resumo){var mi=IRIS.resumo.mes,ult=-1;for(var m=mi;m>=0;m--){if(ic.l.some(function(x){return (x[6][m]||0)>0})){ult=m;break}}
+  if(ult>=0){var g=mi-ult;return g<=1?"Ativo":g<=5?"Atenção":"Recuperar"}}
+ var d=chDias(p.cart.ult);if(d==null)return "Recuperar";return d<=60?"Ativo":d<=180?"Atenção":"Recuperar"}
+var VR_PESO={Recuperar:3,"Atenção":2,Ativo:1};
+function vrVisitaRecente(p,dia){var v=VISITA[p.ck];if(!v)return false;var dv=new Date(v+"T00:00:00"),d0=new Date(dia);d0.setHours(0,0,0,0);var dd=Math.round((d0-dv)/864e5);return dd>=1&&dd<=30}
+function vrVisitadoNoDia(p,dia){return VISITA[p.ck]===isoDia(dia)}
+function vrMonta(seg){var ci=vrCiclo(seg),pl=VROT.plano[ci],dias=[];
+ VROT.circ[pl[0]].forEach(function(d){dias.push(d)});VROT.circ[pl[1]].d.forEach(function(d){dias.push(d)});
+ var usados={},base=postos.filter(function(p){return !EXCL[p.ck]&&!inativo(p)});
+ return {ci:ci,a:pl[0],c:pl[1],dias:dias.map(function(d){var dia=new Date(seg);dia.setDate(dia.getDate()+d.dia-1);var iso=isoDia(dia);
+  var naRota=function(p){return d.mun.indexOf(p.mun)>=0&&!usados[p.ck]};
+  var livre=function(p){return naRota(p)&&(!vrVisitaRecente(p,dia)||vrVisitadoNoDia(p,dia))};
+  var esc=[],por={};function add(p,motivo){if(esc.some(function(x){return x.p===p}))return;esc.push({p:p,m:motivo});usados[p.ck]=1}
+  /* 1) retornos agendados para o dia (visita) nos municípios da rota; os de outros municípios viram aviso */
+  var fora=[];base.forEach(function(p){var r=retInfo(p);if(!r||r.iso.slice(0,10)!==iso)return;if(d.mun.indexOf(p.mun)>=0)add(p,"ret");else fora.push(p)});
+  /* retornos atrasados nos municípios da rota também passam na frente */
+  base.forEach(function(p){if(esc.length>=d.n)return;var r=retInfo(p);if(r&&r.atrasado&&livre(p))add(p,"retatr")});
+  var pos=base.filter(function(p){return p.tipo==="revendedor"&&livre(p)});
+  var cli=pos.filter(function(p){return p.cart&&p.cart.ok}).map(function(p){return {p:p,s:vrSit(p)}}).sort(function(a,b){return VR_PESO[b.s]-VR_PESO[a.s]||(b.p.cart.vol||0)-(a.p.cart.vol||0)});
+  var pro=pos.filter(function(p){return !(p.cart&&p.cart.ok)}).sort(function(a,b){return b.arla-a.arla});
+  var nCli=function(){return esc.filter(function(x){return x.p.cart&&x.p.cart.ok}).length};
+  /* 2) pelo menos uma parada por município; 3) clientes até deixar 2 vagas; 4) prospects; 5) completa com clientes */
+  d.mun.forEach(function(m){if(esc.length>=d.n)return;var c=cli.filter(function(x){return x.p.mun===m&&!usados[x.p.ck]})[0];if(c){add(c.p,"cli");return}var q=pro.filter(function(p){return p.mun===m&&!usados[p.ck]})[0];if(q)add(q,"pro")});
+  cli.forEach(function(x){if(esc.length<d.n&&nCli()<d.n-2&&!usados[x.p.ck])add(x.p,"cli")});
+  pro.forEach(function(p){if(esc.length<d.n&&!usados[p.ck])add(p,"pro")});
+  cli.forEach(function(x){if(esc.length<d.n&&!usados[x.p.ck])add(x.p,"cli")});
+  /* 6) frota: consumidor dos municípios da rota (clientes primeiro, depois quem tem diesel informado) */
+  var fr=base.filter(function(p){return p.tipo==="consumidor"&&livre(p)}).sort(function(a,b){var ca=a.cart?1:0,cb=b.cart?1:0;if(ca!==cb)return cb-ca;return (b.arla||0)-(a.arla||0)||d.mun.indexOf(b.mun)-d.mun.indexOf(a.mun)})[0];
+  if(fr)add(fr,"fro");
+  /* ordem: sequência dos municípios e, dentro de cada um, o mais perto */
+  var cur=coMun(d.ini),seq=[];d.mun.forEach(function(m){var L=esc.filter(function(x){return x.p.mun===m});while(L.length){L.sort(function(a,b){var ca=vrCoord(a.p),cb=vrCoord(b.p);return (ca&&cur?km(cur[0],cur[1],ca[0],ca[1]):1e9)-(cb&&cur?km(cur[0],cur[1],cb[0],cb[1]):1e9)});var x=L.shift();seq.push(x);cur=vrCoord(x.p)||cur}});
+  esc.forEach(function(x){if(seq.indexOf(x)<0)seq.push(x)});
+  var tot=0,pt=coMun(d.ini);seq.forEach(function(x){var c=vrCoord(x.p);if(c&&pt){tot+=km(pt[0],pt[1],c[0],c[1]);pt=c}});var fc=coMun(d.fim);if(fc&&pt)tot+=km(pt[0],pt[1],fc[0],fc[1]);
+  var res=cli.filter(function(x){return !usados[x.p.ck]}).slice(0,3).map(function(x){return x.p}).concat(pro.filter(function(p){return !usados[p.ck]}).slice(0,2));
+  return {d:d,dia:dia,iso:iso,seq:seq,km:Math.round(tot*1.3),fora:fora,res:res}})}}
+function vrEnd(p){return [p.endereco,p.bairro,(p.cidade||vrNomeMun(p.mun))+" MG"].filter(Boolean).join(", ")}
+function vrPonto(p){var la=parseFloat(p.lat),lo=parseFloat(p.lon);return la&&lo?la+","+lo:vrEnd(p)}
+function vrMaps(r){var o=coMun(r.d.ini),f=coMun(r.d.fim);return "https://www.google.com/maps/dir/?api=1&origin="+o[0]+","+o[1]+"&destination="+f[0]+","+f[1]+"&waypoints="+r.seq.map(function(x){return encodeURIComponent(vrPonto(x.p))}).join("%7C")+"&travelmode=driving"}
+function vrPinta(){var seg=VROT.sem,M=vrMonta(seg),box=$("vrcorpo");box.textContent="";
+ function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+ var fim=new Date(seg);fim.setDate(fim.getDate()+4);var f2=function(d){return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})};
+ $("vrsem").textContent="Semana "+(M.ci+1)+" do ciclo · "+f2(seg)+" a "+f2(fim);
+ $("vrplano").textContent="Seg–Ter: circuito "+M.a+" (Divinópolis) · Qua–Sex: "+VROT.circ[M.c].nome+" (Betim)";
+ M.dias.forEach(function(r){var art=el("article","vrdia"),cab=el("div","vrcab"),top=el("div","vrtop");
+  var h=el("h3");h.appendChild(el("em",null,VROT_DIAS[r.d.dia]+" "+f2(r.dia)));h.appendChild(document.createTextNode(r.d.t));top.appendChild(h);
+  top.appendChild(el("span","vrkm",vrNomeMun(r.d.ini)+" → "+vrNomeMun(r.d.fim)+" · ~"+r.km+" km"));cab.appendChild(top);
+  cab.appendChild(el("p","vrobs",r.d.obs));
+  if(r.fora.length)cab.appendChild(el("p","vraviso","Retorno marcado para este dia fora da rota: "+r.fora.map(function(p){return titulo(p.nome)+" ("+p.cidade+")"}).join(", ")+"."));
+  var ac=el("div","vracoes"),mp=el("a","vrmapa","Rota completa no Maps");mp.href=vrMaps(r);mp.target="_blank";mp.rel="noopener";ac.appendChild(mp);cab.appendChild(ac);art.appendChild(cab);
+  var ol=el("ol","vrlista");
+  if(!r.seq.length)ol.appendChild(el("li","vrvazio","Sem paradas disponíveis: todos foram visitados nos últimos 30 dias ou já entraram em outro dia."));
+  r.seq.forEach(function(x,i){var p=x.p,li=el("li","vrp"+(vrVisitadoNoDia(p,r.dia)?" feito":"")+(x.m==="fro"?" frota":""));
+   li.appendChild(el("span","vrnum",String(i+1)));var mid=el("div","vrmid");
+   var nb=el("button","chnome",titulo(p.nome));nb.type="button";nb.title="Abrir a ficha do cliente";nb.addEventListener("click",function(){abrirFicha(p,"dlgrota")});mid.appendChild(nb);
+   mid.appendChild(el("div","vrend",[p.endereco,p.bairro].filter(Boolean).map(titulo).join(" – ")+" · "+(p.cidade||vrNomeMun(p.mun))));
+   var ln=el("div","vrlin"),s=vrSit(p),pill;
+   if(x.m==="ret"||x.m==="retatr"){pill=el("span","vrpill ret",x.m==="ret"?"Retorno agendado":"Retorno atrasado")}
+   else if(x.m==="fro"){pill=el("span","vrpill fro",p.cart?"Frota cliente":"Frota")}
+   else if(s){pill=el("span","vrpill "+(s==="Atenção"?"ate":s==="Ativo"?"ati":"rec"),s)}
+   else pill=el("span","vrpill pro","Prospect");ln.appendChild(pill);
+   var info=p.tipo==="consumidor"?(p.segmento||"Consumidor"):(s?(p.cart.ult?"Última compra "+p.cart.ult:"Sem compra registrada"):"Potencial "+fmt(p.arla)+" L/mês");
+   if(VISITA[p.ck])info+=" · visita em "+dtLonga(VISITA[p.ck]);ln.appendChild(el("span","vrinfo",info));
+   var tl=(p.todos&&p.todos[0])||p.tel1;if(tl)ln.appendChild(el("span","vrtel",tl));
+   var gm=el("a","vrlk","mapa");gm.href="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(vrPonto(p));gm.target="_blank";gm.rel="noopener";ln.appendChild(gm);
+   mid.appendChild(ln);li.appendChild(mid);
+   var bt=el("div","vrbts"),vb=el("button","vrvis",vrVisitadoNoDia(p,r.dia)?"✓ Visitado":"Visitei");vb.type="button";
+   vb.title="Grava "+dtLonga(r.iso)+" como data da visita (vai para o Drive com as marcações)";
+   vb.addEventListener("click",function(){txtSet(VISITA,"postos_visita",p.ck,vrVisitadoNoDia(p,r.dia)?"":r.iso);vrPinta()});bt.appendChild(vb);bt.appendChild(botaoRetorno(p));li.appendChild(bt);
+   ol.appendChild(li)});
+  art.appendChild(ol);
+  if(r.res.length){var dt=el("details","vrres");dt.appendChild(el("summary",null,"Reservas se alguém cancelar ("+r.res.length+")"));var ul=el("ul");
+   r.res.forEach(function(p){var li=el("li"),b=el("button","chnome",titulo(p.nome));b.type="button";b.addEventListener("click",function(){abrirFicha(p,"dlgrota")});li.appendChild(b);var s=vrSit(p);li.appendChild(document.createTextNode(" · "+p.cidade+" · "+(s||"Prospect "+fmt(p.arla)+" L/mês")));ul.appendChild(li)});dt.appendChild(ul);art.appendChild(dt)}
+  box.appendChild(art)})}
+function vrAbrir(){if(!VROT.sem){var h=new Date(),seg=vrSegunda(h);if(h.getDay()===6||h.getDay()===0||(h.getDay()===5&&h.getHours()>=12))seg.setDate(seg.getDate()+7);VROT.sem=seg}
+ vrPinta();var d=$("dlgrota");if(d.showModal)d.showModal();else d.setAttribute("open","")}
+function vrAnda(n){VROT.sem=new Date(VROT.sem);VROT.sem.setDate(VROT.sem.getDate()+7*n);vrPinta()}
+$("rotasbtn").addEventListener("click",vrAbrir);$("vrx").addEventListener("click",function(){var d=$("dlgrota");if(d.close)d.close();else d.removeAttribute("open")});
+$("vrant").addEventListener("click",function(){vrAnda(-1)});$("vrprox").addEventListener("click",function(){vrAnda(1)});$("vrhoje").addEventListener("click",function(){VROT.sem=null;vrAbrir()});
+["dlgret","dlgpront"].forEach(function(id){$(id).addEventListener("close",function(){if($("dlgrota").open)vrPinta()})});
 $("vapp").textContent=VERSAO_APP;$("origem-bases").textContent="Origem das bases: ANP "+B.origem.anp+", carteira "+B.origem.carteira+", agenda "+B.origem.agenda+", consumidores "+B.origem.consumidores+". Versão do app: "+VERSAO_APP+".";
 if("serviceWorker" in navigator){var swTinha=!!navigator.serviceWorker.controller,swRecarregou=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(swTinha&&!swRecarregou){swRecarregou=true;location.reload()}});navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(function(rg){rg.update().catch(function(){});document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")rg.update().catch(function(){})})}).catch(function(){})}
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});
