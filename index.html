@@ -422,7 +422,7 @@ button.mais{display:block;margin:0 auto}
 <h3>Retorno ao cliente</h3>
 <p>"📅 Agendar retorno" (nos botões de ação da coluna Nome e dentro do Prontuário) abre uma janela para escolher data, hora, duração, tipo (visita, ligação ou WhatsApp) e o assunto. Há atalhos para amanhã, 1 semana, 15 e 30 dias e para a próxima saída da rota do cliente. "Salvar no Google Agenda" grava o evento direto na sua agenda, com cliente, CNPJ, telefones, endereço, rota, último atendimento, lembrete e um link que abre a ficha no app. Na primeira vez o Google pede a permissão de agenda: aceite. Remarcar altera o mesmo evento e "Cancelar retorno agendado" apaga o evento da agenda. Cada agendamento, remarcação ou cancelamento fica registrado no histórico do Prontuário. Sem internet ou sem permissão, o app abre o Google Agenda preenchido para você salvar lá. A data fica gravada no app: o botão passa a mostrar o retorno (em vermelho quando atrasado), o Prontuário avisa retornos de hoje e atrasados, e o filtro Visita mostra quem tem retorno agendado, atrasado ou nos próximos 7 dias.</p>
 <h3>Rotas de visita</h3>
-<p>"🗺️ Rotas de visita", no topo, monta a semana de campo num ciclo de 4 semanas: segunda e terça em bate-volta saindo de Divinópolis (circuitos A e B, alternados) e quarta a sexta saindo de Betim (Norte BR-040, Inconfidentes, Leste BR-381 e Grande BH, um por semana), com volta na sexta à tarde. As setas trocam de semana. As paradas saem dos dados do app: primeiro quem tem retorno agendado para aquele dia (retornos marcados para o dia em outro município aparecem como aviso) e os retornos atrasados; depois os clientes da carteira (Recuperar, Atenção e Ativo, pela carga Iris ou pela última compra), os postos prospects de maior potencial e uma frota do município. Quem foi visitado nos 30 dias anteriores fica de fora. "Rota completa no Maps" abre o trajeto com as paradas na ordem, "Visitei" grava a data da visita e "Agendar retorno" funciona como na lista. A quilometragem é estimada (linha reta × 1,3).</p>
+<p>"🗺️ Rotas de visita", no topo, monta a semana de campo num ciclo de 4 semanas: segunda e terça em bate-volta saindo de Divinópolis (circuitos A e B, alternados) e quarta a sexta saindo de Betim (Norte BR-040, Inconfidentes, Leste BR-381 e Grande BH, um por semana), com volta na sexta à tarde. As setas trocam de semana. As paradas saem dos dados do app: primeiro quem tem retorno agendado para aquele dia (retornos marcados para o dia em outro município aparecem como aviso) e os retornos atrasados; depois os clientes da carteira (Recuperar, Atenção e Ativo, pela carga Iris ou pela última compra), os postos prospects de maior potencial e uma frota do município. Ficam de fora quem foi visitado nos 30 dias anteriores, os postos marcados como Inativo e os CNPJs inativos na Receita (baixados, inaptos ou suspensos). "Rota completa no Maps" abre o trajeto com as paradas na ordem, "Visitei" grava a data da visita e "Agendar retorno" funciona como na lista. A quilometragem é estimada (linha reta × 1,3).</p>
 <h3>Rotas de entrega</h3>
 <p>O campo Rota mostra a rota de entrega do cliente e, logo abaixo, os dias da tabela de rotas da Bioar: saída, chegada e o limite para fazer o pedido. Vale nesta ordem: a rota que você escolher no app; a rota escrita na agenda ("ROTA SETE LAGOAS"); e, sem nenhuma das duas, a rota do município — a mais usada pelos clientes daquele município ("rota dos clientes do município"), ou a do município vizinho mais próximo que tenha rota, até 35 km ("sugerida: vizinho"), ou o polo de rota em MG mais perto ("sugerida: polo mais perto"). As sugeridas aparecem em itálico; ao confirmar com o cliente, escolha a rota no campo e ela passa a valer. O filtro Rota e a planilha usam a rota que vale.</p>
 <h3>Situação na Receita</h3>
@@ -497,7 +497,7 @@ button.mais{display:block;margin:0 auto}
 <div class="barra"><div><span id="salvo" role="status" aria-live="polite">Abrindo…</span><button type="button" id="recarregar" hidden>Recarregar com as bases novas</button><button type="button" id="salvar" class="cheio">Conectar ao Drive</button></div></div>
 <script>
 (function(){
-var VERSAO_APP=64;
+var VERSAO_APP=65;
 var IRIS=null;try{IRIS=JSON.parse(localStorage.getItem("base_iris")||"null")}catch(e){IRIS=null} /* manter igual ao número do CACHE em sw.js */
 var B=window.BASES;var PRODS=B.prods,DADOS=B.anp,AGENDA=B.agenda,CARTEIRA=B.carteira;
 var $=function(i){return document.getElementById(i)};
@@ -2384,6 +2384,8 @@ var VROT_DIAS=["","Segunda","Terça","Quarta","Quinta","Sexta"];
 function vrSegunda(d){var x=new Date(d);x.setHours(0,0,0,0);var w=(x.getDay()+6)%7;x.setDate(x.getDate()-w);return x}
 function vrCiclo(seg){var s=Math.round((seg-VROT.ref)/(7*864e5));return ((s%4)+4)%4}
 function vrCoord(p){var la=parseFloat(p.lat),lo=parseFloat(p.lon);if(la&&lo)return [la,lo];var c=coMun(p.mun);return c?[c[0],c[1]]:null}
+/* fora da roteirização: apagados, marcados como Inativo no app e CNPJ inativo na Receita (baixado, inapto, suspenso, nulo) */
+function vrAtivo(p){if(EXCL[p.ck]||inativo(p))return false;var si=sitInfo(p);return !(si&&si.baixado)}
 function vrNomeMun(m){return NOMES[m]||titulo(m)}
 /* situação do cliente: pela carga Iris (meses com compra) ou, sem ela, pela última compra da carteira */
 function vrSit(p){if(!p.cart||!p.cart.ok)return null;var ic=irisCli(p);
@@ -2395,7 +2397,7 @@ function vrVisitaRecente(p,dia){var v=VISITA[p.ck];if(!v)return false;var dv=new
 function vrVisitadoNoDia(p,dia){return VISITA[p.ck]===isoDia(dia)}
 function vrMonta(seg){var ci=vrCiclo(seg),pl=VROT.plano[ci],dias=[];
  VROT.circ[pl[0]].forEach(function(d){dias.push(d)});VROT.circ[pl[1]].d.forEach(function(d){dias.push(d)});
- var usados={},base=postos.filter(function(p){return !EXCL[p.ck]&&!inativo(p)});
+ var usados={},base=postos.filter(vrAtivo);
  return {ci:ci,a:pl[0],c:pl[1],dias:dias.map(function(d){var dia=new Date(seg);dia.setDate(dia.getDate()+d.dia-1);var iso=isoDia(dia);
   var naRota=function(p){return d.mun.indexOf(p.mun)>=0&&!usados[p.ck]};
   var livre=function(p){return naRota(p)&&(!vrVisitaRecente(p,dia)||vrVisitadoNoDia(p,dia))};
