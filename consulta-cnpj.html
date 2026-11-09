@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Consulta de CNPJs</title>
+<script src="cofre.js"></script>
 <style>
   /* Layout: coluna única, formulário no topo, uma ficha por CNPJ abaixo */
   :root {
@@ -91,7 +92,7 @@
   <section id="resultados" aria-live="polite"></section>
 </main>
 
-<script>
+<script type="text/cofre">
 (function () {
   var BASE = "https://receitaws.com.br/v1/cnpj/";
   var LIMITE = 3, JANELA = 60000;       // API pública: 3 consultas por minuto
